@@ -54,3 +54,4 @@ recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov
 * OVS
 
 ### How to use Netlink - programming example ###
+[https://www.linuxjournal.com/article/7356](https://www.linuxjournal.com/article/7356) has a walkthrough for using Netlink in C.
