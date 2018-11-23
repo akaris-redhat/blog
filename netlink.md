@@ -146,7 +146,9 @@ Starting sender
 ~~~
 
 ### How to use Netlink - programming example ###
+
 [https://www.linuxjournal.com/article/7356](https://www.linuxjournal.com/article/7356) has a walkthrough for using Netlink in C.
+[https://www.linuxjournal.com/article/8498](https://www.linuxjournal.com/article/8498) as well.
 
 #### C ####
 
