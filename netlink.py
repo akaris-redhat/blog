@@ -49,6 +49,8 @@ import struct
 import os
 
 s = socket.socket(socket.AF_NETLINK, socket.SOCK_RAW, socket.NETLINK_ROUTE)
+# listen to multicast group RTMGRP_IPV4_ROUTE so that we see all route related
+# updates from the kernel
 s.bind((os.getpid(), RTMGRP_IPV4_ROUTE))
 
 while True:
