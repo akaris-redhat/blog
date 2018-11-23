@@ -155,9 +155,18 @@ Starting sender
 The following C application monitors any route changes that happen in the kernel: 
 [https://github.com/andreaskaris/blog/blob/master/netlink.c](https://github.com/andreaskaris/blog/blob/master/netlink.c)
 
-Note that a more complete example can be found here: [https://gist.github.com/cl4u2/5204374](https://gist.github.com/cl4u2/5204374)
+Compile the code:
+~~~
+gcc netlink.c -o netlink
+~~~
 
-Start the application:
+Start the application and while the application is running, modify the routing table:
+~~~
+[akaris@wks-akaris python]$ sudo ip r a 4.3.2.0/30 via 127.0.0.1
+[akaris@wks-akaris python]$ sudo ip r d 4.3.2.0/30 via 127.0.0.1
+~~~
+
+The application will yield the following. We can see live when the route is added and when it is deleted:
 ~~~
 [akaris@wks-akaris c]$ ./netlink 
 Starting netlink receiverd
@@ -167,12 +176,7 @@ nlmsg_len: 60, nlmsg_type 25, nlmsg_flags: 0, nlmsg_seq: 1543015717, nlmsg_pid: 
 Netmask: 30
 ~~~
 
-And while the application is running, add and delete routes:
-~~~
-[akaris@wks-akaris python]$ sudo ip r a 4.3.2.0/30 via 127.0.0.1
-[akaris@wks-akaris python]$ sudo ip r d 4.3.2.0/30 via 127.0.0.1
-[akaris@wks-akaris python]$ 
-~~~
+Note that a more complete example can be found here: [https://gist.github.com/cl4u2/5204374](https://gist.github.com/cl4u2/5204374)
 
 #### Python ####
 The following python application monitors any route changes that happen in the kernel:
