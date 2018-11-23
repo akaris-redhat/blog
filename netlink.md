@@ -5,6 +5,8 @@
 
 [https://www.linuxjournal.com/article/7356](https://www.linuxjournal.com/article/7356)
 
+[http://inai.de/documents/Netlink_Protocol.pdf](http://inai.de/documents/Netlink_Protocol.pdf)
+
 ### What is Netlink? ###
 A means to exchange networking information between kernel and userspace:
 ~~~
