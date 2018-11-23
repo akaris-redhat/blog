@@ -116,7 +116,11 @@ Starting sender
 
 #### Python ####
 
+##### Resources #####
+[https://wiki.python.org/moin/UdpCommunication](https://wiki.python.org/moin/UdpCommunication)
+
 ##### Program #####
+
 
 ### How to use Netlink - programming example ###
 [https://www.linuxjournal.com/article/7356](https://www.linuxjournal.com/article/7356) has a walkthrough for using Netlink in C.
