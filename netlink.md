@@ -151,3 +151,43 @@ Starting sender
 #### C ####
 
 #### Python ####
+The following python application monitors any new routes that are added to the kernel:
+[https://github.com/andreaskaris/blog/blob/master/netlink.py](https://github.com/andreaskaris/blog/blob/master/netlink.py)
+
+
+Start the application and while the application is running, modify the routing table:
+~~~
+[akaris@wks-akaris python]$ sudo ip r a 4.3.2.0/30 via 127.0.0.1
+[akaris@wks-akaris python]$ sudo ip r d 4.3.2.0/30 via 127.0.0.1
+~~~
+
+The application will yield the following. We can see live when the route is added and when it is deleted:
+~~~
+[akaris@wks-akaris python]$ ./netlink.py 
+Netlink header:  60 RTM_NEWROUTE 1536 1543012056 13037
+Netlink payload:  2 30 0 0 254 3 0 1 0
+Netmask: 30
+IP:  b'\x04\x03\x02\x00'
+Netlink header:  60 RTM_DELROUTE 0 1543012061 13047
+Netlink payload:  2 30 0 0 254 3 0 1 0
+Netmask: 30
+IP:  b'\x04\x03\x02\x00'
+~~~
+
+strace'ing the application reveals even more about the message structure:
+~~~
+[akaris@wks-akaris python]$ strace -e trace=network ./netlink.py 
+socket(AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, NETLINK_ROUTE) = 3
+bind(3, {sa_family=AF_NETLINK, nl_pid=13307, nl_groups=0x000040}, 12) = 0
+recvfrom(3, {{len=60, type=RTM_NEWROUTE, flags=NLM_F_EXCL|NLM_F_CREATE, seq=1543012305, pid=13310}, {rtm_family=AF_INET, rtm_dst_len=30, rtm_src_len=0, rtm_tos=0, rtm_table=RT_TABLE_MAIN, rtm_protocol=RTPROT_BOOT, rtm_scope=RT_SCOPE_UNIVERSE, rtm_type=RTN_UNICAST, rtm_flags=0}, [{{nla_len=8, nla_type=RTA_TABLE}, RT_TABLE_MAIN}, {{nla_len=8, nla_type=RTA_DST}, 4.3.2.0}, {{nla_len=8, nla_type=RTA_GATEWAY}, 127.0.0.1}, {{nla_len=8, nla_type=RTA_OIF}, if_nametoindex("lo")}]}, 65535, 0, NULL, NULL) = 60
+Netlink header:  60 RTM_NEWROUTE 1536 1543012305 13310
+Netlink payload:  2 30 0 0 254 3 0 1 0
+Netmask: 30
+IP:  b'\x04\x03\x02\x00'
+recvfrom(3, {{len=60, type=RTM_DELROUTE, flags=0, seq=1543012307, pid=13320}, {rtm_family=AF_INET, rtm_dst_len=30, rtm_src_len=0, rtm_tos=0, rtm_table=RT_TABLE_MAIN, rtm_protocol=RTPROT_BOOT, rtm_scope=RT_SCOPE_UNIVERSE, rtm_type=RTN_UNICAST, rtm_flags=0}, [{{nla_len=8, nla_type=RTA_TABLE}, RT_TABLE_MAIN}, {{nla_len=8, nla_type=RTA_DST}, 4.3.2.0}, {{nla_len=8, nla_type=RTA_GATEWAY}, 127.0.0.1}, {{nla_len=8, nla_type=RTA_OIF}, if_nametoindex("lo")}]}, 65535, 0, NULL, NULL) = 60
+Netlink header:  60 RTM_DELROUTE 0 1543012307 13320
+Netlink payload:  2 30 0 0 254 3 0 1 0
+Netmask: 30
+IP:  b'\x04\x03\x02\x00'
+recvfrom(3, 
+~~~
