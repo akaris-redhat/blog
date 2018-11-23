@@ -72,14 +72,9 @@ recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov
 
 * OVS
 
-### How to use Netlink - programming example ###
-[https://www.linuxjournal.com/article/7356](https://www.linuxjournal.com/article/7356) has a walkthrough for using Netlink in C.
+### Socket programming ###
 
-#### Python ####
-
-##### Socket #####
-
-##### Netlink #####
+Let's do a little detour towards socket programming, as this will teach the basics for Netlink programming.
 
 #### C ####
 
@@ -87,7 +82,7 @@ recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov
 
 The Linux Programming Reference is an excellent book for C programming with Linux.
 
-##### Socket #####
+##### Program #####
 
 Let's start with a generic example for IPC via sockets in C. The following contains an example for a UDP socket:
 [https://github.com/andreaskaris/blog/blob/master/messenger.c](https://github.com/andreaskaris/blog/blob/master/messenger.c)
@@ -119,4 +114,13 @@ This node is a sender
 Starting sender
 ~~~
 
-##### Netlink #####
+#### Python ####
+
+##### Program #####
+
+### How to use Netlink - programming example ###
+[https://www.linuxjournal.com/article/7356](https://www.linuxjournal.com/article/7356) has a walkthrough for using Netlink in C.
+
+#### C ####
+
+#### Python ####
