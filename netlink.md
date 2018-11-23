@@ -152,8 +152,30 @@ Starting sender
 
 #### C ####
 
+The following C application monitors any route changes that happen in the kernel: 
+[https://github.com/andreaskaris/blog/blob/master/netlink.c](https://github.com/andreaskaris/blog/blob/master/netlink.c)
+
+Note that a more complete example can be found here: [https://gist.github.com/cl4u2/5204374](https://gist.github.com/cl4u2/5204374)
+
+Start the application:
+~~~
+[akaris@wks-akaris c]$ ./netlink 
+Starting netlink receiverd
+nlmsg_len: 60, nlmsg_type 24, nlmsg_flags: 1536, nlmsg_seq: 1543015716, nlmsg_pid: 15333
+Netmask: 30
+nlmsg_len: 60, nlmsg_type 25, nlmsg_flags: 0, nlmsg_seq: 1543015717, nlmsg_pid: 15343
+Netmask: 30
+~~~
+
+And while the application is running, add and delete routes:
+~~~
+[akaris@wks-akaris python]$ sudo ip r a 4.3.2.0/30 via 127.0.0.1
+[akaris@wks-akaris python]$ sudo ip r d 4.3.2.0/30 via 127.0.0.1
+[akaris@wks-akaris python]$ 
+~~~
+
 #### Python ####
-The following python application monitors any new routes that are added to the kernel:
+The following python application monitors any route changes that happen in the kernel:
 [https://github.com/andreaskaris/blog/blob/master/netlink.py](https://github.com/andreaskaris/blog/blob/master/netlink.py)
 
 
