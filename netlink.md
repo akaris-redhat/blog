@@ -74,3 +74,21 @@ recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov
 
 ### How to use Netlink - programming example ###
 [https://www.linuxjournal.com/article/7356](https://www.linuxjournal.com/article/7356) has a walkthrough for using Netlink in C.
+
+#### Python ####
+
+##### Socket #####
+
+##### Netlink #####
+
+#### C ####
+
+##### Resources #####
+
+The Linux Programming Reference is an excellent book for C programming with Linux.
+
+##### Socket #####
+
+Let's start with a generic example for IPC via sockets in C. 
+
+##### Netlink #####
