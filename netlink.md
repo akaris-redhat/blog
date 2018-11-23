@@ -120,7 +120,30 @@ Starting sender
 [https://wiki.python.org/moin/UdpCommunication](https://wiki.python.org/moin/UdpCommunication)
 
 ##### Program #####
+Let's start with a generic example for IPC via sockets in Python. The following contains an example for a UDP socket:
+[https://github.com/andreaskaris/blog/blob/master/messenger.py](https://github.com/andreaskaris/blog/blob/master/messenger.py)
 
+Run the server:
+~~~
+[akaris@wks-akaris python]$ ./messenger.py rec
+This node is a receiver
+Starting receiver
+Received datagram from  ('127.0.0.1', 58172)
+Datagram content:  b'MSG'
+Received datagram from  ('127.0.0.1', 39735)
+Datagram content:  b'MSG'
+~~~
+
+Run the client in another CLI:
+~~~
+[akaris@wks-akaris python]$ ./messenger.py sender
+This node is a sender
+Starting sender
+[akaris@wks-akaris python]$ ./messenger.py sender
+This node is a sender
+Starting sender
+[akaris@wks-akaris python]$ 
+~~~
 
 ### How to use Netlink - programming example ###
 [https://www.linuxjournal.com/article/7356](https://www.linuxjournal.com/article/7356) has a walkthrough for using Netlink in C.
