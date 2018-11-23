@@ -89,6 +89,34 @@ The Linux Programming Reference is an excellent book for C programming with Linu
 
 ##### Socket #####
 
-Let's start with a generic example for IPC via sockets in C. 
+Let's start with a generic example for IPC via sockets in C. The following contains an example for a UDP socket:
+[https://github.com/andreaskaris/blog/blob/master/messenger.c](https://github.com/andreaskaris/blog/blob/master/messenger.c)
+
+Compile:
+~~~
+[akaris@wks-akaris c]$ gcc messenger.c -o messenger
+[akaris@wks-akaris c]$ 
+~~~
+
+Then run, in one CLI the receiver:
+~~~
+[akaris@wks-akaris c]$ ./messenger receiver
+This node is a receiver
+Starting receiver
+Received datagram from 127.0.0.1
+Datagram content: MSG
+Received datagram from 127.0.0.1
+Datagram content: MSG
+~~~
+
+In the other CLI the sender:
+~~~
+[akaris@wks-akaris c]$ ./messenger sender
+This node is a sender
+Starting sender
+[akaris@wks-akaris c]$ ./messenger sender
+This node is a sender
+Starting sender
+~~~
 
 ##### Netlink #####
