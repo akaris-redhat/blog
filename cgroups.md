@@ -69,3 +69,25 @@ accounting/limiting the resources which processes in a cgroup can
 access. For example, cpusets (see Documentation/cgroup-v1/cpusets.txt) allow
 you to associate a set of CPUs and a set of memory nodes with the
 tasks in each cgroup.
+
+#### Listing the cgroups that a process is in ####
+
+[https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt)
+>  Each task under /proc has an added file named 'cgroup' displaying,
+for each active hierarchy, the subsystem names and the cgroup name
+as the path relative to the root of the cgroup file system.
+
+~~~
+[root@rhospbl-1 ~]# cat /proc/$(pidof libvirtd)/cgroup
+11:pids:/
+10:memory:/system.slice
+9:perf_event:/
+8:cpuset:/
+7:cpuacct,cpu:/system.slice
+6:freezer:/
+5:hugetlb:/
+4:devices:/system.slice/libvirtd.service
+3:blkio:/system.slice
+2:net_prio,net_cls:/
+1:name=systemd:/system.slice/libvirtd.service
+~~~
