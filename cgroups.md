@@ -44,17 +44,17 @@ mount: unknown filesystem type 'cgroup2'
 
 > Definitions:
 
-A *cgroup* associates a set of tasks with a set of parameters for one
+> A *cgroup* associates a set of tasks with a set of parameters for one
 or more subsystems.
 
-A *subsystem* is a module that makes use of the task grouping
+> A *subsystem* is a module that makes use of the task grouping
 facilities provided by cgroups to treat groups of tasks in
 particular ways. A subsystem is typically a "resource controller" that
 schedules a resource or applies per-cgroup limits, but it may be
 anything that wants to act on a group of processes, e.g. a
 virtualization subsystem.
 
-A *hierarchy* is a set of cgroups arranged in a tree, such that
+> A *hierarchy* is a set of cgroups arranged in a tree, such that
 every task in the system is in exactly one of the cgroups in the
 hierarchy, and a set of subsystems; each subsystem has system-specific
 state attached to each cgroup in the hierarchy.  Each hierarchy has
