@@ -142,6 +142,23 @@ cgroup.clone_children  cgroup.event_control   cgroup.procs           notify_on_r
 1
 ~~~
 
+#### Using cgroups manually ####
+
+~~~
+[root@overcloud-controller-0 cgroup]# cd /sys/fs/cgroup/cpuset/
+[root@overcloud-controller-0 cpuset]# mkdir test
+[root@overcloud-controller-0 test]# echo 2-3 > cpuset.cpus
+[root@overcloud-controller-0 test]# cat cpuset.cpus
+2-3
+[root@overcloud-controller-0 test]# dd if=/dev/zero of=/dev/null &
+[2] 931866
+[root@overcloud-controller-0 test]# taskset -p -c 931866 
+pid 931866's current affinity list: 0-3
+[root@overcloud-controller-0 test]# echo 931866 > tasks 
+[root@overcloud-controller-0 test]# taskset -p -c 931866 
+pid 931866's current affinity list: 2,3
+~~~
+
 ### The relationship of containers and cgroup ###
 
 Containers are basically just a bunch of cgroups?
