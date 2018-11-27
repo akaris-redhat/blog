@@ -91,3 +91,53 @@ as the path relative to the root of the cgroup file system.
 2:net_prio,net_cls:/
 1:name=systemd:/system.slice/libvirtd.service
 ~~~
+
+#### notify_on_release ####
+
+> If the notify_on_release flag is enabled (1) in a cgroup, then
+whenever the last task in the cgroup leaves (exits or attaches to
+some other cgroup) and the last child cgroup of that cgroup
+is removed, then the kernel runs the command specified by the contents
+of the "release_agent" file in that hierarchy's root directory,
+supplying the pathname (relative to the mount point of the cgroup
+file system) of the abandoned cgroup.  This enables automatic
+removal of abandoned cgroups.  The default value of
+notify_on_release in the root cgroup at system boot is disabled
+(0).  The default value of other cgroups at creation is the current
+value of their parents' notify_on_release settings. The default value of
+a cgroup hierarchy's release_agent path is empty.
+
+~~~
+[root@overcloud-controller-0 ~]# systemctl status session-c2.scope
+● session-c2.scope - Session c2 of user rabbitmq
+   Loaded: loaded (/run/systemd/system/session-c2.scope; static; vendor preset: disabled)
+  Drop-In: /run/systemd/system/session-c2.scope.d
+           └─50-After-systemd-logind\x2eservice.conf, 50-After-systemd-user-sessions\x2eservice.conf, 50-Description.conf, 50-SendSIGHUP.conf, 50-Slice.conf, 50-TasksMax.conf
+   Active: active (abandoned) since Wed 2018-11-07 22:40:43 UTC; 2 weeks 5 days ago
+   CGroup: /user.slice/user-975.slice/session-c2.scope
+           └─22384 /usr/lib64/erlang/erts-7.3.1.4/bin/epmd -daemon
+
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
+[root@overcloud-controller-0 ~]# cat /sys/fs/cgroup/
+blkio/            cpu,cpuacct/      freezer/          net_cls/          perf_event/       
+cpu/              cpuset/           hugetlb/          net_cls,net_prio/ pids/             
+cpuacct/          devices/          memory/           net_prio/         systemd/          
+[root@overcloud-controller-0 ~]# cat /sys/fs/cgroup/
+blkio/            cpu,cpuacct/      freezer/          net_cls/          perf_event/       
+cpu/              cpuset/           hugetlb/          net_cls,net_prio/ pids/             
+cpuacct/          devices/          memory/           net_prio/         systemd/          
+[root@overcloud-controller-0 ~]# cat /sys/fs/cgroup/
+blkio/            cpu,cpuacct/      freezer/          net_cls/          perf_event/       
+cpu/              cpuset/           hugetlb/          net_cls,net_prio/ pids/             
+cpuacct/          devices/          memory/           net_prio/         systemd/          
+[root@overcloud-controller-0 ~]# cat /sys/fs/cgroup/systemd/
+cgroup.clone_children  cgroup.procs           machine.slice/         release_agent          tasks
+cgroup.event_control   cgroup.sane_behavior   notify_on_release      system.slice/          user.slice/
+[root@overcloud-controller-0 ~]# cat /sys/fs/cgroup/systemd/
+cgroup.clone_children  cgroup.procs           machine.slice/         release_agent          tasks
+cgroup.event_control   cgroup.sane_behavior   notify_on_release      system.slice/          user.slice/
+[root@overcloud-controller-0 ~]# cat /sys/fs/cgroup/systemd/user.slice/user-975.slice/session-c2.scope/
+cgroup.clone_children  cgroup.event_control   cgroup.procs           notify_on_release      tasks
+[root@overcloud-controller-0 ~]# cat /sys/fs/cgroup/systemd/user.slice/user-975.slice/session-c2.scope/notify_on_release 
+1
+~~~
