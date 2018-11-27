@@ -141,3 +141,27 @@ cgroup.clone_children  cgroup.event_control   cgroup.procs           notify_on_r
 [root@overcloud-controller-0 ~]# cat /sys/fs/cgroup/systemd/user.slice/user-975.slice/session-c2.scope/notify_on_release 
 1
 ~~~
+
+### The relationship of containers and cgroup ###
+
+Containers are basically just a bunch of cgroups?
+~~~
+[root@overcloud-controller-0 cpuset]# cat  system.slice/docker-027ca08b78824b60c243324660df7ed4a7fa7659027209e3f646b70a6a9a3cae.scope/tasks 
+167446
+[root@overcloud-controller-0 cpuset]# docker exec 027ca08b7882 /bin/dd 
+^C
+[root@overcloud-controller-0 cpuset]# ps aux | grep dd
+(...)
+42445     894272  0.3  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
+(...)
+[root@overcloud-controller-0 cpuset]# ps aux | grep 167446
+42445     167446  0.0  0.3 163940 26892 ?        Ss   Nov07   0:39 /usr/bin/python2 /usr/bin/swift-object-updater /etc/swift/object-server.conf
+root      896151  0.0  0.0 112712   976 pts/0    S+   04:07   0:00 grep --color=auto 167446
+[root@overcloud-controller-0 cpuset]# ps aux | grep 894272
+42445     894272  0.0  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
+root      896803  0.0  0.0 112708   976 pts/0    S+   04:07   0:00 grep --color=auto 894272
+[root@overcloud-controller-0 cpuset]# docker exec -it 027ca08b7882 /bin/bash
+()[swift@overcloud-controller-0 /]$ ps aux | grep [d]d
+swift       5617  0.0  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
+()[swift@overcloud-controller-0 /]$ 
+~~~
