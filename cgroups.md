@@ -161,7 +161,7 @@ pid 931866's current affinity list: 2,3
 
 ### The relationship of containers and cgroup ###
 
-Containers are basically just a bunch of cgroups?
+Containers are basically just a bunch of cgroups + namespace isolation:
 ~~~
 [root@overcloud-controller-0 cpuset]# cat  system.slice/docker-027ca08b78824b60c243324660df7ed4a7fa7659027209e3f646b70a6a9a3cae.scope/tasks 
 167446
@@ -182,3 +182,11 @@ root      896803  0.0  0.0 112708   976 pts/0    S+   04:07   0:00 grep --color=
 swift       5617  0.0  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
 ()[swift@overcloud-controller-0 /]$ 
 ~~~
+
+[https://en.wikipedia.org/wiki/LXC](https://en.wikipedia.org/wiki/LXC)
+> The Linux kernel provides the cgroups functionality that allows limitation and prioritization of resources (CPU, memory, block I/O, network, etc.) without the need for starting any virtual machines, and also namespace isolation functionality that allows complete isolation of an applications' view of the operating environment, including process trees, networking, user IDs and mounted file systems.[3]
+
+> LXC combines the kernel's cgroups and support for isolated namespaces to provide an isolated environment for applications. Early versions of Docker used LXC as the container execution driver, though LXC was made optional in v0.9 and support was dropped in Docker v1.10. [4] 
+
+[https://en.wikipedia.org/wiki/Docker_(software)](https://en.wikipedia.org/wiki/Docker_(software))
+> Docker is developed primarily for Linux, where it uses the resource isolation features of the Linux kernel such as cgroups and kernel namespaces, and a union-capable file system such as OverlayFS and others[28] to allow independent "containers" to run within a single Linux instance, avoiding the overhead of starting and maintaining virtual machines (VMs).[29] The Linux kernel's support for namespaces mostly[30] isolates an application's view of the operating environment, including process trees, network, user IDs and mounted file systems, while the kernel's cgroups provide resource limiting for memory and CPU.[31] Since version 0.9, Docker includes the libcontainer library as its own way to directly use virtualization facilities provided by the Linux kernel, in addition to using abstracted virtualization interfaces via libvirt, LXC and systemd-nspawn.[13][32][27]
