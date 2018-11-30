@@ -1,8 +1,8 @@
 ### Resources ###
 [https://en.wikipedia.org/wiki/Cgroups](https://en.wikipedia.org/wiki/Cgroups)
 [https://www.kernel.org/doc/Documentation/cgroup-v1/](https://www.kernel.org/doc/Documentation/cgroup-v1/)
-
 [https://lwn.net/Articles/679786/](https://lwn.net/Articles/679786/)
+[https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/resource_management_guide/index](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/resource_management_guide/index)
 
 ### cgroups versions ###
 
