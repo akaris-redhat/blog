@@ -163,6 +163,20 @@ pid 931866's current affinity list: 2,3
 
 ##### Example hugetlb #####
 
+Looking at meminfo, we see that 4 hugepages are used:
+~~~
+[root@overcloud-computesriov-0 system.slice]# cat /sys/devices/system/node/node?/meminfo | grep -i huge
+Node 0 AnonHugePages:      4096 kB
+Node 0 HugePages_Total:    16
+Node 0 HugePages_Free:     12
+Node 0 HugePages_Surp:      0
+Node 1 AnonHugePages:      2048 kB
+Node 1 HugePages_Total:    16
+Node 1 HugePages_Free:     16
+Node 1 HugePages_Surp:      0
+~~~
+
+One way to find out which processes are using hugepages, is to check the hugetlb cgroups:
 ~~~
 [root@overcloud-computesriov-0 ~]# cd /sys/fs/cgroup/hugetlb
 [root@overcloud-computesriov-0 hugetlb]# ll
