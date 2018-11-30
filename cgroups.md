@@ -1,5 +1,6 @@
 ### Resources ###
 [https://en.wikipedia.org/wiki/Cgroups](https://en.wikipedia.org/wiki/Cgroups)
+[https://www.kernel.org/doc/Documentation/cgroup-v1/](https://www.kernel.org/doc/Documentation/cgroup-v1/)
 
 [https://lwn.net/Articles/679786/](https://lwn.net/Articles/679786/)
 
@@ -144,6 +145,7 @@ cgroup.clone_children  cgroup.event_control   cgroup.procs           notify_on_r
 
 #### Using cgroups manually ####
 
+[https://www.kernel.org/doc/Documentation/cgroup-v1/hugetlb.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/hugetlb.txt)
 ~~~
 [root@overcloud-controller-0 cgroup]# cd /sys/fs/cgroup/cpuset/
 [root@overcloud-controller-0 cpuset]# mkdir test
@@ -157,6 +159,129 @@ pid 931866's current affinity list: 0-3
 [root@overcloud-controller-0 test]# echo 931866 > tasks 
 [root@overcloud-controller-0 test]# taskset -p -c 931866 
 pid 931866's current affinity list: 2,3
+~~~
+
+##### Example hugetlb #####
+
+~~~
+[root@overcloud-computesriov-0 ~]# cd /sys/fs/cgroup/hugetlb
+[root@overcloud-computesriov-0 hugetlb]# ll
+total 0
+-rw-r--r--.  1 root root 0 Nov 27 06:17 cgroup.clone_children
+--w--w--w-.  1 root root 0 Nov 27 06:17 cgroup.event_control
+-rw-r--r--.  1 root root 0 Nov 27 06:17 cgroup.procs
+-r--r--r--.  1 root root 0 Nov 27 06:17 cgroup.sane_behavior
+-rw-r--r--.  1 root root 0 Nov 27 06:17 hugetlb.1GB.failcnt
+-rw-r--r--.  1 root root 0 Nov 27 06:17 hugetlb.1GB.limit_in_bytes
+-rw-r--r--.  1 root root 0 Nov 27 06:17 hugetlb.1GB.max_usage_in_bytes
+-r--r--r--.  1 root root 0 Nov 27 06:17 hugetlb.1GB.usage_in_bytes
+-rw-r--r--.  1 root root 0 Nov 27 06:17 notify_on_release
+-rw-r--r--.  1 root root 0 Nov 27 06:17 release_agent
+drwxr-xr-x. 11 root root 0 Nov 27 06:46 system.slice
+-rw-r--r--.  1 root root 0 Nov 27 06:17 tasks
+[root@overcloud-computesriov-0 hugetlb]# cat hugetlb.1GB.usage_in_bytes
+4294967296
+[root@overcloud-computesriov-0 hugetlb]# cd system.slice
+[root@overcloud-computesriov-0 system.slice]# ll
+total 0
+-rw-r--r--. 1 root root 0 Nov 27 06:25 cgroup.clone_children
+--w--w--w-. 1 root root 0 Nov 27 06:25 cgroup.event_control
+-rw-r--r--. 1 root root 0 Nov 27 06:25 cgroup.procs
+drwxr-xr-x. 2 root root 0 Nov 27 06:46 docker-111c9c039324d640875e550763d6507450cbbd07f6674c3883388839807cd614.scope
+drwxr-xr-x. 2 root root 0 Nov 27 06:51 docker-1286b301010bb53e3d919616054e645c00a2288b9cdc8235bdb68aa404a0c34b.scope
+drwxr-xr-x. 2 root root 0 Nov 27 06:46 docker-46ed5e7b2045df285552bde12209717f1601b27e3d6e137ed9122d3d9c519a3d.scope
+drwxr-xr-x. 2 root root 0 Nov 27 06:51 docker-90030441400dd9536aa33d13d3d5792a4e1f025fb383141cb0f18cfaed260979.scope
+drwxr-xr-x. 2 root root 0 Nov 27 06:46 docker-a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.scope
+drwxr-xr-x. 2 root root 0 Nov 27 06:51 docker-b9ff1a61cc4f144cc2aa16332d8e07248ad71a7263056b0d9cddb7339368457a.scope
+drwxr-xr-x. 2 root root 0 Nov 27 06:51 docker-c538d8c4e222b977b218746ee9ebef34335d768a364fbe1bfb3e72284d65520a.scope
+drwxr-xr-x. 2 root root 0 Nov 27 06:51 docker-d2e87b4ec13cc51c9dab3e593ee44051eb243ce684cc300b7e6103e8f35e1320.scope
+drwxr-xr-x. 2 root root 0 Nov 27 06:51 docker-dce63a96f513527b894bbec6c7f39f40dd2912bdbf4dec0a51b2e59704c03e7b.scope
+-rw-r--r--. 1 root root 0 Nov 27 06:25 hugetlb.1GB.failcnt
+-rw-r--r--. 1 root root 0 Nov 27 06:25 hugetlb.1GB.limit_in_bytes
+-rw-r--r--. 1 root root 0 Nov 27 06:25 hugetlb.1GB.max_usage_in_bytes
+-r--r--r--. 1 root root 0 Nov 27 06:25 hugetlb.1GB.usage_in_bytes
+-rw-r--r--. 1 root root 0 Nov 27 06:25 notify_on_release
+-rw-r--r--. 1 root root 0 Nov 27 06:25 tasks
+[root@overcloud-computesriov-0 system.slice]# cat hugetlb.1GB.usage_in_bytes
+4294967296
+[root@overcloud-computesriov-0 system.slice]# find . -name '*usage_in_bytes'
+./docker-b9ff1a61cc4f144cc2aa16332d8e07248ad71a7263056b0d9cddb7339368457a.scope/hugetlb.1GB.max_usage_in_bytes
+./docker-b9ff1a61cc4f144cc2aa16332d8e07248ad71a7263056b0d9cddb7339368457a.scope/hugetlb.1GB.usage_in_bytes
+./docker-dce63a96f513527b894bbec6c7f39f40dd2912bdbf4dec0a51b2e59704c03e7b.scope/hugetlb.1GB.max_usage_in_bytes
+./docker-dce63a96f513527b894bbec6c7f39f40dd2912bdbf4dec0a51b2e59704c03e7b.scope/hugetlb.1GB.usage_in_bytes
+./docker-c538d8c4e222b977b218746ee9ebef34335d768a364fbe1bfb3e72284d65520a.scope/hugetlb.1GB.max_usage_in_bytes
+./docker-c538d8c4e222b977b218746ee9ebef34335d768a364fbe1bfb3e72284d65520a.scope/hugetlb.1GB.usage_in_bytes
+./docker-d2e87b4ec13cc51c9dab3e593ee44051eb243ce684cc300b7e6103e8f35e1320.scope/hugetlb.1GB.max_usage_in_bytes
+./docker-d2e87b4ec13cc51c9dab3e593ee44051eb243ce684cc300b7e6103e8f35e1320.scope/hugetlb.1GB.usage_in_bytes
+./docker-90030441400dd9536aa33d13d3d5792a4e1f025fb383141cb0f18cfaed260979.scope/hugetlb.1GB.max_usage_in_bytes
+./docker-90030441400dd9536aa33d13d3d5792a4e1f025fb383141cb0f18cfaed260979.scope/hugetlb.1GB.usage_in_bytes
+./docker-1286b301010bb53e3d919616054e645c00a2288b9cdc8235bdb68aa404a0c34b.scope/hugetlb.1GB.max_usage_in_bytes
+./docker-1286b301010bb53e3d919616054e645c00a2288b9cdc8235bdb68aa404a0c34b.scope/hugetlb.1GB.usage_in_bytes
+./docker-111c9c039324d640875e550763d6507450cbbd07f6674c3883388839807cd614.scope/hugetlb.1GB.max_usage_in_bytes
+./docker-111c9c039324d640875e550763d6507450cbbd07f6674c3883388839807cd614.scope/hugetlb.1GB.usage_in_bytes
+./docker-a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.scope/hugetlb.1GB.max_usage_in_bytes
+./docker-a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.scope/hugetlb.1GB.usage_in_bytes
+./docker-46ed5e7b2045df285552bde12209717f1601b27e3d6e137ed9122d3d9c519a3d.scope/hugetlb.1GB.max_usage_in_bytes
+./docker-46ed5e7b2045df285552bde12209717f1601b27e3d6e137ed9122d3d9c519a3d.scope/hugetlb.1GB.usage_in_bytes
+./hugetlb.1GB.max_usage_in_bytes
+./hugetlb.1GB.usage_in_bytes
+[root@overcloud-computesriov-0 system.slice]# find . -name '*usage_in_bytes' | while read line; do echo $line ; cat $line ; done
+./docker-b9ff1a61cc4f144cc2aa16332d8e07248ad71a7263056b0d9cddb7339368457a.scope/hugetlb.1GB.max_usage_in_bytes
+0
+./docker-b9ff1a61cc4f144cc2aa16332d8e07248ad71a7263056b0d9cddb7339368457a.scope/hugetlb.1GB.usage_in_bytes
+0
+./docker-dce63a96f513527b894bbec6c7f39f40dd2912bdbf4dec0a51b2e59704c03e7b.scope/hugetlb.1GB.max_usage_in_bytes
+0
+./docker-dce63a96f513527b894bbec6c7f39f40dd2912bdbf4dec0a51b2e59704c03e7b.scope/hugetlb.1GB.usage_in_bytes
+0
+./docker-c538d8c4e222b977b218746ee9ebef34335d768a364fbe1bfb3e72284d65520a.scope/hugetlb.1GB.max_usage_in_bytes
+0
+./docker-c538d8c4e222b977b218746ee9ebef34335d768a364fbe1bfb3e72284d65520a.scope/hugetlb.1GB.usage_in_bytes
+0
+./docker-d2e87b4ec13cc51c9dab3e593ee44051eb243ce684cc300b7e6103e8f35e1320.scope/hugetlb.1GB.max_usage_in_bytes
+0
+./docker-d2e87b4ec13cc51c9dab3e593ee44051eb243ce684cc300b7e6103e8f35e1320.scope/hugetlb.1GB.usage_in_bytes
+0
+./docker-90030441400dd9536aa33d13d3d5792a4e1f025fb383141cb0f18cfaed260979.scope/hugetlb.1GB.max_usage_in_bytes
+0
+./docker-90030441400dd9536aa33d13d3d5792a4e1f025fb383141cb0f18cfaed260979.scope/hugetlb.1GB.usage_in_bytes
+0
+./docker-1286b301010bb53e3d919616054e645c00a2288b9cdc8235bdb68aa404a0c34b.scope/hugetlb.1GB.max_usage_in_bytes
+0
+./docker-1286b301010bb53e3d919616054e645c00a2288b9cdc8235bdb68aa404a0c34b.scope/hugetlb.1GB.usage_in_bytes
+0
+./docker-111c9c039324d640875e550763d6507450cbbd07f6674c3883388839807cd614.scope/hugetlb.1GB.max_usage_in_bytes
+0
+./docker-111c9c039324d640875e550763d6507450cbbd07f6674c3883388839807cd614.scope/hugetlb.1GB.usage_in_bytes
+0
+./docker-a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.scope/hugetlb.1GB.max_usage_in_bytes
+4294967296
+./docker-a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.scope/hugetlb.1GB.usage_in_bytes
+4294967296
+./docker-46ed5e7b2045df285552bde12209717f1601b27e3d6e137ed9122d3d9c519a3d.scope/hugetlb.1GB.max_usage_in_bytes
+0
+./docker-46ed5e7b2045df285552bde12209717f1601b27e3d6e137ed9122d3d9c519a3d.scope/hugetlb.1GB.usage_in_bytes
+0
+./hugetlb.1GB.max_usage_in_bytes
+4294967296
+./hugetlb.1GB.usage_in_bytes
+4294967296
+[root@overcloud-computesriov-0 system.slice]# docker ps | grep a94d9089
+a94d9089fac5        registry.access.redhat.com/rhosp13/openstack-nova-libvirt:13.0-72                "kolla_start"       3 days ago          Up 3 days                                 nova_libvirt
+[root@overcloud-computesriov-0 system.slice]# systemctl status docker-a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.scope
+● docker-a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.scope - libcontainer container a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d
+   Loaded: loaded (/run/systemd/system/docker-a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.scope; static; vendor preset: disabled)
+  Drop-In: /run/systemd/system/docker-a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.scope.d
+           └─50-BlockIOAccounting.conf, 50-CPUAccounting.conf, 50-DefaultDependencies.conf, 50-Delegate.conf, 50-Description.conf, 50-MemoryAccounting.conf, 50-Slice.conf
+   Active: active (running) since Tue 2018-11-27 06:46:11 UTC; 3 days ago
+    Tasks: 18
+   Memory: 14.8M
+   CGroup: /system.slice/docker-a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.scope
+           └─33304 /usr/sbin/libvirtd
+
+Nov 27 06:46:11 overcloud-computesriov-0 systemd[1]: Started libcontainer container a94d9089fac5ed4b1dbe48b0f5460536462c49e0ff14fd4059fbae7a7dbd1b4d.
+Nov 27 06:46:11 overcloud-computesriov-0 sudo[33325]:     root : TTY=unknown ; PWD=/ ; USER=root ; COMMAND=/usr/local/bin/kolla_set_configs
+[root@overcloud-computesriov-0 system.slice]# 
 ~~~
 
 ### The relationship of containers and cgroup ###
