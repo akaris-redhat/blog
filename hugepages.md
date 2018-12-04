@@ -74,28 +74,6 @@ to verify this.
 
 When you are done, please hit return
 Now, actually writing all 0s into the first hugepage
-Now, verify again
-grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/
-find /sys -name meminfo | xargs grep -i huge
-to verify this.
-
-When you are done, please hit return
-Now, actually writing one 0 into the second hugepage
-Now, verify again
-grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/
-find /sys -name meminfo | xargs grep -i huge
-to verify this.
-
-When you are done, please hit return to end the program
-[root@dell-r430-30 ~]# ./mmap 
-Memory address 0x2aaac0000000
-This will only reserve pages. Execute 
-grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/
-find /sys -name meminfo | xargs grep -i huge
-to verify this.
-
-When you are done, please hit return
-Now, actually writing all 0s into the first hugepage
 ^C
 [root@dell-r430-30 ~]# ^C
 [root@dell-r430-30 ~]# ^C
