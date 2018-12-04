@@ -173,8 +173,78 @@ Also note that writing 1GB to the hugepage actually takes quite some time:
 
 #### Allocating hugepages right away ####
 
+Instead of having to write to the hugepage to allocate it, we can populate the page right away and it will show up in used pages right away:
+~~~
+man mmap
+(...)
+       MAP_POPULATE (since Linux 2.5.46)
+              Populate (prefault) page tables for a mapping.  For a file mapping, this  causes  read-ahead  on  the
+              file.   Later  accesses to the mapping will not be blocked by page faults.  MAP_POPULATE is supported
+              for private mappings only since Linux 2.6.23.
+(...)
 ~~~
 
+The applcation is:
+~~~
+#include <sys/mman.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define PAGE_SIZE (unsigned int) 1024*1024*1024
+#define NUM_PAGES 2
+
+void main() {
+	char * buf = mmap(
+		NULL, 
+		NUM_PAGES * PAGE_SIZE,
+		PROT_READ | PROT_WRITE, 
+		MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB | MAP_POPULATE,
+		-1, 
+		0
+	); 
+  	if (buf == MAP_FAILED) {
+    		perror("mmap");
+    		exit(1);
+  	}
+
+	char * line = NULL;
+	size_t size;
+
+	printf("Memory address %p\n", buf);
+        printf("This will only reserve and populate pages. Execute \n");
+	printf("grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/\n");
+        printf("find /sys -name meminfo | xargs grep -i huge\n");
+	printf("to verify this.\n\n");
+	printf("When you are done, please hit return\n");
+        getline(&line,&size,stdin);
+}
+~~~
+
+Testing:
+~~~
+[root@dell-r430-30 ~]# gcc mmap2.c -o mmap2
+[root@dell-r430-30 ~]# ./mmap2 
+Memory address 0x2aaac0000000
+This will only reserve and populate pages. Execute 
+grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/
+find /sys -name meminfo | xargs grep -i huge
+to verify this.
+
+When you are done, please hit return
+
+~~~
+
+~~~
+[root@dell-r430-30 ~]# find /sys -name meminfo | xargs grep -i huge
+/sys/devices/system/node/node0/meminfo:Node 0 AnonHugePages:         0 kB
+/sys/devices/system/node/node0/meminfo:Node 0 HugePages_Total:    16
+/sys/devices/system/node/node0/meminfo:Node 0 HugePages_Free:     16
+/sys/devices/system/node/node0/meminfo:Node 0 HugePages_Surp:      0
+/sys/devices/system/node/node1/meminfo:Node 1 AnonHugePages:      6144 kB
+/sys/devices/system/node/node1/meminfo:Node 1 HugePages_Total:    16
+/sys/devices/system/node/node1/meminfo:Node 1 HugePages_Free:     14
+/sys/devices/system/node/node1/meminfo:Node 1 HugePages_Surp:      0
+[root@dell-r430-30 ~]# 
 ~~~
 
 ### Sharing hugepages between processes ###
