@@ -184,7 +184,7 @@ man mmap
 (...)
 ~~~
 
-The applcation is:
+The application is:
 ~~~
 #include <sys/mman.h>
 #include <stdio.h>
@@ -251,3 +251,4 @@ When you are done, please hit return
 
 In vhost_user, OVS-DPDK and qemu-kvm instances share the same hugepages for DMA copies. [https://access.redhat.com/solutions/3394851](https://access.redhat.com/solutions/3394851). Let's emulate this with 2 sample applications.
 
+[http://nuncaalaprimera.com/2014/using-hugepage-backed-buffers-in-linux-kernel-driver](http://nuncaalaprimera.com/2014/using-hugepage-backed-buffers-in-linux-kernel-driver)
