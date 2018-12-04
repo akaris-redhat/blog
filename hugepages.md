@@ -170,3 +170,14 @@ Also note that writing 1GB to the hugepage actually takes quite some time:
 /sys/devices/system/node/node1/meminfo:Node 1 HugePages_Free:     16
 /sys/devices/system/node/node1/meminfo:Node 1 HugePages_Surp:      0
 ~~~
+
+#### Allocating hugepages right away ####
+
+~~~
+
+~~~
+
+### Sharing hugepages between processes ###
+
+In vhost_user, OVS-DPDK and qemu-kvm instances share the same hugepages for DMA copies. [https://access.redhat.com/solutions/3394851](https://access.redhat.com/solutions/3394851). Let's emulate this with 2 sample applications.
+
