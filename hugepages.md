@@ -273,8 +273,16 @@ Let's start with IPC (Inter Process Communication) via Linux sockets as we'll ha
 #include <sys/un.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/mman.h>
 
 #define SOCKNAME "/tmp/unix.socket"
+#define HUGEPAGE_FILE_NAME "/dev/hugepages/server"
+#define NUM_PAGES 2
+#define PAGE_SIZE (unsigned long) 1024 * 1024 * 1024
 
 int bind_socket() {
 	int sfd;
@@ -314,7 +322,8 @@ int share_memory_location(int fd, char * address) {
 	if (listen(fd, 1) == -1)
 		return -1;
 	int cfd;
-	while(true) {
+
+	// while(!sigint_received) {
 		cfd = accept(fd, NULL, NULL);
 		printf("Client connected\n");
 		if(cfd == -1)
@@ -322,12 +331,48 @@ int share_memory_location(int fd, char * address) {
 		printf("Sending '%s' to client\n", address);
 		dprintf(cfd, address);
 		close(cfd);
-	}
+	// }
+
+	return 0;
+}
+
+int close_socket(int fd) {
+	close(fd);
+	unlink(SOCKNAME);
+	return 0;
 }
 
 int read_memory_location(int fd, void * memory_location, int buf_size) {
 	int bytes_read;
   	bytes_read = read(fd, memory_location, 100);
+
+	return 0;
+}
+
+int create_shared_hugepage() {
+	int fd = open(HUGEPAGE_FILE_NAME, O_CREAT | O_RDWR, 0755);
+	if (fd < 0)
+		return -1;
+
+        char * buf = mmap(
+                NULL,
+                NUM_PAGES * PAGE_SIZE,
+                PROT_READ | PROT_WRITE,
+                MAP_SHARED,
+                fd,
+                0
+        );
+        if (buf == MAP_FAILED) {
+                return -1;
+        }
+
+	return fd;
+}
+
+int delete_shared_hugepage(int fd) {
+	close(fd);
+	unlink(HUGEPAGE_FILE_NAME);
+	return 0;
 }
 
 int main(int argc , char ** argv) {
@@ -347,8 +392,13 @@ int main(int argc , char ** argv) {
 
 	int fd;
 	if(server_mode) {
-		char * memory_location;
-		memory_location = "this is the memory location";
+		char * memory_location = HUGEPAGE_FILE_NAME;
+		int hp_fd = create_shared_hugepage();
+		if(hp_fd == -1) {
+			perror("Couldn't allocate hugepage");
+			exit(1);
+		}
+
 		fd = bind_socket();
 		if(fd == -1) {
 			printf("Error binding socket (does %s exist? Delete it!)\n", SOCKNAME);
@@ -359,6 +409,8 @@ int main(int argc , char ** argv) {
 			perror("Error sharing memory location");
 			exit(1);
 		}
+		delete_shared_hugepage(hp_fd);
+		close_socket(fd);
 	} else {
 		char mem_loc[100];
 		fd = connect_socket();
@@ -369,6 +421,5 @@ int main(int argc , char ** argv) {
 		printf("Memory location is '%s'\n", mem_loc);
 	}
 }
-
 ~~~
 
