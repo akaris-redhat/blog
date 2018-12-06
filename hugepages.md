@@ -316,20 +316,18 @@ int share_memory_location(int fd, char * address) {
 	int cfd;
 	while(true) {
 		cfd = accept(fd, NULL, NULL);
+		printf("Client connected\n");
 		if(cfd == -1)
 			return -1;
+		printf("Sending '%s' to client\n", address);
 		dprintf(cfd, address);
 		close(cfd);
 	}
 }
 
-int read_memory_location(int fd, char * memory_location) {
-	int len = 0;
-	ioctl(fd, FIONREAD, &len);
-	if (len > 0) {
-		memory_location = malloc(len);
-  		len = read(fd, memory_location, len);
-	}
+int read_memory_location(int fd, void * memory_location, int buf_size) {
+	int bytes_read;
+  	bytes_read = read(fd, memory_location, 100);
 }
 
 int main(int argc , char ** argv) {
@@ -348,8 +346,8 @@ int main(int argc , char ** argv) {
 	}
 
 	int fd;
-	char * memory_location;
 	if(server_mode) {
+		char * memory_location;
 		memory_location = "this is the memory location";
 		fd = bind_socket();
 		if(fd == -1) {
@@ -362,10 +360,15 @@ int main(int argc , char ** argv) {
 			exit(1);
 		}
 	} else {
+		char mem_loc[100];
 		fd = connect_socket();
-		read_memory_location(fd, memory_location);
-		printf("Memory location is %s\n", memory_location);
+		if(read_memory_location(fd, &mem_loc, 100) == -1) {
+			perror("Error reading memory location");
+			exit(1);
+		}
+		printf("Memory location is '%s'\n", mem_loc);
 	}
 }
+
 ~~~
 
