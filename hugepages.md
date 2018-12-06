@@ -355,7 +355,28 @@ int create_shared_hugepage() {
 		return -1;
 
         char * buf = mmap(
-                NULL,
+                (void *)(0x0UL),
+                NUM_PAGES * PAGE_SIZE,
+                PROT_READ | PROT_WRITE,
+                MAP_SHARED | MAP_POPULATE,
+                fd,
+                0
+        );
+        if (buf == MAP_FAILED) {
+                return -1;
+        }
+	buf[0] = 'y';
+
+	return fd;
+}
+
+int read_from_shared_hugepage(char * page_location, void * return_buf) {
+	int fd = open(page_location, O_RDWR, 0755);
+	if (fd < 0)
+		return -1;
+
+        char * buf = mmap(
+                (void *)(0x0UL),
                 NUM_PAGES * PAGE_SIZE,
                 PROT_READ | PROT_WRITE,
                 MAP_SHARED,
@@ -365,6 +386,8 @@ int create_shared_hugepage() {
         if (buf == MAP_FAILED) {
                 return -1;
         }
+
+	((char *) return_buf)[0] = buf[0];
 
 	return fd;
 }
@@ -409,6 +432,7 @@ int main(int argc , char ** argv) {
 			perror("Error sharing memory location");
 			exit(1);
 		}
+		sleep(5);
 		delete_shared_hugepage(hp_fd);
 		close_socket(fd);
 	} else {
@@ -419,6 +443,12 @@ int main(int argc , char ** argv) {
 			exit(1);
 		}
 		printf("Memory location is '%s'\n", mem_loc);
+
+		char hp_content[100];
+		read_from_shared_hugepage(mem_loc, hp_content);
+	        printf("Content of first byte at page '%s' is '%s'\n", 
+		mem_loc,
+		hp_content[0]);
 	}
 }
 ~~~
