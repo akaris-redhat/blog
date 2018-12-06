@@ -257,4 +257,115 @@ In vhost_user, OVS-DPDK and qemu-kvm instances share the same hugepages for DMA 
 
 Let's start with IPC (Inter Process Communication) via Linux sockets as we'll have to communicate the location of the shared memory from the server process to the client process.
 
+`ipc.c`:
+~~~
+/*
+ *
+ * This heavily borrows from examples in 
+ * "The Linux Programming Interface"
+ *
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <sys/un.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+
+#define SOCKNAME "/tmp/unix.socket"
+
+int bind_socket() {
+	int sfd;
+	struct sockaddr_un addr;
+	sfd = socket(AF_UNIX, SOCK_STREAM, 0);
+	if (sfd == -1)
+		return -1;
+	/* Create socket */
+	memset(&addr, 0, sizeof(struct sockaddr_un));
+	/* Clear structure */
+	addr.sun_family = AF_UNIX;
+	/* UNIX domain address */
+	strncpy(addr.sun_path, SOCKNAME, sizeof(addr.sun_path) - 1);
+	if (bind(sfd, (struct sockaddr *) &addr, sizeof(struct sockaddr_un)) == -1)
+		return -1;
+	return sfd;
+}
+
+int connect_socket() {
+	int sfd;
+	struct sockaddr_un addr;
+	sfd = socket(AF_UNIX, SOCK_STREAM, 0);
+	if (sfd == -1)
+		return -1;
+	/* Create socket */
+	memset(&addr, 0, sizeof(struct sockaddr_un));
+	/* Clear structure */
+	addr.sun_family = AF_UNIX;
+	/* UNIX domain address */
+	strncpy(addr.sun_path, SOCKNAME, sizeof(addr.sun_path) - 1);
+	if (connect(sfd, (struct sockaddr *) &addr, sizeof(struct sockaddr_un)) == -1)
+		return -1;
+	return sfd;
+}
+
+int share_memory_location(int fd, char * address) {
+	if (listen(fd, 1) == -1)
+		return -1;
+	int cfd;
+	while(true) {
+		cfd = accept(fd, NULL, NULL);
+		if(cfd == -1)
+			return -1;
+		dprintf(cfd, address);
+		close(cfd);
+	}
+}
+
+int read_memory_location(int fd, char * memory_location) {
+	int len = 0;
+	ioctl(fd, FIONREAD, &len);
+	if (len > 0) {
+		memory_location = malloc(len);
+  		len = read(fd, memory_location, len);
+	}
+}
+
+int main(int argc , char ** argv) {
+	if(argc < 2) {
+		printf("Please provide either server or client as an argument\n");
+		exit(1);
+	}
+
+	bool server_mode = false;
+
+	if(strcmp(argv[1], "server") == 0) {
+		printf("Server mode ...\n");
+		server_mode = true;
+	} else {
+		printf("Client mode ...\n");
+	}
+
+	int fd;
+	char * memory_location;
+	if(server_mode) {
+		memory_location = "this is the memory location";
+		fd = bind_socket();
+		if(fd == -1) {
+			printf("Error binding socket (does %s exist? Delete it!)\n", SOCKNAME);
+			perror("");
+			exit(1);
+		}
+		if(share_memory_location(fd, memory_location) == -1) {
+			perror("Error sharing memory location");
+			exit(1);
+		}
+	} else {
+		fd = connect_socket();
+		read_memory_location(fd, memory_location);
+		printf("Memory location is %s\n", memory_location);
+	}
+}
+~~~
 
