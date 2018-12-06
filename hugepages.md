@@ -31,34 +31,34 @@ void main() {
 	char * line = NULL;
 	size_t size;
 
-	printf("Memory address %p\n", buf);
-        printf("This will only reserve pages. Execute \n");
-	printf("grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/\n");
-        printf("find /sys -name meminfo | xargs grep -i huge\n");
-	printf("to verify this.\n\n");
-	printf("When you are done, please hit return\n");
+	printf("Memory address %p\n"
+               "This will only reserve pages. Execute \n"
+	       "grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/\n"
+               "find /sys -name meminfo | xargs grep -i huge\n"
+	       "to verify this.\n\n"
+	       "When you are done, please hit return\n", buf);
         getline(&line,&size,stdin);
         int i;
 	printf("Now, actually writing all 0s into the first hugepage\n");
         for(i = 0; i < PAGE_SIZE; i++) {
 		buf[i] = '0';
 	}
-        printf("Now, verify again\n");
-	printf("grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/\n");
-        printf("find /sys -name meminfo | xargs grep -i huge\n");
-	printf("to verify this.\n\n");
-	printf("When you are done, please hit return\n");
+        printf("Now, verify again\n"
+	       "grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/\n"
+               "find /sys -name meminfo | xargs grep -i huge\n"
+	       "to verify this.\n\n"
+	       "When you are done, please hit return\n", buf);
         getline(&line,&size,stdin);
 
 	printf("Now, actually writing one 0 into the second hugepage\n");
 	for(; i < PAGE_SIZE + 1; i++) {
                 buf[i] = '0';
         }
-        printf("Now, verify again\n");
-	printf("grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/\n");
-        printf("find /sys -name meminfo | xargs grep -i huge\n");
-	printf("to verify this.\n\n");
-	printf("When you are done, please hit return to end the program\n");
+        printf("Now, verify again\n"
+	       "grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/\n"
+               "find /sys -name meminfo | xargs grep -i huge\n"
+	       "to verify this.\n\n"
+	       "When you are done, please hit return to end the program\n", buf);
         getline(&line,&size,stdin);
 }
 ~~~
@@ -184,7 +184,7 @@ man mmap
 (...)
 ~~~
 
-The application is:
+The application is `mmap2.c`:
 ~~~
 #include <sys/mman.h>
 #include <stdio.h>
@@ -210,12 +210,12 @@ void main() {
 	char * line = NULL;
 	size_t size;
 
-	printf("Memory address %p\n", buf);
-        printf("This will only reserve and populate pages. Execute \n");
-	printf("grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/\n");
-        printf("find /sys -name meminfo | xargs grep -i huge\n");
-	printf("to verify this.\n\n");
-	printf("When you are done, please hit return\n");
+	printf("Memory address %p\n"
+               "This will only reserve and populate pages. Execute \n"
+	       "grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/\n"
+               "find /sys -name meminfo | xargs grep -i huge\n"
+	       "to verify this.\n\n"
+	       "When you are done, please hit return\n", buf);
         getline(&line,&size,stdin);
 }
 ~~~
@@ -252,3 +252,9 @@ When you are done, please hit return
 In vhost_user, OVS-DPDK and qemu-kvm instances share the same hugepages for DMA copies. [https://access.redhat.com/solutions/3394851](https://access.redhat.com/solutions/3394851). Let's emulate this with 2 sample applications.
 
 [http://nuncaalaprimera.com/2014/using-hugepage-backed-buffers-in-linux-kernel-driver](http://nuncaalaprimera.com/2014/using-hugepage-backed-buffers-in-linux-kernel-driver)
+
+#### IPC (Inter Process Communication) ###
+
+Let's start with IPC (Inter Process Communication) via Linux sockets as we'll have to communicate the location of the shared memory from the server process to the client process.
+
+
