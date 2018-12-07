@@ -1,10 +1,45 @@
 ### Summary ###
+The summit was really interesting, but for somebody like me working more with the top-level OpenStack components many times lacked some high-level overview of what a specific talk was actually about. Understandably, the further up a presentation was on the stack, the easier it was for me to follow along with it. The OVS presentations, particularly of the first day, hence were far easier to follow than the DPDK presentations.
+
+In this document, I annotate some of the presentations that seemed interesting **to me** with clarifying documents and quotes.
 
 ### DPDK summit ###
 
 Agenda: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/](https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/)
 
 #### SW Assisted vDPA for Live Migration - Xiao Wang, Intel ####
+
+##### What is vDPA? #####
+
+Brand new patch to the kernel: [https://lwn.net/Articles/750770/](https://lwn.net/Articles/750770/)
+~~~
+This patch introduces a mdev (mediated device) based hardware
+vhost backend. This backend is an abstraction of the various
+hardware vhost accelerators (potentially any device that uses
+virtio ring can be used as a vhost accelerator). Some generic
+mdev parent ops are provided for accelerator drivers to support
+generating mdev instances.
+(...)
+Difference between vDPA and PCI passthru
+========================================
+
+The key difference between vDPA and PCI passthru is that, in
+vDPA only the data path of the device (e.g. DMA ring, notify
+region and queue interrupt) is pass-throughed to the VM, the
+device control path (e.g. PCI configuration space and MMIO
+regions) is still defined and emulated by QEMU.
+
+The benefits of keeping virtio device emulation in QEMU compared
+with virtio device PCI passthru include (but not limit to):
+
+- consistent device interface for guest OS in the VM;
+- max flexibility on the hardware design, especially the
+  accelerator for each vhost backend doesn't have to be a
+  full PCI device;
+- leveraging the existing virtio live-migration framework;
+~~~
+
+The important take-away is that we'll hopefully soon have a means to get the performance of SR-IOV with the flexibility of virtio, especially with regards to live-migration.
 
 #### Using nDPI over DPDK to Classify and Block Unwanted Network Traffic ####
 
