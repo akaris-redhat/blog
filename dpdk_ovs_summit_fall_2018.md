@@ -10,6 +10,12 @@ Agenda: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-
 #### SW Assisted vDPA for Live Migration - Xiao Wang, Intel ####
 
 Presentation PDF: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/8f/XiaoWang-DPDK-US-Summit-SW-assisted-VDPA-for-LM-v2.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/8f/XiaoWang-DPDK-US-Summit-SW-assisted-VDPA-for-LM-v2.pdf)
+~~~
+Key Takeaways
+• VDPA combines SW Flex & HW Perf
+• SW assisted VDPA could further simplify HW design
+• A generic zero copy framework for all NICs with VDPA
+~~~
 
 ##### What is vDPA? #####
 
