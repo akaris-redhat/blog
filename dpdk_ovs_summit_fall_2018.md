@@ -43,6 +43,51 @@ with virtio device PCI passthru include (but not limit to):
 
 The important take-away is that we'll hopefully soon have a means to get the performance of SR-IOV with the flexibility of virtio, especially with regards to live-migration.
 
+##### What is mdev? #####
+
+mdev is "a common interface for mediated device management that can be used by drivers of different devices." and allows to "query and configure mediated devices in a hardware-agnostic fashion". The key point is that it's the hardware abstraction technology which enables vDPA.
+
+[https://www.kernel.org/doc/Documentation/vfio-mediated-device.txt](https://www.kernel.org/doc/Documentation/vfio-mediated-device.txt)
+~~~
+Virtual Function I/O (VFIO) Mediated devices[1]
+===============================================
+
+The number of use cases for virtualizing DMA devices that do not have built-in
+SR_IOV capability is increasing. Previously, to virtualize such devices,
+developers had to create their own management interfaces and APIs, and then
+integrate them with user space software. To simplify integration with user space
+software, we have identified common requirements and a unified management
+interface for such devices.
+
+The VFIO driver framework provides unified APIs for direct device access. It is
+an IOMMU/device-agnostic framework for exposing direct device access to user
+space in a secure, IOMMU-protected environment. This framework is used for
+multiple devices, such as GPUs, network adapters, and compute accelerators. With
+direct device access, virtual machines or user space applications have direct
+access to the physical device. This framework is reused for mediated devices.
+
+The mediated core driver provides a common interface for mediated device
+management that can be used by drivers of different devices. This module
+provides a generic interface to perform these operations:
+
+* Create and destroy a mediated device
+* Add a mediated device to and remove it from a mediated bus driver
+* Add a mediated device to and remove it from an IOMMU group
+(...)
+Mediated Device Management Interface Through sysfs
+==================================================
+
+The management interface through sysfs enables user space software, such as
+libvirt, to query and configure mediated devices in a hardware-agnostic fashion.
+This management interface provides flexibility to the underlying physical
+device's driver to support features such as:
+
+* Mediated device hot plug
+* Multiple mediated devices in a single virtual machine
+* Multiple mediated devices from different physical devices
+(...)
+~~~
+
 #### Using nDPI over DPDK to Classify and Block Unwanted Network Traffic ####
 
 #### Thread Quiescent State (TQS) Library - Honnappa Nagarahalli, Arm ####
