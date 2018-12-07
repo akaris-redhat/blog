@@ -9,6 +9,8 @@ Agenda: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-
 
 #### SW Assisted vDPA for Live Migration - Xiao Wang, Intel ####
 
+Presentation PDF: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/8f/XiaoWang-DPDK-US-Summit-SW-assisted-VDPA-for-LM-v2.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/8f/XiaoWang-DPDK-US-Summit-SW-assisted-VDPA-for-LM-v2.pdf)
+
 ##### What is vDPA? #####
 
 vDPA: vhost Data Path Acceleration
