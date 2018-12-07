@@ -11,6 +11,8 @@ Agenda: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-
 
 ##### What is vDPA? #####
 
+vDPA: vhost Data Path Acceleration
+
 Brand new patch to the kernel: [https://lwn.net/Articles/750770/](https://lwn.net/Articles/750770/)
 ~~~
 This patch introduces a mdev (mediated device) based hardware
