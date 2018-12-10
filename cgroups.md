@@ -329,3 +329,421 @@ swift       5617  0.0  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
 
 [https://en.wikipedia.org/wiki/Docker_(software)](https://en.wikipedia.org/wiki/Docker_(software))
 > Docker is developed primarily for Linux, where it uses the resource isolation features of the Linux kernel such as cgroups and kernel namespaces, and a union-capable file system such as OverlayFS and others[28] to allow independent "containers" to run within a single Linux instance, avoiding the overhead of starting and maintaining virtual machines (VMs).[29] The Linux kernel's support for namespaces mostly[30] isolates an application's view of the operating environment, including process trees, network, user IDs and mounted file systems, while the kernel's cgroups provide resource limiting for memory and CPU.[31] Since version 0.9, Docker includes the libcontainer library as its own way to directly use virtualization facilities provided by the Linux kernel, in addition to using abstracted virtualization interfaces via libvirt, LXC and systemd-nspawn.[13][32][27]
+
+### Resources ###
+
+`man 7 cgroups`
+
+### What is a croup ###
+
+man 7 cgroups
+       (...)
+       Control  cgroups,  usually  referred to as cgroups, are a Linux kernel feature which
+       allow processes to be organized into hierarchical  groups  whose  usage  of  various
+       types of resources can then be limited and monitored.  The kernel's cgroup interface
+       is provided through a pseudo-filesystem called cgroupfs.  Grouping is implemented in
+       the core cgroup kernel code, while resource tracking and limits are implemented in a
+       set of per-resource-type subsystems (memory, CPU, and so on).
+       (...)
+       Subsystems are sometimes also known as resource controllers (or
+       simply, controllers).
+       (...)
+       The cgroups for a controller are arranged in a hierarchy.  This hierarchy is defined
+       by creating, removing, and renaming subdirectories within the cgroup filesystem.  At
+       each level of the hierarchy, attributes (e.g., limits) can be defined.  The  limits,
+       control,  and  accounting  provided  by cgroups generally have effect throughout the
+       subhierarchy underneath the cgroup where the  attributes  are  defined.   Thus,  for
+       example,  the limits placed on a cgroup at a higher level in the hierarchy cannot be
+       exceeded by descendant cgroups.
+       (...)
+
+### cgroupsv1 vs cgroupsv2 ###
+
+man 7 cgroups
+      (...)
+       The initial release of the cgroups implementation was in Linux 2.6.24.   Over  time,
+       various  cgroup controllers have been added to allow the management of various types
+       of resources.  However, the development of these controllers was  largely  uncoordi‐
+       nated,  with the result that many inconsistencies arose between controllers and man‐
+       agement of the cgroup hierarchies became rather complex.  (A longer  description  of
+       these problems can be found in the kernel source file Documentation/cgroup-v2.txt.)
+       (...)
+
+#### Backwards compatibility ####
+       (...)
+       Although cgroups v2 is intended as a replacement for cgroups v1,  the  older  system
+       continues  to exist (and for compatibility reasons is unlikely to be removed).  Cur‐
+       rently, cgroups v2 implements only a subset of the controllers available in  cgroups
+       v1.   The two systems are implemented so that both v1 controllers and v2 controllers
+       can be mounted on the same system.  Thus, for example, it is possible to  use  those
+       controllers  that  are  supported  under  version 2, while also using version 1 con‐
+       trollers where version 2 does not yet support those controllers.  The only  restric‐
+       tion here is that a controller can't be simultaneously employed in both a cgroups v1
+       hierarchy and in the cgroups v2 hierarchy.
+       (...)
+
+#### Defaults ####
+
+##### Default in RHEL 7 #####
+~~~
+
+~~~
+
+##### Default in Fedora 28 #####
+~~~
+[akaris@wks-akaris blog]$ cat /etc/redhat-release 
+Fedora release 28 (Twenty Eight)
+[akaris@wks-akaris blog]$ mount | grep cgroup
+tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
+cgroup2 on /sys/fs/cgroup/unified type cgroup2 (rw,nosuid,nodev,noexec,relatime,seclabel,nsdelegate)
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,name=systemd)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpu,cpuacct)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
+cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_cls,net_prio)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
+~~~
+
+##### Default in RHEL 8 #####
+~~~
+[root@rhel8 ~]# cat /etc/redhat-release 
+Red Hat Enterprise Linux release 8.0 Beta (Ootpa)
+[root@rhel8 ~]# mount | grep cgroup
+tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpu,cpuacct)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_cls,net_prio)
+cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
+cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,rdma)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
+~~~
+
+#### Support for cgroupv2? ####
+
+##### In RHEL 7 #####
+
+No:
+~~~
+
+~~~
+
+##### In RHEL 8 #####
+
+Yes:
+~~~~
+[root@rhel8 ~]# mount cgroup2 -t cgroup2 /mnt/cgroupv2
+[root@rhel8 ~]# mount | grep cgroup2
+cgroup2 on /mnt/cgroupv2 type cgroup2 (rw,relatime,seclabel)
+[root@rhel8 ~]# 
+~~~~
+
+### cgroupsv1 - close-up ####
+
+man 7 cgroups
+       (...)
+       It is possible to comount multiple controllers  against  the  same  hierarchy.   For
+       example, here the cpu and cpuacct controllers are comounted against a single hierar‐
+       chy:
+
+           mount -t cgroup -o cpu,cpuacct none /sys/fs/cgroup/cpu,cpuacct
+
+       Comounting controllers has the effect that a process is in the same cgroup  for  all
+       of  the  comounted controllers.  Separately mounting controllers allows a process to
+       be in cgroup /foo1 for one controller while being in /foo2/foo3 for another.
+
+       It is possible to comount all v1 controllers against the same hierarchy:
+
+           mount -t cgroup -o all cgroup /sys/fs/cgroup
+
+       (One can achieve the same result by omitting -o all, since it is the default  if  no
+       controllers are explicitly specified.)
+       (...)
+
+~~~
+[akaris@wks-akaris blog]$ mount | grep cgroup
+tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
+cgroup2 on /sys/fs/cgroup/unified type cgroup2 (rw,nosuid,nodev,noexec,relatime,seclabel,nsdelegate)
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,name=systemd)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpu,cpuacct)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
+cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_cls,net_prio)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
+[akaris@wks-akaris blog]$ ls /sys/fs/cgroup
+blkio  cpu  cpuacct  cpu,cpuacct  cpuset  devices  freezer  hugetlb  memory  net_cls  net_cls,net_prio  net_prio  perf_event  pids  systemd  unified
+[akaris@wks-akaris blog]$ 
+~~~
+
+man 7 cgroup
+       (...)
+       It is not possible to mount the same controller against multiple cgroup hierarchies.
+       For example, it is not possible to  mount  both  the  cpu  and  cpuacct  controllers
+       against one hierarchy, and to mount the cpu controller alone against another hierar‐
+       chy.  It is possible to create multiple mount points with exactly the  same  set  of
+       comounted  controllers.   However,  in  this case all that results is multiple mount
+       points providing a view of the same hierarchy.
+       (...)
+
+~~~
+[root@rhel8 ~]# mount | grep cgroup
+tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpu,cpuacct)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_cls,net_prio)
+cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
+cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,rdma)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
+cgroup2 on /mnt/cgroupv2 type cgroup2 (rw,relatime,seclabel)
+[root@rhel8 ~]# mount group -t net_cls /sys/fs/cgroup/net_cls
+mount: /sys/fs/cgroup/net_cls,net_prio: unknown filesystem type 'net_cls'.
+[root@rhel8 ~]# mount group -t cgroup -o net_cls /sys/fs/cgroup/net_cls
+mount: /sys/fs/cgroup/net_cls,net_prio: group already mounted or mount point busy.
+[root@rhel8 ~]# mount group -t cgroup -o net_cls /mnt
+mount: /mnt: group already mounted or mount point busy.
+[root@rhel8 ~]# mount group -t cgroup -o net_cls,net_prio /mnt
+[root@rhel8 ~]# umount /mnt
+~~~
+
+man 7 cgroups
+       (...)
+       Unmounting v1 controllers
+       A  mounted cgroup filesystem can be unmounted using the umount(8) command, as in the
+       following example:
+
+           umount /sys/fs/cgroup/pids
+
+       But note well: a cgroup filesystem is unmounted only if it is not busy, that is,  it
+       has  no  child  cgroups.   If  this  is  not  the  case, then the only effect of the
+       umount(8) is to make the mount invisible.  Thus, to ensure that the mount  point  is
+       really  removed,  one must first remove all child cgroups, which in turn can be done
+       only after all member processes have been moved  from  those  cgroups  to  the  root
+       cgroup.
+       (...)
+
+~~~
+
+~~~
+
+#### Relationship between systemd and cgroups ####
+
+man 7 group
+~~~
+(...)
+       Note that on many systems,  the  v1  controllers  are  automatically  mounted  under
+       /sys/fs/cgroup; in particular, systemd(1) automatically creates such mount points.
+(...)
+~~~
+[akaris@wks-akaris blog]$ cat namespaces.md 
+### Resources ###
+
+~~~
+[akaris@wks-akaris blog]$ apropos namespace | grep _namespaces
+cgroup_namespaces (7) - overview of Linux cgroup namespaces
+mount_namespaces (7) - overview of Linux mount namespaces
+network_namespaces (7) - overview of Linux network namespaces
+pid_namespaces (7)   - overview of Linux PID namespaces
+user_namespaces (7)  - overview of Linux user namespaces
+~~~
+
+`man 7 namespaces`
+
+### What is a namespace? ###
+
+man 7 namespaces
+    (...)
+    A  namespace  wraps a global system resource in an abstraction that makes it appear to the processes within the namespace that they have their own isolated instance of the global resource.  Changes to the global resource are visible to other processes that are members of the namespace, but are invisible to other processes.  One use  of namespaces  is  to implement containers.
+    (...)
+
+Namespace resources are: Cgroup, IPC, Network, Mount, PID, User, UTS
+
+### cgroup namespaces and their purpose ###
+
+man cgroup_namespaces
+(...)
+       Among the purposes served by the virtualization provided by cgroup namespaces are the following:
+
+       * It prevents information leaks whereby cgroup directory paths outside of a container would otherwise be visible to processes in the container.  Such leakages could, for example,
+         reveal information about the container framework to containerized applications.
+
+       * It eases tasks such as container migration.  The virtualization provided by cgroup namespaces allows containers to be isolated from  knowledge  of  the  pathnames  of  ancestor
+         cgroups.  Without such isolation, the full cgroup pathnames (displayed in /proc/self/cgroups) would need to be replicated on the target system when migrating a container; those
+         pathnames would also need to be unique, so that they don't conflict with other pathnames on the target system.
+
+       * It allows better confinement of containerized processes, because it is possible to mount the container's cgroup filesystems such that the container processes can't gain  access
+         to ancestor cgroup directories.  Consider, for example, the following scenario:
+
+           · We have a cgroup directory, /cg/1, that is owned by user ID 9000.
+
+           · We  have a process, X, also owned by user ID 9000, that is namespaced under the cgroup /cg/1/2 (i.e., X was placed in a new cgroup namespace via clone(2) or unshare(2) with
+             the CLONE_NEWCGROUP flag).
+
+         In the absence of cgroup namespacing, because the cgroup directory /cg/1 is owned (and writable) by UID 9000 and process X is also owned by user ID 9000, then process  X  would
+         be able to modify the contents of cgroups files (i.e., change cgroup settings) not only in /cg/1/2 but also in the ancestor cgroup directory /cg/1.  Namespacing process X under
+         the cgroup directory /cg/1/2, in combination with suitable mount operations for the cgroup filesystem (as shown above), prevents it modifying files in /cg/1,  since  it  cannot
+         even  see the contents of that directory (or of further removed cgroup ancestor directories).  Combined with correct enforcement of hierarchical limits, this prevents process X
+         from escaping the limits imposed by ancestor cgroups.
+(...)
+
+### network namespaces ###
+
+man ip-netns
+(...)
+       A network namespace is logically another copy of the network stack, with its own routes, firewall rules, and network devices.
+
+       By default a process inherits its network namespace from its parent. Initially all the processes share the same default network namespace from the init process.
+
+       By convention a named network namespace is an object at /var/run/netns/NAME that can be opened. The file descriptor resulting from opening /var/run/netns/NAME refers to the spec‐
+       ified network namespace. Holding that file descriptor open keeps the network namespace alive. The file descriptor can be used with the setns(2) system call to change the network
+       namespace associated with a task.
+(...)
+
+~~~
+ip netns add test
+[akaris@wks-akaris blog]$ ls /var/run/netns/test 
+/var/run/netns/test
+[akaris@wks-akaris blog]$ ls /var/run/netns
+test
+[akaris@wks-akaris blog]$ 
+~~~
+
+~~~
+[akaris@wks-akaris blog]$ sudo unshare -n  ip a
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+~~~
+
+Compare that to:
+~~~
+[akaris@wks-akaris blog]$ sudo unshare ip a ls dev lo
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+~~~
+
+### mount_namespaces ###
+
+man mount_namespaces
+(...)
+       Mount  namespaces  provide  isolation  of the list of mount points seen by the processes in each namespace instance.  Thus, the processes in each of the mount namespace instances
+       will see distinct single-directory hierarchies.
+
+       The views provided by the /proc/[pid]/mounts, /proc/[pid]/mountinfo, and /proc/[pid]/mountstats files (all described in proc(5)) correspond to the mount namespace  in  which  the
+       process with the PID [pid] resides.  (All of the processes that reside in the same mount namespace will see the same view in these files.)
+
+       When  a  process  creates a new mount namespace using clone(2) or unshare(2) with the CLONE_NEWNS flag, the mount point list for the new namespace is a copy of the caller's mount
+       point list.  Subsequent modifications to the mount point list (mount(2) and umount(2)) in either mount namespace will not (by default) affect the mount point  list  seen  in  the
+       other namespace (but see the following discussion of shared subtrees).
+(...)
+
+### PID namespaces ###
+
+man pid_namespaces
+(...)
+       PID  namespaces  isolate  the process ID number space, meaning that processes in different PID namespaces can have the same PID.  PID namespaces allow containers to provide func‐
+       tionality such as suspending/resuming the set of processes in the container and migrating the container to a new host while the processes inside the container maintain  the  same
+       PIDs.
+
+       PIDs in a new PID namespace start at 1, somewhat like a standalone system, and calls to fork(2), vfork(2), or clone(2) will produce processes with PIDs that are unique within the
+       namespace.
+(...)
+       The first process created in a new namespace (i.e., the process created using clone(2) with the CLONE_NEWPID flag, or the first child  created  by  a  process  after  a  call  to
+       unshare(2)  using  the CLONE_NEWPID flag) has the PID 1, and is the "init" process for the namespace (see init(1)).  A child process that is orphaned within the namespace will be
+       reparented to this process rather than init(1) (unless one of the ancestors of the child in the same PID namespace employed the prctl(2) PR_SET_CHILD_SUBREAPER  command  to  mark
+       itself as the reaper of orphaned descendant processes).
+
+       If  the  "init" process of a PID namespace terminates, the kernel terminates all of the processes in the namespace via a SIGKILL signal.  This behavior reflects the fact that the
+       "init" process is essential for the correct operation of a PID namespace.  In this case, a subsequent fork(2) into this PID namespace fail with the error ENOMEM; it is not possi‐
+       ble  to  create  a new processes in a PID namespace whose "init" process has terminated. 
+(...)
+
+~~~
+[akaris@wks-akaris blog]$ sudo unshare -p --fork bash
+[sudo] password for akaris: 
+[root@wks-akaris blog]# echo $$
+1
+[root@wks-akaris blog]# echo $$
+29
+~~~
+
+### user namespaces ###
+
+man user_namespaces
+(...)
+       User  namespaces  isolate security-related identifiers and attributes, in particular, user IDs and group IDs (see credentials(7)), the root directory, keys (see keyrings(7)), and
+       capabilities (see capabilities(7)).  A process's user and group IDs can be different inside and outside a user namespace.  In particular, a process can have a normal unprivileged
+       user ID outside a user namespace while at the same time having a user ID of 0 inside the namespace; in other words, the process has full privileges for operations inside the user
+       namespace, but is unprivileged for operations outside the namespace.
+(...)
+
+### Listing namespaces ###
+
+[akaris@wks-akaris ~]$ sudo lsns
+[sudo] password for akaris: 
+        NS TYPE   NPROCS   PID USER   COMMAND
+4026531835 cgroup    275     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026531836 pid       273     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026531837 user      275     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026531838 uts       275     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026531839 ipc       275     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026531840 mnt       266     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026531860 mnt         1    33 root   kdevtmpfs
+4026532008 net       274     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026532186 mnt         1   791 root   /usr/lib/systemd/systemd-udevd
+4026532445 net         1  1051 rtkit  /usr/libexec/rtkit-daemon
+4026532508 mnt         1  1051 rtkit  /usr/libexec/rtkit-daemon
+4026532509 mnt         1  1084 chrony /usr/sbin/chronyd
+4026532510 mnt         1  1244 root   /usr/sbin/NetworkManager --no-daemon
+4026532593 pid         2  4924 root   bash
+4026532594 mnt         1  1335 colord /usr/libexec/colord
+4026532677 mnt         1  2178 root   /usr/libexec/bluetooth/bluetoothd
+4026532678 mnt         1  1800 root   /usr/libexec/boltd
+4026532752 mnt         1  2751 root   /usr/libexec/fwupd/fwupd
+~~~
+
+For example, in CLI 1:
+~~~
+[akaris@wks-akaris ~]$ sudo lsns | grep net
+4026532008 net       276     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+~~~
+
+In CLI 2:
+~~~
+4026532445 net         1  1051 rtkit  /usr/libexec/rtkit-daemon
+[root@wks-akaris blog]# sudo ip netns add test2
+[root@wks-akaris blog]# sudo ip netns exec test2 bash
+/bin/basename: missing operand
+Try '/bin/basename --help' for more information.
+~~~
+
+Again, in CLI 1:
+~~~
+[akaris@wks-akaris ~]$ sudo lsns | grep net
+4026532008 net       277     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026532445 net         1  1051 rtkit  /usr/libexec/rtkit-daemon
+4026532607 net         1  5202 root   bash
+~~~
