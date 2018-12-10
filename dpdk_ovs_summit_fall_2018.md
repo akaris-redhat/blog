@@ -112,6 +112,8 @@ virtual Broadband Network Gateway
 A broadband remote access server (BRAS, B-RAS or BBRAS) routes traffic to and from broadband remote access devices such as digital subscriber line access multiplexers (DSLAM) on an Internet service provider's (ISP) network.[1][2] BRAS can also be referred to as a Broadband Network Gateway (BNG).[3]
 
 The BRAS sits at the edge of an ISP's core network, and aggregates user sessions from the access network. It is at the BRAS that an ISP can inject policy management and IP Quality of Service (QoS). 
+(...)
+By acting as the network termination point, the BRAS is responsible for assigning network parameters such as IP addresses to the clients. The BRAS is also the first IP hop from the client to the Internet.
 ~~~
 [https://en.wikipedia.org/wiki/Broadband_remote_access_server](https://en.wikipedia.org/wiki/Broadband_remote_access_server)
 
