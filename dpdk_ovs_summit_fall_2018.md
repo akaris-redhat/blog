@@ -106,13 +106,22 @@ device's driver to support features such as:
 
 #### Accelerating Telco NFV Deployments with DPDK and Smart NIC - Kalimani Venkatesan Govindarajan, Aricent & Barak Perlman , Ethernity Network ####
 
+##### What is a vBNG ####
+virtual Broadband Network Gateway
+~~~
+A broadband remote access server (BRAS, B-RAS or BBRAS) routes traffic to and from broadband remote access devices such as digital subscriber line access multiplexers (DSLAM) on an Internet service provider's (ISP) network.[1][2] BRAS can also be referred to as a Broadband Network Gateway (BNG).[3]
+
+The BRAS sits at the edge of an ISP's core network, and aggregates user sessions from the access network. It is at the BRAS that an ISP can inject policy management and IP Quality of Service (QoS). 
+~~~
+[https://en.wikipedia.org/wiki/Broadband_remote_access_server](https://en.wikipedia.org/wiki/Broadband_remote_access_server)
+
 #### NFF-Go: Bringing DPDK to the Cloud - Areg Melik-Adamyan, Intel #####
 
 #### Enabing P4 in DPDK - Cristian Dumitrescu, Intel & Antonin Bas, Barefoot Networks #### 
 
 #### Accelerating DPDK via P4-programmable FPGA-based Smart NICs - Petr Kastovsky, Netcope Technologies ####
 
-#### P4 ####
+##### P4 #####
 
 Website: [http://www.p4.org](http://www.p4.org)
 
