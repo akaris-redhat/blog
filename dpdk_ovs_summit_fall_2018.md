@@ -112,6 +112,30 @@ device's driver to support features such as:
 
 #### Accelerating DPDK via P4-programmable FPGA-based Smart NICs - Petr Kastovsky, Netcope Technologies ####
 
+#### P4 ####
+
+Website: [http://www.p4.org](http://www.p4.org)
+
+P4 is a high-level, imperative, domain specific language. As an Open Source project, it intends to be protocol and device independent. The default file extension is `.p4`.
+Source: `p4-tutorial.pdf`
+
+Backend targets of P4 are software switches, NICs, packet processors, FPGAS, GPUS, ASICs, etc. Because it is a high-level language, it prevents vendor lockin. 
+
+P4 allows to easily program the dataplane of Smartnics. P4 is not intended to implement the control plane.
+Source: `p4-tutorial.pdf`
+Source: `file:///home/akaris/blog/dpdksummit/P4%20(programming%20language)%20-%20Wikipedia.html`
+
+P4 syntax is similar to python, however on purpose the language is not Turing complete. P4 can easily be translated into a JSON representation.
+
+Runtime changes to the device's configuration are possible.
+
+P4 is protocol independent, meaning that the programmer needs to define header fields for any protocol, such as VLAN or TCP.
+Source: `file:///home/akaris/blog/dpdksummit/P4%20(programming%20language)%20-%20Wikipedia.html`
+
+#### RTE_FLOW ####
+[https://doc.dpdk.org/guides/prog_guide/rte_flow.html](https://doc.dpdk.org/guides/prog_guide/rte_flow.html)
+
+
 #### DPDK Tunnel Offloading  - Yongseok Koh & Rony Efraim, Mellanox ####
 
 #### DPDK on F5 BIG-IP Virtual ADCs - Brent Blood, F5 Networks ####
