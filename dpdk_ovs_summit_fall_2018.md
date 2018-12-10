@@ -182,3 +182,42 @@ Source: `file:///home/akaris/blog/dpdksummit/P4%20(programming%20language)%20-%2
 #### DPDK Based Vswitch Upgrade - Yuanhan Liu, Tencent ####
 
 #### Using New DPDK Port Representor by Switch Application like OVS - Rony Efraim, Mellanox ####
+
+### OVS summit ###
+
+[http://www.openvswitch.org/support/ovscon2018/](http://www.openvswitch.org/support/ovscon2018/)
+
+#### Running OVS-DPDK Without Hugepages, Busy Loop, and Exclusive Cores (Yi Yang, Inspur) 	####
+#### Enabling TSO in OvS-DPDK (Tiago Lam, Intel) 	####
+#### OVS-DPDK Memory Management and Debugging (Kevin Traynor, Red Hat, and Ian Stokes, Intel) 	####
+#### Empowering OVS with eBPF (Yi-Hung Wei, William Tu, and Yifeng Sun, VMware) 	####
+#### Open vSwitch Extensions with BPF (Paul Chaignon, Orange Labs) 	####
+#### Fast Userspace OVS with AF_XDP (William Tu, VMware) ####
+#### OVS with DPDK Community Update (Ian Stokes, Intel) 	####
+#### Why use DPDK LTS? (Kevin Traynor, Red Hat) ####
+#### Flow Monitoring in OVS (Ashish Varma, VMware) ####
+#### OVS and PVP testing (Eelco Chaudron, Red Hat) ####
+#### Testing the Performance Impact of the Exact Match Cache (Andrew Theurer, Red Hat) ####
+#### Applying SIMD Optimizations to the OVS Datapath Classifier (Harry van Haaren, Intel) 	####
+#### PMD Auto Load Balancing (Nitin Katiyar, Jan Scheurich, and Venkatesan Pradeep, Ericsson) 	####
+#### All or Nothing: The Challenge of Hardware Offload (Dan Daly, Intel) 	####
+#### Reprogrammable Packet Processing Pipeline in FPGA for OVS Offloading (Debashis Chatterjee, Intel) ####
+#### Offloading Linux LAG Devices Via Open vSwitch and TC (John Hurley, Netronome) ####
+#### Connection Tracing Hardware Offload via TC (Rony Efraim, Yossi Kuperman, and Guy Shattah, Mellanox) ####
+#### Bleep bloop! A robot workshop. (Aaron Conole, Red Hat) 	####
+#### Comparison Between OVS and Tungsten Fabric vRouter (Yi Yang, Inspur) 	####
+#### The Discrepancy of the Megaflow Cache in OVS (Levente Csikor and Gabor Retvari, Budapest University of Technology and Economics) 	####
+#### Elmo: Source-Routed Multicast for Public Clouds (Muhammad Shahbaz, Stanford) 	####
+#### Sangfor Cloud Security Pool, The First-Ever NSH Use Case in Service Function Chaining Product (XiaoFan Chen, Sangfor and Yi Yang, Inspur) 	####
+#### Answering the Open Questions About an OVN/OVS Split (Mark Michelson, Red Hat) 	####
+#### OVN performance: past, present, and future (Mark Michelson, Red Hat) ####
+#### Unencapsulated OVN: What we have and what we want (Mark Michelson, Red Hat) 	####
+#### Connectivity for External Networks on the Overlay (Gregory A Smith, Nutanix) 	####
+#### Active-Active load balancing with liveness detection through OVN forwarding group (Manoj Sharma, Nutanix) 	PPTX 	Video
+#### Debugging OVS with GDB (macros) (Eelco Chaudron, Red Hat) ####
+#### OVN Controller Incremental Processing (Han Zhou, eBay) 	####
+#### OVN DBs HA with Scale Test (Aliasgar Ginwala, eBay) 	####
+#### Distributed Virtual Routing for VLAN Backed Networks Through OVN (Ankur Sharma, Nutanix) ####
+#### Policy-Based Routing in OVS (Mary Manohar, Nutanix) ####
+#### Encrypting OVN Tunnels with IPSEC (Qiuyu Xiao, University of North Carolina at Chapel Hill) 	####
+#### Windows Community Updates on OVS and OVN (Ionut-Madalin Balutoiu, Cloudbase, and Anand Kumar and Sairam Venugopal, VMware)  ####
