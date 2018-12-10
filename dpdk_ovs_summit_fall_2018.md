@@ -119,9 +119,7 @@ By acting as the network termination point, the BRAS is responsible for assignin
 
 #### NFF-Go: Bringing DPDK to the Cloud - Areg Melik-Adamyan, Intel #####
 
-#### Enabing P4 in DPDK - Cristian Dumitrescu, Intel & Antonin Bas, Barefoot Networks #### 
-
-#### Accelerating DPDK via P4-programmable FPGA-based Smart NICs - Petr Kastovsky, Netcope Technologies ####
+#### Enabing P4 in DPDK - Cristian Dumitrescu, Intel & Antonin Bas, Barefoot Networks | Accelerating DPDK via P4-programmable FPGA-based Smart NICs - Petr Kastovsky, Netcope Technologies ####
 
 ##### P4 #####
 
