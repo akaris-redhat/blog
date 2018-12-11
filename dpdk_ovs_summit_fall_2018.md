@@ -218,6 +218,22 @@ And a really good presentation (definitely worth a watch!) is here: [https://www
 #### Flow Monitoring in OVS (Ashish Varma, VMware) ####
 #### OVS and PVP testing (Eelco Chaudron, Red Hat) ####
 #### Testing the Performance Impact of the Exact Match Cache (Andrew Theurer, Red Hat) ####
+
+First level of DPDK caching infrastructure in OVS:
+    * EMC - Exact Match Cache, by default 8192 entries
+    * SMC - Signature Match Cache, 1 M flows 
+    
+[http://docs.openvswitch.org/en/latest/topics/dpdk/bridge/](http://docs.openvswitch.org/en/latest/topics/dpdk/bridge/)
+~~~
+SMC cache (experimental)
+
+SMC cache or signature match cache is a new cache level after EMC cache. The difference between SMC and EMC is SMC only stores a signature of a flow thus it is much more memory efficient. With same memory space, EMC can store 8k flows while SMC can store 1M flows. When traffic flow count is much larger than EMC size, it is generally beneficial to turn off EMC and turn on SMC. It is currently turned off by default and an experimental feature.
+
+To turn on SMC:
+
+$ ovs-vsctl --no-wait set Open_vSwitch . other_config:smc-enable=tru
+~~~
+
 #### Applying SIMD Optimizations to the OVS Datapath Classifier (Harry van Haaren, Intel) 	####
 #### PMD Auto Load Balancing (Nitin Katiyar, Jan Scheurich, and Venkatesan Pradeep, Ericsson) 	####
 #### All or Nothing: The Challenge of Hardware Offload (Dan Daly, Intel) 	####
