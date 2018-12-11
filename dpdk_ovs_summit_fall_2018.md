@@ -191,6 +191,26 @@ Source: `file:///home/akaris/blog/dpdksummit/P4%20(programming%20language)%20-%2
 #### Enabling TSO in OvS-DPDK (Tiago Lam, Intel) 	####
 #### OVS-DPDK Memory Management and Debugging (Kevin Traynor, Red Hat, and Ian Stokes, Intel) 	####
 #### Empowering OVS with eBPF (Yi-Hung Wei, William Tu, and Yifeng Sun, VMware) 	####
+
+##### What is eBPF? #####
+extended Berkeley Packet Filter
+
+[https://lwn.net/Articles/740157/](https://lwn.net/Articles/740157/)
+~~~
+was designed for capturing and filtering network packets that matched specific rules. Filters are implemented as programs to be run on a register-based virtual machine.
+
+The ability to run user-supplied programs inside of the kernel proved to be a useful design decision but other aspects of the original BPF design didn't hold up so well. 
+(...)
+Alexei Starovoitov introduced the extended BPF (eBPF) design to take advantage of advances in modern hardware. The eBPF virtual machine more closely resembles contemporary processors, allowing eBPF instructions to be mapped more closely to the hardware ISA for improved performance.
+(...)
+An eBPF program is "attached" to a designated code path in the kernel. When the code path is traversed, any attached eBPF programs are executed. Given its origin, eBPF is especially suited to writing network programs and it's possible to write programs that attach to a network socket to filter traffic, to classify traffic, and to run network classifier actions. It's even possible to modify the settings of an established network socket with an eBPF program. The XDP project, in particular, uses eBPF to do high-performance packet processing by running eBPF programs at the lowest level of the network stack, immediately after a packet is received. 
+~~~
+
+eBPF allows to run user-supplied programs either at the `XDP` entry point, directly after receiving the packet. This will benefit from the kernel's driver, contrary to DPDK, no reimplementation of the driver is needed. On the other hand, this will allow to bypass the kernel's networking stack, or for DDOS mitigation to drop unwanted packets early and hand off the remaining packets to the kernel for processing. Another entry point in addition to `XDP` is `tc`. When this entry point is used, further processing of the packet has already taken place and the eBPF program can take advantage of data structures that were initialized and filled by the kernel, e.g. the skb data structure. 
+
+A really detailed read can be found here: [https://cilium.readthedocs.io/en/v1.3/bpf/](https://cilium.readthedocs.io/en/v1.3/bpf/)
+And a really good presentation (definitely worth a watch!) is here: [https://www.youtube.com/watch?v=JRFNIKUROPE](https://www.youtube.com/watch?v=JRFNIKUROPE)
+
 #### Open vSwitch Extensions with BPF (Paul Chaignon, Orange Labs) 	####
 #### Fast Userspace OVS with AF_XDP (William Tu, VMware) ####
 #### OVS with DPDK Community Update (Ian Stokes, Intel) 	####
