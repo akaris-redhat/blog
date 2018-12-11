@@ -211,6 +211,8 @@ eBPF allows to run user-supplied programs either at the `XDP` entry point, direc
 A really detailed read can be found here: [https://cilium.readthedocs.io/en/v1.3/bpf/](https://cilium.readthedocs.io/en/v1.3/bpf/)
 And a really good presentation (definitely worth a watch!) is here: [https://www.youtube.com/watch?v=JRFNIKUROPE](https://www.youtube.com/watch?v=JRFNIKUROPE)
 
+The above presentation focuses on the new debugging possibilities that are brought to us by eBPF. Read this blog article by mcroce about eBPF network debugging in RHEL 8: [https://developers.redhat.com/blog/2018/12/03/network-debugging-with-ebpf/](https://developers.redhat.com/blog/2018/12/03/network-debugging-with-ebpf/)
+
 #### Open vSwitch Extensions with BPF (Paul Chaignon, Orange Labs) 	####
 #### Fast Userspace OVS with AF_XDP (William Tu, VMware) ####
 #### OVS with DPDK Community Update (Ian Stokes, Intel) 	####
