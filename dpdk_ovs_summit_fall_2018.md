@@ -9,7 +9,7 @@ Agenda: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-
 
 #### SW Assisted vDPA for Live Migration - Xiao Wang, Intel ####
 
-Presentation PDF: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/8f/XiaoWang-DPDK-US-Summit-SW-assisted-VDPA-for-LM-v2.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/8f/XiaoWang-DPDK-US-Summit-SW-assisted-VDPA-for-LM-v2.pdf)
+Presentation: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/](https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/)
 ~~~
 Key Takeaways
 • VDPA combines SW Flex & HW Perf
@@ -98,13 +98,38 @@ device's driver to support features such as:
 
 #### Using nDPI over DPDK to Classify and Block Unwanted Network Traffic ####
 
+Presentation: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/](https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/)
+
+Summary:
+* Presented nDPI an open source 
+DPI toolkit able to detect many popular 
+Internet protocols and scale at 10 Gbit on 
+commodity hardware platforms. 
+
+* Its open design make it suitable for using it 
+both in open-source and security applications 
+where code inspection is compulsory. 
+
+* Code Availability (GNU LGPLv3)
+https://github.com/ntop/nDPI
+
 #### Thread Quiescent State (TQS) Library - Honnappa Nagarahalli, Arm ####
+
+Presentation: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/](https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/)
 
 #### A Hierarchical SW Load Balancing Solution for Cloud Deployment - Hongjun Ni, Intel #### 
 
+Presentation: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/](https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/)
+
 #### DPDK Based L4 Load Balancer - M Jayakumar, Intel ####
 
+Presentation: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/02/MJay_DPDKBasedLoadBalancers.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/02/MJay_DPDKBasedLoadBalancers.pdf)
+
+Presents the DPDK Virtual Server (DPVS): [https://github.com/iqiyi/dpvs](https://github.com/iqiyi/dpvs)
+
 #### Accelerating Telco NFV Deployments with DPDK and Smart NIC - Kalimani Venkatesan Govindarajan, Aricent & Barak Perlman , Ethernity Network ####
+
+Presentation: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/c6/Kalimani%20and%20Barak%20Accelerating%20NFV%20with%20DPDK%20and%20SmartNICs.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/c6/Kalimani%20and%20Barak%20Accelerating%20NFV%20with%20DPDK%20and%20SmartNICs.pdf)
 
 ##### What is a vBNG ####
 virtual Broadband Network Gateway
