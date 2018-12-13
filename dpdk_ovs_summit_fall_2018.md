@@ -9,7 +9,7 @@ Agenda: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-
 
 #### SW Assisted vDPA for Live Migration - Xiao Wang, Intel ####
 
-Presentation: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/](https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/)
+Presentation:  [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/8f/XiaoWang-DPDK-US-Summit-SW-assisted-VDPA-for-LM-v2.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/8f/XiaoWang-DPDK-US-Summit-SW-assisted-VDPA-for-LM-v2.pdf)
 ~~~
 Key Takeaways
 • VDPA combines SW Flex & HW Perf
@@ -98,7 +98,7 @@ device's driver to support features such as:
 
 #### Using nDPI over DPDK to Classify and Block Unwanted Network Traffic ####
 
-Presentation: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/](https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/)
+Presentation: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/a5/LUCADERI_NDPI.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/a5/LUCADERI_NDPI.pdf)
 
 Summary:
 * Presented nDPI an open source 
@@ -115,11 +115,9 @@ https://github.com/ntop/nDPI
 
 #### Thread Quiescent State (TQS) Library - Honnappa Nagarahalli, Arm ####
 
-Presentation: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/](https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/)
+Presentation: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/e3/lock_free_rte_tqs_Honnappa.pptx](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/e3/lock_free_rte_tqs_Honnappa.pptx)
 
 #### A Hierarchical SW Load Balancing Solution for Cloud Deployment - Hongjun Ni, Intel #### 
-
-Presentation: [https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/](https://events.linuxfoundation.org/events/dpdknorthamerica2018/dpdk-na-program/agenda/)
 
 #### DPDK Based L4 Load Balancer - M Jayakumar, Intel ####
 
@@ -171,6 +169,8 @@ Source: `file:///home/akaris/blog/dpdksummit/P4%20(programming%20language)%20-%2
 
 
 #### DPDK Tunnel Offloading  - Yongseok Koh & Rony Efraim, Mellanox ####
+
+Presentation: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/81/Rony_Yongseok_DPDK_Tunnel_Offloading.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/81/Rony_Yongseok_DPDK_Tunnel_Offloading.pdf)
 
 #### DPDK on F5 BIG-IP Virtual ADCs - Brent Blood, F5 Networks ####
 
