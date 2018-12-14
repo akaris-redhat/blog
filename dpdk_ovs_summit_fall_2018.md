@@ -243,12 +243,38 @@ Intel submitted patches upstream:
 * [https://mail.openvswitch.org/pipermail/ovs-dev/2018-August/350832.html](https://mail.openvswitch.org/pipermail/ovs-dev/2018-August/350832.html)
 
 #### OVS-DPDK Memory Management and Debugging (Kevin Traynor, Red Hat, and Ian Stokes, Intel) 	####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/5/1000-traynor.pdf](http://www.openvswitch.org/support/ovscon2018/5/1000-traynor.pdf)
+
+Explains current and future memory management models with mbufs. Currently, shared mbuf model.As of OVS 2.10, a per port memory model where mempools are allocated per interface can be enabled by request with:
+~~~
+ovs-vsctl set Open_vSwitch . other_config:per-port-memory=true
+~~~
+
+The presentors continue with a small excursion to memory debugging: error messages that administrators may come across and how to react to them.
+
 #### Empowering OVS with eBPF (Yi-Hung Wei, William Tu, and Yifeng Sun, VMware) 	####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/5/1045-wei.pptx](http://www.openvswitch.org/support/ovscon2018/5/1045-wei.pptx)
 
 ##### What is eBPF? #####
 extended Berkeley Packet Filter
 
-[https://lwn.net/Articles/740157/](https://lwn.net/Articles/740157/)
+From [http://www.openvswitch.org/support/ovscon2018/5/1045-wei.pptx](http://www.openvswitch.org/support/ovscon2018/5/1045-wei.pptx):
+
+    A way to write a restricted C program and runs in Linux kernel
+         A virtual machine that runs eBPF bytecode in Linux kernel
+         Safety guaranteed by BPF verifier
+    Maps
+        Efficient key/value store resides in kernel space
+        Can be shared between eBPF program and user space applications 
+        Ex: Implement flow table 
+    Helper Functions
+        A core kernel defined set of functions for eBPF program to retrieve/push data from/to the kernel
+        Ex: BPF_FUNC_map_lookup_elem(), BPF_FUNC_skb_get_tunnel_key()
+
+
+From [https://lwn.net/Articles/740157/](https://lwn.net/Articles/740157/)
 ~~~
 was designed for capturing and filtering network packets that matched specific rules. Filters are implemented as programs to be run on a register-based virtual machine.
 
@@ -267,7 +293,37 @@ And a really good presentation (definitely worth a watch!) is here: [https://www
 The above presentation focuses on the new debugging possibilities that are brought to us by eBPF. Read this blog article by mcroce about eBPF network debugging in RHEL 8: [https://developers.redhat.com/blog/2018/12/03/network-debugging-with-ebpf/](https://developers.redhat.com/blog/2018/12/03/network-debugging-with-ebpf/)
 
 #### Open vSwitch Extensions with BPF (Paul Chaignon, Orange Labs) 	####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/5/1110-chaignon.pdf](http://www.openvswitch.org/support/ovscon2018/5/1110-chaignon.pdf)
+
 #### Fast Userspace OVS with AF_XDP (William Tu, VMware) ####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/5/1135-tu.pptx](http://www.openvswitch.org/support/ovscon2018/5/1135-tu.pptx)
+
+~~~
+AF_XDP is a high-speed Linux socket type
+We add a new netdev type based on AF_XDP
+Re-use the userspace datapath used by OVS-DPDK
+~~~
+
+~~~
+Need high packet rate but can’t deploy DPDK? Use AF_XDP!
+Still slower than OVS-DPDK [1], more optimizations are coming [2]
+
+Comparison with OVS-DPDK
+Better integration with Linux kernel and management tool
+Selectively use kernel’s feature, no re-injection needed
+Do not require dedicated device or CPU
+~~~
+
+Using AF_XDP to get into the netdev datapath, instead of using vfio-pci and the DPDK userspace drivers:
+~~~
+# ovs-vsctl add-br br0 -- \
+		    set Bridge br0 datapath_type=netdev 
+# ovs-vsctl add-port br0 eth0 -- \
+            set int enp2s0 type="afxdp”
+~~~
+
 #### OVS with DPDK Community Update (Ian Stokes, Intel) 	####
 #### Why use DPDK LTS? (Kevin Traynor, Red Hat) ####
 #### Flow Monitoring in OVS (Ashish Varma, VMware) ####
