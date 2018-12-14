@@ -377,22 +377,67 @@ $ ovs-vsctl --no-wait set Open_vSwitch . other_config:smc-enable=tru
 ~~~
 
 #### Applying SIMD Optimizations to the OVS Datapath Classifier (Harry van Haaren, Intel) 	####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/5/1355-van-haaren.pdf](http://www.openvswitch.org/support/ovscon2018/5/1355-van-haaren.pdf)
+
 #### PMD Auto Load Balancing (Nitin Katiyar, Jan Scheurich, and Venkatesan Pradeep, Ericsson) 	####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/](http://www.openvswitch.org/support/ovscon2018/)
+
+RXQs are currently either assigned round-robin to the available PMDs or they are sorted by processing cycles spent for each Rx queue and then assigned to PMDs ordered by that value. Cycles are calculated within 6 snapshots each spanning 10 seconds (1 minute average). 
+Dynamic port assignment is currently triggered whenever a configuration change is made to OVS (port addition, etc.)  or when the pmd-rxq-rebalance command is executed.
+The presentation proposes automatic load balancing of RXQs across PMDs. Reassignment of RXQs to PMDs will be triggered if it will result in better load distribution of RXQs across PMDs.
+
 #### All or Nothing: The Challenge of Hardware Offload (Dan Daly, Intel) 	####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/5/1510-daly.pptx](http://www.openvswitch.org/support/ovscon2018/5/1510-daly.pptx)
+
+Hardware offloading with Intel NICs
+
 #### Reprogrammable Packet Processing Pipeline in FPGA for OVS Offloading (Debashis Chatterjee, Intel) ####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/5/1535-chatterjee.pptx](http://www.openvswitch.org/support/ovscon2018/5/1535-chatterjee.pptx)
+
+Hardware offloading with Intel NICs
+
 #### Offloading Linux LAG Devices Via Open vSwitch and TC (John Hurley, Netronome) ####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/5/1600-hurley.pptx](http://www.openvswitch.org/support/ovscon2018/5/1600-hurley.pptx)
+
+Netronome LAG hardware offloading
+
 #### Connection Tracing Hardware Offload via TC (Rony Efraim, Yossi Kuperman, and Guy Shattah, Mellanox) ####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/5/1625-efraim.pptx](http://www.openvswitch.org/support/ovscon2018/5/1625-efraim.pptx)
+
+Hardware offloading with Melanox
+
 #### Bleep bloop! A robot workshop. (Aaron Conole, Red Hat) 	####
+
+Robot for OVS repository
+
 #### Comparison Between OVS and Tungsten Fabric vRouter (Yi Yang, Inspur) 	####
 #### The Discrepancy of the Megaflow Cache in OVS (Levente Csikor and Gabor Retvari, Budapest University of Technology and Economics) 	####
 #### Elmo: Source-Routed Multicast for Public Clouds (Muhammad Shahbaz, Stanford) 	####
 #### Sangfor Cloud Security Pool, The First-Ever NSH Use Case in Service Function Chaining Product (XiaoFan Chen, Sangfor and Yi Yang, Inspur) 	####
 #### Answering the Open Questions About an OVN/OVS Split (Mark Michelson, Red Hat) 	####
+
+Discussion about how to best split OVN and OVS
+
 #### OVN performance: past, present, and future (Mark Michelson, Red Hat) ####
+
 #### Unencapsulated OVN: What we have and what we want (Mark Michelson, Red Hat) 	####
+
 #### Connectivity for External Networks on the Overlay (Gregory A Smith, Nutanix) 	####
+
 #### Active-Active load balancing with liveness detection through OVN forwarding group (Manoj Sharma, Nutanix) 	PPTX 	Video
+
 #### Debugging OVS with GDB (macros) (Eelco Chaudron, Red Hat) ####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/6/1345-chaudron.pdf](http://www.openvswitch.org/support/ovscon2018/6/1345-chaudron.pdf)
+
+GDB macros for OVS: [https://github.com/openvswitch/ovs/blob/master/utilities/gdb/ovs_gdb.py](https://github.com/openvswitch/ovs/blob/master/utilities/gdb/ovs_gdb.py)
+
 #### OVN Controller Incremental Processing (Han Zhou, eBay) 	####
 #### OVN DBs HA with Scale Test (Aliasgar Ginwala, eBay) 	####
 #### Distributed Virtual Routing for VLAN Backed Networks Through OVN (Ankur Sharma, Nutanix) ####
