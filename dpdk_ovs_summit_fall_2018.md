@@ -227,7 +227,21 @@ The DPDK Open Lab is a performance based continuous integration system, supporte
 [http://www.openvswitch.org/support/ovscon2018/](http://www.openvswitch.org/support/ovscon2018/)
 
 #### Running OVS-DPDK Without Hugepages, Busy Loop, and Exclusive Cores (Yi Yang, Inspur) 	####
+
+Presentation: [http://www.openvswitch.org/support/ovscon2018/5/0910-yang.pdf](http://www.openvswitch.org/support/ovscon2018/5/0910-yang.pdf)
+
+
 #### Enabling TSO in OvS-DPDK (Tiago Lam, Intel) 	####
+
+Presentation: [www.openvswitch.org/support/ovscon2018/5/0935-lam.pptx](www.openvswitch.org/support/ovscon2018/5/0935-lam.pptx)
+
+This is related to: [https://access.redhat.com/solutions/2971871](https://access.redhat.com/solutions/2971871)
+Currently, TCP with large segment sizes achieves less performance on OVS-DPDK than with normal OVS. The problem is that TSO / LSO ([https://en.wikipedia.org/wiki/Large_send_offload](https://en.wikipedia.org/wiki/Large_send_offload) does not work with OVS DPDK. Intel has been working on this feature for a while. Implementing this requires them to change the implementation of DPDK mbufs. 
+
+Intel submitted patches upstream: 
+* [https://mail.openvswitch.org/pipermail/ovs-dev/2018-October/352889.html](https://mail.openvswitch.org/pipermail/ovs-dev/2018-October/352889.html)
+* [https://mail.openvswitch.org/pipermail/ovs-dev/2018-August/350832.html](https://mail.openvswitch.org/pipermail/ovs-dev/2018-August/350832.html)
+
 #### OVS-DPDK Memory Management and Debugging (Kevin Traynor, Red Hat, and Ian Stokes, Intel) 	####
 #### Empowering OVS with eBPF (Yi-Hung Wei, William Tu, and Yifeng Sun, VMware) 	####
 
