@@ -174,13 +174,27 @@ Presentation: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/81/Rony_Y
 
 #### DPDK on F5 BIG-IP Virtual ADCs - Brent Blood, F5 Networks ####
 
+Presentation: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/46/BrentBlood_DPDKonF5BIG-IPVirtualADCs.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/46/BrentBlood_DPDKonF5BIG-IPVirtualADCs.pdf)
+
+Description of how F5 makes use of DPDK in their BIG-IP reverse proxy
+
 #### Arm’s Efforts for DPDK and Optimization Plan - Gavin Hu & Honnappa Nagarahalli, Arm ####
+
+Presentation: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/b5/Gavin_Hu_Arm%27s%20efforts%20to%20DPDK%20and%20future%20plan.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/b5/Gavin_Hu_Arm%27s%20efforts%20to%20DPDK%20and%20future%20plan.pdf)
+
+DPDK on ARM
 
 #### DPDK Flow Classification and Traffic Profiling & Measurement  - Ren Wang & Yipeng Wang, Intel Labs ####
 
 #### Projects using DPDK - Stephen Hemminger, Microsoft ####
 
 #### DPDK Open Lab Performance Continious Integration - Jeremy Plsek, University of New Hampshire InterOperability Laboratory ####
+
+Presentation: [https://schd.ws/hosted_files/dpdksummitnorthamerica2018/03/JEREMYPLSEK_COMMUNITYLAB3.pdf](https://schd.ws/hosted_files/dpdksummitnorthamerica2018/03/JEREMYPLSEK_COMMUNITYLAB3.pdf)
+
+~~~
+The DPDK Open Lab is a performance based continuous integration system, supported by the DPDK project. When a patch is submitted, it is automatically sent to our CI to be applied and built. Once the patch is compiled and installed, it is ran against each of the bare metal environments hosted in the lab. This is to check for performance degradations or speed ups within DPDK on various hardware platforms. This talk will explore how the this system supports the development community, such as accepting patches based on performance and tracking how performance has changed in DPDK over time. We will go over how to navigate and use the Dashboard. We will show how the performance has changed in DPDK over the past six months, looking at relative numbers and graphs of various platforms. Finally, we will also talk about the future of the Open Lab, such as running more test cases, running unit tests for DPDK, additional capabilities for the dashboard, and making the systems more accessible to the development community. 
+~~~
 
 #### Fast Prototyping DPDK Apps in Containernet - Andrew Wang, Comcast ####
 
