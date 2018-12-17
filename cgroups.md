@@ -106,6 +106,8 @@ hierarchy and in the cgroups v2 hierarchy.
 
 cgroups are mounted as a virtual filesystem. Hence, verify with the mount command which version is currently in use.
 
+##### Default in RHEL 7 #####
+
 RHEL 7 uses cgroups v1:
 ~~~
 [root@rhospbl-1 ~]# mount | grep cgroup
@@ -125,11 +127,66 @@ cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,pids)
 Linux rhospbl-1.openstack.gsslab.rdu2.redhat.com 3.10.0-693.el7.x86_64 #1 SMP Thu Jul 6 19:56:57 EDT 2017 x86_64 x86_64 x86_64 GNU/Linux
 ~~~
 
-cgroups v2 is not in the kernel:
+##### Default in Fedora 28 #####
+~~~
+[akaris@wks-akaris blog]$ cat /etc/redhat-release 
+Fedora release 28 (Twenty Eight)
+[akaris@wks-akaris blog]$ mount | grep cgroup
+tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
+cgroup2 on /sys/fs/cgroup/unified type cgroup2 (rw,nosuid,nodev,noexec,relatime,seclabel,nsdelegate)
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,name=systemd)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpu,cpuacct)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
+cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_cls,net_prio)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
+~~~
+
+##### Default in RHEL 8 #####
+~~~
+[root@rhel8 ~]# cat /etc/redhat-release 
+Red Hat Enterprise Linux release 8.0 Beta (Ootpa)
+[root@rhel8 ~]# mount | grep cgroup
+tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpu,cpuacct)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_cls,net_prio)
+cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
+cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,rdma)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
+~~~
+
+#### Support for cgroupv2? ####
+
+##### In RHEL 7 #####
+
+No, cgroups v2 is not in the kernel in RHEL 7:
 ~~~
 [root@rhospbl-1 ~]# mount -t cgroup2 none /mnt/test
 mount: unknown filesystem type 'cgroup2'
 ~~~
+
+##### In RHEL 8 #####
+
+Yes:
+~~~~
+[root@rhel8 ~]# mount cgroup2 -t cgroup2 /mnt/cgroupv2
+[root@rhel8 ~]# mount | grep cgroup2
+cgroup2 on /mnt/cgroupv2 type cgroup2 (rw,relatime,seclabel)
+[root@rhel8 ~]# 
+~~~~
+
 
 ### cgroups v1 ###
 [https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt)
@@ -161,6 +218,8 @@ accounting/limiting the resources which processes in a cgroup can
 access. For example, cpusets (see Documentation/cgroup-v1/cpusets.txt) allow
 you to associate a set of CPUs and a set of memory nodes with the
 tasks in each cgroup.
+
+
 
 #### Listing the cgroups that a process is in ####
 
@@ -389,93 +448,20 @@ Nov 27 06:46:11 overcloud-computesriov-0 sudo[33325]:     root : TTY=unknown ; P
 [root@overcloud-computesriov-0 system.slice]# 
 ~~~
 
-#### Defaults ####
-
-##### Default in RHEL 7 #####
-~~~
-
-~~~
-
-##### Default in Fedora 28 #####
-~~~
-[akaris@wks-akaris blog]$ cat /etc/redhat-release 
-Fedora release 28 (Twenty Eight)
-[akaris@wks-akaris blog]$ mount | grep cgroup
-tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
-cgroup2 on /sys/fs/cgroup/unified type cgroup2 (rw,nosuid,nodev,noexec,relatime,seclabel,nsdelegate)
-cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,name=systemd)
-cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpu,cpuacct)
-cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
-cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
-cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
-cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
-cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
-cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_cls,net_prio)
-cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
-cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
-cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
-~~~
-
-##### Default in RHEL 8 #####
-~~~
-[root@rhel8 ~]# cat /etc/redhat-release 
-Red Hat Enterprise Linux release 8.0 Beta (Ootpa)
-[root@rhel8 ~]# mount | grep cgroup
-tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
-cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
-cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
-cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpu,cpuacct)
-cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
-cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_cls,net_prio)
-cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
-cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
-cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
-cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,rdma)
-cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
-cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
-cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
-~~~
-
-#### Support for cgroupv2? ####
-
-##### In RHEL 7 #####
-
-No:
-~~~
-
-~~~
-
-##### In RHEL 8 #####
-
-Yes:
-~~~~
-[root@rhel8 ~]# mount cgroup2 -t cgroup2 /mnt/cgroupv2
-[root@rhel8 ~]# mount | grep cgroup2
-cgroup2 on /mnt/cgroupv2 type cgroup2 (rw,relatime,seclabel)
-[root@rhel8 ~]# 
-~~~~
-
-### cgroupsv1 - close-up ####
-
-man 7 cgroups
-       (...)
-       It is possible to comount multiple controllers  against  the  same  hierarchy.   For
-       example, here the cpu and cpuacct controllers are comounted against a single hierar‐
-       chy:
-
-           mount -t cgroup -o cpu,cpuacct none /sys/fs/cgroup/cpu,cpuacct
-
-       Comounting controllers has the effect that a process is in the same cgroup  for  all
-       of  the  comounted controllers.  Separately mounting controllers allows a process to
-       be in cgroup /foo1 for one controller while being in /foo2/foo3 for another.
-
-       It is possible to comount all v1 controllers against the same hierarchy:
-
-           mount -t cgroup -o all cgroup /sys/fs/cgroup
-
-       (One can achieve the same result by omitting -o all, since it is the default  if  no
-       controllers are explicitly specified.)
-       (...)
+`man 7 cgroups`
+> (...)
+It is possible to comount multiple controllers  against  the  same  hierarchy.   For
+example, here the cpu and cpuacct controllers are comounted against a single hierar‐
+chy:
+    mount -t cgroup -o cpu,cpuacct none /sys/fs/cgroup/cpu,cpuacct
+Comounting controllers has the effect that a process is in the same cgroup  for  all
+of  the  comounted controllers.  Separately mounting controllers allows a process to
+be in cgroup /foo1 for one controller while being in /foo2/foo3 for another.
+It is possible to comount all v1 controllers against the same hierarchy:
+    mount -t cgroup -o all cgroup /sys/fs/cgroup
+(One can achieve the same result by omitting -o all, since it is the default  if  no
+controllers are explicitly specified.)
+(...)
 
 ~~~
 [akaris@wks-akaris blog]$ mount | grep cgroup
@@ -497,15 +483,15 @@ blkio  cpu  cpuacct  cpu,cpuacct  cpuset  devices  freezer  hugetlb  memory  net
 [akaris@wks-akaris blog]$ 
 ~~~
 
-man 7 cgroup
-       (...)
-       It is not possible to mount the same controller against multiple cgroup hierarchies.
-       For example, it is not possible to  mount  both  the  cpu  and  cpuacct  controllers
-       against one hierarchy, and to mount the cpu controller alone against another hierar‐
-       chy.  It is possible to create multiple mount points with exactly the  same  set  of
-       comounted  controllers.   However,  in  this case all that results is multiple mount
-       points providing a view of the same hierarchy.
-       (...)
+`man 7 cgroup`
+> (...)
+It is not possible to mount the same controller against multiple cgroup hierarchies.
+For example, it is not possible to  mount  both  the  cpu  and  cpuacct  controllers
+against one hierarchy, and to mount the cpu controller alone against another hierar‐
+chy.  It is possible to create multiple mount points with exactly the  same  set  of
+comounted  controllers.   However,  in  this case all that results is multiple mount
+points providing a view of the same hierarchy.
+(...)
 
 ~~~
 [root@rhel8 ~]# mount | grep cgroup
@@ -533,25 +519,19 @@ mount: /mnt: group already mounted or mount point busy.
 [root@rhel8 ~]# umount /mnt
 ~~~
 
-man 7 cgroups
-       (...)
-       Unmounting v1 controllers
-       A  mounted cgroup filesystem can be unmounted using the umount(8) command, as in the
-       following example:
-
-           umount /sys/fs/cgroup/pids
-
-       But note well: a cgroup filesystem is unmounted only if it is not busy, that is,  it
-       has  no  child  cgroups.   If  this  is  not  the  case, then the only effect of the
-       umount(8) is to make the mount invisible.  Thus, to ensure that the mount  point  is
-       really  removed,  one must first remove all child cgroups, which in turn can be done
-       only after all member processes have been moved  from  those  cgroups  to  the  root
-       cgroup.
-       (...)
-
-~~~
-
-~~~
+`man 7 cgroups`
+> (...)
+Unmounting v1 controllers
+A  mounted cgroup filesystem can be unmounted using the umount(8) command, as in the
+following example:
+    umount /sys/fs/cgroup/pids
+But note well: a cgroup filesystem is unmounted only if it is not busy, that is,  it
+has  no  child  cgroups.   If  this  is  not  the  case, then the only effect of the
+umount(8) is to make the mount invisible.  Thus, to ensure that the mount  point  is
+really  removed,  one must first remove all child cgroups, which in turn can be done
+only after all member processes have been moved  from  those  cgroups  to  the  root
+cgroup.
+(...)
 
 #### Relationship between systemd and cgroups ####
 
