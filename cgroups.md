@@ -20,7 +20,8 @@ cgroups ...
 > On their own, the only use for cgroups is for simple job tracking. The intention is that other subsystems hook into the generic cgroup support to provide new attributes for cgroups, such as accounting/limiting the resources which processes in a cgroup can access. For example, cpusets (see Documentation/cgroup-v1/cpusets.txt) allow you to associate a set of CPUs and a set of memory nodes with the tasks in each cgroup.
 
 man 7 cgroups
-       (...)
+       
+       > (...)
        Control  cgroups,  usually  referred to as cgroups, are a Linux kernel feature which
        allow processes to be organized into hierarchical  groups  whose  usage  of  various
        types of resources can then be limited and monitored.  The kernel's cgroup interface
