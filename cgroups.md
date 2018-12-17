@@ -3,6 +3,7 @@
 [https://www.kernel.org/doc/Documentation/cgroup-v1/](https://www.kernel.org/doc/Documentation/cgroup-v1/)
 [https://lwn.net/Articles/679786/](https://lwn.net/Articles/679786/)
 [https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/resource_management_guide/index](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/resource_management_guide/index)
+`man 7 cgroups`
 
 ### What are cgroups? ###
 
@@ -10,11 +11,34 @@ cgroups ...
 - stand for control groups
 - handle management, accounting of system resources like CPU, memory, I/O
 - associates a set of tasks with a set of parameters for one or more subsystems 
-- are organized in hierarchies
-- on their own allow for simple job tracking but combined with other subsystems allow for resource accounting / limiting of resources
+- on their own allow for simple job tracking 
+- combined with other subsystems (so-called resource controllers) allow for resource accounting / monitoring / limiting of resources
+- provided through the cgroupfs pseudo filesystem
+- are organized in hierarchies - hierarchies are defined by creating subdirectories in the cgroup filessystem
 
 [https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt)
 > On their own, the only use for cgroups is for simple job tracking. The intention is that other subsystems hook into the generic cgroup support to provide new attributes for cgroups, such as accounting/limiting the resources which processes in a cgroup can access. For example, cpusets (see Documentation/cgroup-v1/cpusets.txt) allow you to associate a set of CPUs and a set of memory nodes with the tasks in each cgroup.
+
+man 7 cgroups
+       (...)
+       Control  cgroups,  usually  referred to as cgroups, are a Linux kernel feature which
+       allow processes to be organized into hierarchical  groups  whose  usage  of  various
+       types of resources can then be limited and monitored.  The kernel's cgroup interface
+       is provided through a pseudo-filesystem called cgroupfs.  Grouping is implemented in
+       the core cgroup kernel code, while resource tracking and limits are implemented in a
+       set of per-resource-type subsystems (memory, CPU, and so on).
+       (...)
+       Subsystems are sometimes also known as resource controllers (or
+       simply, controllers).
+       (...)
+       The cgroups for a controller are arranged in a hierarchy.  This hierarchy is defined
+       by creating, removing, and renaming subdirectories within the cgroup filesystem.  At
+       each level of the hierarchy, attributes (e.g., limits) can be defined.  The  limits,
+       control,  and  accounting  provided  by cgroups generally have effect throughout the
+       subhierarchy underneath the cgroup where the  attributes  are  defined.   Thus,  for
+       example,  the limits placed on a cgroup at a higher level in the hierarchy cannot be
+       exceeded by descendant cgroups.
+       (...)
 
 [https://lwn.net/Articles/679786/](https://lwn.net/Articles/679786/)
 > The cgroup subsystem and associated controllers handle management and accounting of various system resources like CPU, memory, I/O, and more. Together with the Linux namespace subsystem, which is a bit older (having started around 2002) and is considered a bit more mature (apart, perhaps, from user namespaces, which still raise discussions), these subsystems form the basis of Linux containers. Currently, most projects involving Linux containers, like Docker, LXC, OpenVZ, Kubernetes, and others, are based on both of them. The development of the Linux cgroup subsystem started in 2006 at Google, led primarily by Rohit Seth and Paul Menage. Initially the project was called "Process Containers", but later on the name was changed to "Control Groups", to avoid confusion with Linux containers, and nowadays everybody calls them "cgroups" for short. There are currently 12 cgroup controllers in cgroups v1; all—except one—have existed for several years. The new addition is the PIDs controller, developed by Aditya Kali and merged in kernel 4.3. It allows restricting the number of processes created inside a control group, and it can be used as an anti-fork-bomb solution. The PID space in Linux consists of, at a maximum, about four million PIDs (PID_MAX_LIMIT). Given today's RAM capacities, this limit could easily and quite quickly be exhausted by a fork bomb from within a single container. The PIDs controller is supported by both cgroups v1 and cgroups v2.
@@ -323,33 +347,6 @@ Nov 27 06:46:11 overcloud-computesriov-0 systemd[1]: Started libcontainer contai
 Nov 27 06:46:11 overcloud-computesriov-0 sudo[33325]:     root : TTY=unknown ; PWD=/ ; USER=root ; COMMAND=/usr/local/bin/kolla_set_configs
 [root@overcloud-computesriov-0 system.slice]# 
 ~~~
-
-### Resources ###
-
-`man 7 cgroups`
-
-### What is a croup ###
-
-man 7 cgroups
-       (...)
-       Control  cgroups,  usually  referred to as cgroups, are a Linux kernel feature which
-       allow processes to be organized into hierarchical  groups  whose  usage  of  various
-       types of resources can then be limited and monitored.  The kernel's cgroup interface
-       is provided through a pseudo-filesystem called cgroupfs.  Grouping is implemented in
-       the core cgroup kernel code, while resource tracking and limits are implemented in a
-       set of per-resource-type subsystems (memory, CPU, and so on).
-       (...)
-       Subsystems are sometimes also known as resource controllers (or
-       simply, controllers).
-       (...)
-       The cgroups for a controller are arranged in a hierarchy.  This hierarchy is defined
-       by creating, removing, and renaming subdirectories within the cgroup filesystem.  At
-       each level of the hierarchy, attributes (e.g., limits) can be defined.  The  limits,
-       control,  and  accounting  provided  by cgroups generally have effect throughout the
-       subhierarchy underneath the cgroup where the  attributes  are  defined.   Thus,  for
-       example,  the limits placed on a cgroup at a higher level in the hierarchy cannot be
-       exceeded by descendant cgroups.
-       (...)
 
 ### cgroupsv1 vs cgroupsv2 ###
 
