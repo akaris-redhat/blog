@@ -1,8 +1,12 @@
 ### Resources ###
 [https://en.wikipedia.org/wiki/Cgroups](https://en.wikipedia.org/wiki/Cgroups)
+
 [https://www.kernel.org/doc/Documentation/cgroup-v1/](https://www.kernel.org/doc/Documentation/cgroup-v1/)
+
 [https://lwn.net/Articles/679786/](https://lwn.net/Articles/679786/)
+
 [https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/resource_management_guide/index](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/resource_management_guide/index)
+
 `man 7 cgroups`
 
 ### What are cgroups? ###
@@ -19,7 +23,7 @@ cgroups ...
 [https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt)
 > On their own, the only use for cgroups is for simple job tracking. The intention is that other subsystems hook into the generic cgroup support to provide new attributes for cgroups, such as accounting/limiting the resources which processes in a cgroup can access. For example, cpusets (see Documentation/cgroup-v1/cpusets.txt) allow you to associate a set of CPUs and a set of memory nodes with the tasks in each cgroup.
 
-man 7 cgroups
+`man 7 cgroups`
 > (...)
 Control  cgroups,  usually  referred to as cgroups, are a Linux kernel feature which
 allow processes to be organized into hierarchical  groups  whose  usage  of  various
@@ -60,6 +64,43 @@ Containers are basically just a bunch of cgroups plus namespace isolation (plus 
 ### cgroups versions ###
 
 cgroup comes in 2 versions. cgroups v2 are to replace cgroups v1 eventually. However, for reasons of backwards compatibility, both will probably be around for a very long time.
+
+cgroups v1 have several issues ...
+- uncoordinated development of resource controllers
+- inconsistencies between controllers
+- complex hierarchy management
+
+Solution: cgroups v2.
+
+`man 7 cgroups`
+> (...)
+The initial release of the cgroups implementation was in Linux 2.6.24.   Over  time,
+various  cgroup controllers have been added to allow the management of various types
+of resources.  However, the development of these controllers was  largely  uncoordi‐
+nated,  with the result that many inconsistencies arose between controllers and man‐
+agement of the cgroup hierarchies became rather complex.  (A longer  description  of
+these problems can be found in the kernel source file Documentation/cgroup-v2.txt.)
+(...)
+
+#### Backwards compatibility ####
+
+- cgroups v1 is unlikely to be removed
+- cgroups v1 and v2 can coexist
+- cgroups v2 only implemented a subset of v1's functionality
+- users can use resource controllers supported in v2 and use v1 controllers for features which are unsupported in v2
+
+`man 7 cgroups`
+> (...)
+Although cgroups v2 is intended as a replacement for cgroups v1,  the  older  system
+continues  to exist (and for compatibility reasons is unlikely to be removed).  Cur‐
+rently, cgroups v2 implements only a subset of the controllers available in  cgroups
+v1.   The two systems are implemented so that both v1 controllers and v2 controllers
+can be mounted on the same system.  Thus, for example, it is possible to  use  those
+controllers  that  are  supported  under  version 2, while also using version 1 con‐
+trollers where version 2 does not yet support those controllers.  The only  restric‐
+tion here is that a controller can't be simultaneously employed in both a cgroups v1
+hierarchy and in the cgroups v2 hierarchy.
+(...)
 
 #### Which version of cgroups are you running? ####
 
@@ -347,31 +388,6 @@ Nov 27 06:46:11 overcloud-computesriov-0 systemd[1]: Started libcontainer contai
 Nov 27 06:46:11 overcloud-computesriov-0 sudo[33325]:     root : TTY=unknown ; PWD=/ ; USER=root ; COMMAND=/usr/local/bin/kolla_set_configs
 [root@overcloud-computesriov-0 system.slice]# 
 ~~~
-
-### cgroupsv1 vs cgroupsv2 ###
-
-man 7 cgroups
-      (...)
-       The initial release of the cgroups implementation was in Linux 2.6.24.   Over  time,
-       various  cgroup controllers have been added to allow the management of various types
-       of resources.  However, the development of these controllers was  largely  uncoordi‐
-       nated,  with the result that many inconsistencies arose between controllers and man‐
-       agement of the cgroup hierarchies became rather complex.  (A longer  description  of
-       these problems can be found in the kernel source file Documentation/cgroup-v2.txt.)
-       (...)
-
-#### Backwards compatibility ####
-       (...)
-       Although cgroups v2 is intended as a replacement for cgroups v1,  the  older  system
-       continues  to exist (and for compatibility reasons is unlikely to be removed).  Cur‐
-       rently, cgroups v2 implements only a subset of the controllers available in  cgroups
-       v1.   The two systems are implemented so that both v1 controllers and v2 controllers
-       can be mounted on the same system.  Thus, for example, it is possible to  use  those
-       controllers  that  are  supported  under  version 2, while also using version 1 con‐
-       trollers where version 2 does not yet support those controllers.  The only  restric‐
-       tion here is that a controller can't be simultaneously employed in both a cgroups v1
-       hierarchy and in the cgroups v2 hierarchy.
-       (...)
 
 #### Defaults ####
 
