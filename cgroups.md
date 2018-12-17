@@ -9,6 +9,8 @@
 
 `man 7 cgroups`
 
+[https://www.youtube.com/watch?v=sK5i-N34im8](https://www.youtube.com/watch?v=sK5i-N34im8)
+
 ### What are cgroups? ###
 
 cgroups ...
@@ -220,8 +222,6 @@ access. For example, cpusets (see Documentation/cgroup-v1/cpusets.txt) allow
 you to associate a set of CPUs and a set of memory nodes with the
 tasks in each cgroup.
 
-
-
 #### Listing the cgroups that a process is in ####
 
 [https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt)
@@ -294,7 +294,9 @@ cgroup.clone_children  cgroup.event_control   cgroup.procs           notify_on_r
 1
 ~~~
 
-#### Using cgroups manually ####
+### Types of cgroups v1 resource controllers ###
+
+#### cpuset resource controller ####
 
 [https://www.kernel.org/doc/Documentation/cgroup-v1/hugetlb.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/hugetlb.txt)
 ~~~
@@ -312,7 +314,7 @@ pid 931866's current affinity list: 0-3
 pid 931866's current affinity list: 2,3
 ~~~
 
-##### Example hugetlb #####
+##### hugetlb resource controller #####
 
 Looking at meminfo, we see that 4 hugepages are used:
 ~~~
@@ -449,6 +451,11 @@ Nov 27 06:46:11 overcloud-computesriov-0 sudo[33325]:     root : TTY=unknown ; P
 [root@overcloud-computesriov-0 system.slice]# 
 ~~~
 
+#### memory cgroup ####
+
+- keep track of pages used by each group
+
+### mounting, unmounting and comounting cgroup v1 resource controllers ###
 `man 7 cgroups`
 > (...)
 It is possible to comount multiple controllers  against  the  same  hierarchy.   For
@@ -533,14 +540,4 @@ really  removed,  one must first remove all child cgroups, which in turn can be 
 only after all member processes have been moved  from  those  cgroups  to  the  root
 cgroup.
 (...)
-
-#### Relationship between systemd and cgroups ####
-
-man 7 group
-~~~
-(...)
-       Note that on many systems,  the  v1  controllers  are  automatically  mounted  under
-       /sys/fs/cgroup; in particular, systemd(1) automatically creates such mount points.
-(...)
-~~~
 
