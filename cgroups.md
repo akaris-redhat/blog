@@ -4,16 +4,61 @@
 [https://lwn.net/Articles/679786/](https://lwn.net/Articles/679786/)
 [https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/resource_management_guide/index](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/resource_management_guide/index)
 
-### cgroups versions ###
+### What are cgroups? ###
 
-cgroup comes in 2 versions. cgroupsv2 are to replace cgroupsv1 eventually.
+cgroups ...
+- stand for control groups
+- handle management, accounting of system resources like CPU, memory, I/O
+- associates a set of tasks with a set of parameters for one or more subsystems 
+- are organized in hierarchies
+
+[https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt)
+> On their own, the only use for cgroups is for simple job tracking. The intention is that other subsystems hook into the generic cgroup support to provide new attributes for cgroups, such as accounting/limiting the resources which processes in a cgroup can access. For example, cpusets (see Documentation/cgroup-v1/cpusets.txt) allow you to associate a set of CPUs and a set of memory nodes with the tasks in each cgroup.
 
 [https://lwn.net/Articles/679786/](https://lwn.net/Articles/679786/)
 > The cgroup subsystem and associated controllers handle management and accounting of various system resources like CPU, memory, I/O, and more. Together with the Linux namespace subsystem, which is a bit older (having started around 2002) and is considered a bit more mature (apart, perhaps, from user namespaces, which still raise discussions), these subsystems form the basis of Linux containers. Currently, most projects involving Linux containers, like Docker, LXC, OpenVZ, Kubernetes, and others, are based on both of them. The development of the Linux cgroup subsystem started in 2006 at Google, led primarily by Rohit Seth and Paul Menage. Initially the project was called "Process Containers", but later on the name was changed to "Control Groups", to avoid confusion with Linux containers, and nowadays everybody calls them "cgroups" for short. There are currently 12 cgroup controllers in cgroups v1; all—except one—have existed for several years. The new addition is the PIDs controller, developed by Aditya Kali and merged in kernel 4.3. It allows restricting the number of processes created inside a control group, and it can be used as an anti-fork-bomb solution. The PID space in Linux consists of, at a maximum, about four million PIDs (PID_MAX_LIMIT). Given today's RAM capacities, this limit could easily and quite quickly be exhausted by a fork bomb from within a single container. The PIDs controller is supported by both cgroups v1 and cgroups v2.
 Over the years, there was a lot of criticism about the implementation of cgroups, which seems to present a number of inconsistencies and a lot of chaos. For example, when creating subgroups (cgroups within cgroups), several cgroup controllers propagate parameters to their immediate subgroups, while other controllers do not. Or, for a different example, some controllers use interface files (such as the cpuset controller's clone_children) that appear in all controllers even though they only affect one.
 As maintainer Tejun Heo himself has admitted [YouTube], "design followed implementation", "different decisions were taken for different controllers", and "sometimes too much flexibility causes a hindrance". In an LWN article from 2012, it was said that "control groups are one of those features that kernel developers love to hate." 
 
+### The relationship of containers and cgroup ###
+
+Containers are basically just a bunch of cgroups plus namespace isolation (plus some extra features):
+~~~
+[root@overcloud-controller-0 cpuset]# cat  system.slice/docker-027ca08b78824b60c243324660df7ed4a7fa7659027209e3f646b70a6a9a3cae.scope/tasks 
+167446
+[root@overcloud-controller-0 cpuset]# docker exec 027ca08b7882 /bin/dd 
+^C
+[root@overcloud-controller-0 cpuset]# ps aux | grep dd
+(...)
+42445     894272  0.3  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
+(...)
+[root@overcloud-controller-0 cpuset]# ps aux | grep 167446
+42445     167446  0.0  0.3 163940 26892 ?        Ss   Nov07   0:39 /usr/bin/python2 /usr/bin/swift-object-updater /etc/swift/object-server.conf
+root      896151  0.0  0.0 112712   976 pts/0    S+   04:07   0:00 grep --color=auto 167446
+[root@overcloud-controller-0 cpuset]# ps aux | grep 894272
+42445     894272  0.0  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
+root      896803  0.0  0.0 112708   976 pts/0    S+   04:07   0:00 grep --color=auto 894272
+[root@overcloud-controller-0 cpuset]# docker exec -it 027ca08b7882 /bin/bash
+()[swift@overcloud-controller-0 /]$ ps aux | grep [d]d
+swift       5617  0.0  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
+()[swift@overcloud-controller-0 /]$ 
+~~~
+
+[https://en.wikipedia.org/wiki/LXC](https://en.wikipedia.org/wiki/LXC)
+> The Linux kernel provides the cgroups functionality that allows limitation and prioritization of resources (CPU, memory, block I/O, network, etc.) without the need for starting any virtual machines, and also namespace isolation functionality that allows complete isolation of an applications' view of the operating environment, including process trees, networking, user IDs and mounted file systems.[3]
+
+> LXC combines the kernel's cgroups and support for isolated namespaces to provide an isolated environment for applications. Early versions of Docker used LXC as the container execution driver, though LXC was made optional in v0.9 and support was dropped in Docker v1.10. [4] 
+
+[https://en.wikipedia.org/wiki/Docker_(software)](https://en.wikipedia.org/wiki/Docker_(software))
+> Docker is developed primarily for Linux, where it uses the resource isolation features of the Linux kernel such as cgroups and kernel namespaces, and a union-capable file system such as OverlayFS and others[28] to allow independent "containers" to run within a single Linux instance, avoiding the overhead of starting and maintaining virtual machines (VMs).[29] The Linux kernel's support for namespaces mostly[30] isolates an application's view of the operating environment, including process trees, network, user IDs and mounted file systems, while the kernel's cgroups provide resource limiting for memory and CPU.[31] Since version 0.9, Docker includes the libcontainer library as its own way to directly use virtualization facilities provided by the Linux kernel, in addition to using abstracted virtualization interfaces via libvirt, LXC and systemd-nspawn.[13][32][27]
+
+### cgroups versions ###
+
+cgroup comes in 2 versions. cgroups v2 are to replace cgroups v1 eventually. However, for reasons of backwards compatibility, both will probably be around for a very long time.
+
 #### Which version of cgroups are you running? ####
+
+cgroups are mounted as a virtual filesystem. Hence, verify with the mount command which version is currently in use.
 
 RHEL 7 uses cgroups v1:
 ~~~
@@ -34,7 +79,7 @@ cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,pids)
 Linux rhospbl-1.openstack.gsslab.rdu2.redhat.com 3.10.0-693.el7.x86_64 #1 SMP Thu Jul 6 19:56:57 EDT 2017 x86_64 x86_64 x86_64 GNU/Linux
 ~~~
 
-cgroup2 is not in the kernel:
+cgroups v2 is not in the kernel:
 ~~~
 [root@rhospbl-1 ~]# mount -t cgroup2 none /mnt/test
 mount: unknown filesystem type 'cgroup2'
@@ -297,38 +342,6 @@ Nov 27 06:46:11 overcloud-computesriov-0 systemd[1]: Started libcontainer contai
 Nov 27 06:46:11 overcloud-computesriov-0 sudo[33325]:     root : TTY=unknown ; PWD=/ ; USER=root ; COMMAND=/usr/local/bin/kolla_set_configs
 [root@overcloud-computesriov-0 system.slice]# 
 ~~~
-
-### The relationship of containers and cgroup ###
-
-Containers are basically just a bunch of cgroups + namespace isolation:
-~~~
-[root@overcloud-controller-0 cpuset]# cat  system.slice/docker-027ca08b78824b60c243324660df7ed4a7fa7659027209e3f646b70a6a9a3cae.scope/tasks 
-167446
-[root@overcloud-controller-0 cpuset]# docker exec 027ca08b7882 /bin/dd 
-^C
-[root@overcloud-controller-0 cpuset]# ps aux | grep dd
-(...)
-42445     894272  0.3  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
-(...)
-[root@overcloud-controller-0 cpuset]# ps aux | grep 167446
-42445     167446  0.0  0.3 163940 26892 ?        Ss   Nov07   0:39 /usr/bin/python2 /usr/bin/swift-object-updater /etc/swift/object-server.conf
-root      896151  0.0  0.0 112712   976 pts/0    S+   04:07   0:00 grep --color=auto 167446
-[root@overcloud-controller-0 cpuset]# ps aux | grep 894272
-42445     894272  0.0  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
-root      896803  0.0  0.0 112708   976 pts/0    S+   04:07   0:00 grep --color=auto 894272
-[root@overcloud-controller-0 cpuset]# docker exec -it 027ca08b7882 /bin/bash
-()[swift@overcloud-controller-0 /]$ ps aux | grep [d]d
-swift       5617  0.0  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
-()[swift@overcloud-controller-0 /]$ 
-~~~
-
-[https://en.wikipedia.org/wiki/LXC](https://en.wikipedia.org/wiki/LXC)
-> The Linux kernel provides the cgroups functionality that allows limitation and prioritization of resources (CPU, memory, block I/O, network, etc.) without the need for starting any virtual machines, and also namespace isolation functionality that allows complete isolation of an applications' view of the operating environment, including process trees, networking, user IDs and mounted file systems.[3]
-
-> LXC combines the kernel's cgroups and support for isolated namespaces to provide an isolated environment for applications. Early versions of Docker used LXC as the container execution driver, though LXC was made optional in v0.9 and support was dropped in Docker v1.10. [4] 
-
-[https://en.wikipedia.org/wiki/Docker_(software)](https://en.wikipedia.org/wiki/Docker_(software))
-> Docker is developed primarily for Linux, where it uses the resource isolation features of the Linux kernel such as cgroups and kernel namespaces, and a union-capable file system such as OverlayFS and others[28] to allow independent "containers" to run within a single Linux instance, avoiding the overhead of starting and maintaining virtual machines (VMs).[29] The Linux kernel's support for namespaces mostly[30] isolates an application's view of the operating environment, including process trees, network, user IDs and mounted file systems, while the kernel's cgroups provide resource limiting for memory and CPU.[31] Since version 0.9, Docker includes the libcontainer library as its own way to directly use virtualization facilities provided by the Linux kernel, in addition to using abstracted virtualization interfaces via libvirt, LXC and systemd-nspawn.[13][32][27]
 
 ### Resources ###
 
