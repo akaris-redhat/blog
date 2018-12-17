@@ -1,6 +1,9 @@
-### Relations ship between containers, cgroups, SELinux and containers ####
+### Introductory read about the components that make up a container ### 
+[https://medium.com/@nagarwal/understanding-the-docker-internals-7ccb052ce9fe](https://medium.com/@nagarwal/understanding-the-docker-internals-7ccb052ce9fe)
 
-Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:
+### Relations ship between containers, cgroups, SELinux and containers ###
+
+`Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems`:
 ~~~
 Kernel namespaces ensure process isolation and cgroups are employed to control
 the system resources. SELinux is used to assure separation between the host and the container and
@@ -9,7 +12,7 @@ the aforementioned kernel components and provides tools for construction and man
 containers.
 ~~~
 
-Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:
+`Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems`:
 ~~~
 Namespaces
 The kernel provides process isolation by creating separate namespaces for containers. Namespaces
@@ -30,6 +33,7 @@ Linux 7 SELinux Users and Administrators Guide.
 (...)
 ~~~
 
+`Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems`:
 ~~~
 1.3. SECURE CONTAINERS WITH SELINUX
 From the security point of view, there is a need to isolate the host system from a container and to
