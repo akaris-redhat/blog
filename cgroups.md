@@ -296,6 +296,10 @@ cgroup.clone_children  cgroup.event_control   cgroup.procs           notify_on_r
 
 ### Types of cgroups v1 resource controllers ###
 
+#### cpu resource controller ####
+
+- cpu tracking based on cgroups
+
 #### cpuset resource controller ####
 
 [https://www.kernel.org/doc/Documentation/cgroup-v1/hugetlb.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/hugetlb.txt)
@@ -315,6 +319,9 @@ pid 931866's current affinity list: 2,3
 ~~~
 
 ##### hugetlb resource controller #####
+
+- controls amount of hugepages usable by a process
+- by default, a process can request as many hugepages as it wants
 
 Looking at meminfo, we see that 4 hugepages are used:
 ~~~
@@ -454,6 +461,38 @@ Nov 27 06:46:11 overcloud-computesriov-0 sudo[33325]:     root : TTY=unknown ; P
 #### memory cgroup ####
 
 - keep track of pages used by each group
+- allow the OOM (out of memory) killer to trigger on a specific memory cgroup only
+- kernel can "freeze" the cgroup
+
+#### blockio cgroup ####
+
+- keep track of I/Os for each group
+- throttle each group
+- writes go through page cache unless O_DIRECT is set
+
+#### net_cls cgroup ####
+
+- automatically set traffic classs for egress traffic (use tc/iptables)
+
+#### net_prio cgroup ###
+
+- automatically set traffic classs for egress traffic (use queuing disciplines)
+
+#### devices cgroup ####
+
+- which group can read/write from which device in /dev
+
+#### freezer cgroup ####
+
+- used to freeze / stop all processes in a group (SIGSTOP / SIGCONT)
+
+### Processes in cgroups ###
+
+Processes start in the same cgroups as their parent
+A process can be moved by:
+~~~
+echo $id > /sys/fs/cgroup/.../tasks
+~~~
 
 ### mounting, unmounting and comounting cgroup v1 resource controllers ###
 `man 7 cgroups`
