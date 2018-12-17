@@ -3,7 +3,7 @@
 
 ### Relations ship between containers, cgroups, SELinux and containers ###
 
-`Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems`:
+`Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems` [https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index):
 ~~~
 Kernel namespaces ensure process isolation and cgroups are employed to control
 the system resources. SELinux is used to assure separation between the host and the container and
@@ -12,7 +12,7 @@ the aforementioned kernel components and provides tools for construction and man
 containers.
 ~~~
 
-`Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems`:
+`Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems` [https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index):
 ~~~
 Namespaces
 The kernel provides process isolation by creating separate namespaces for containers. Namespaces
@@ -33,7 +33,7 @@ Linux 7 SELinux Users and Administrators Guide.
 (...)
 ~~~
 
-`Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems`:
+`Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems` [https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index):
 ~~~
 1.3. SECURE CONTAINERS WITH SELINUX
 From the security point of view, there is a need to isolate the host system from a container and to
