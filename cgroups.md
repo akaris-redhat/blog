@@ -11,6 +11,7 @@ cgroups ...
 - handle management, accounting of system resources like CPU, memory, I/O
 - associates a set of tasks with a set of parameters for one or more subsystems 
 - are organized in hierarchies
+- on their own allow for simple job tracking but combined with other subsystems allow for resource accounting / limiting of resources
 
 [https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt)
 > On their own, the only use for cgroups is for simple job tracking. The intention is that other subsystems hook into the generic cgroup support to provide new attributes for cgroups, such as accounting/limiting the resources which processes in a cgroup can access. For example, cpusets (see Documentation/cgroup-v1/cpusets.txt) allow you to associate a set of CPUs and a set of memory nodes with the tasks in each cgroup.
@@ -20,29 +21,9 @@ cgroups ...
 Over the years, there was a lot of criticism about the implementation of cgroups, which seems to present a number of inconsistencies and a lot of chaos. For example, when creating subgroups (cgroups within cgroups), several cgroup controllers propagate parameters to their immediate subgroups, while other controllers do not. Or, for a different example, some controllers use interface files (such as the cpuset controller's clone_children) that appear in all controllers even though they only affect one.
 As maintainer Tejun Heo himself has admitted [YouTube], "design followed implementation", "different decisions were taken for different controllers", and "sometimes too much flexibility causes a hindrance". In an LWN article from 2012, it was said that "control groups are one of those features that kernel developers love to hate." 
 
-### The relationship of containers and cgroup ###
+### The relationship of containers and cgroups ###
 
 Containers are basically just a bunch of cgroups plus namespace isolation (plus some extra features):
-~~~
-[root@overcloud-controller-0 cpuset]# cat  system.slice/docker-027ca08b78824b60c243324660df7ed4a7fa7659027209e3f646b70a6a9a3cae.scope/tasks 
-167446
-[root@overcloud-controller-0 cpuset]# docker exec 027ca08b7882 /bin/dd 
-^C
-[root@overcloud-controller-0 cpuset]# ps aux | grep dd
-(...)
-42445     894272  0.3  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
-(...)
-[root@overcloud-controller-0 cpuset]# ps aux | grep 167446
-42445     167446  0.0  0.3 163940 26892 ?        Ss   Nov07   0:39 /usr/bin/python2 /usr/bin/swift-object-updater /etc/swift/object-server.conf
-root      896151  0.0  0.0 112712   976 pts/0    S+   04:07   0:00 grep --color=auto 167446
-[root@overcloud-controller-0 cpuset]# ps aux | grep 894272
-42445     894272  0.0  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
-root      896803  0.0  0.0 112708   976 pts/0    S+   04:07   0:00 grep --color=auto 894272
-[root@overcloud-controller-0 cpuset]# docker exec -it 027ca08b7882 /bin/bash
-()[swift@overcloud-controller-0 /]$ ps aux | grep [d]d
-swift       5617  0.0  0.0   4404   356 ?        Ss   04:06   0:00 /bin/dd
-()[swift@overcloud-controller-0 /]$ 
-~~~
 
 [https://en.wikipedia.org/wiki/LXC](https://en.wikipedia.org/wiki/LXC)
 > The Linux kernel provides the cgroups functionality that allows limitation and prioritization of resources (CPU, memory, block I/O, network, etc.) without the need for starting any virtual machines, and also namespace isolation functionality that allows complete isolation of an applications' view of the operating environment, including process trees, networking, user IDs and mounted file systems.[3]
