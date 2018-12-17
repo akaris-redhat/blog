@@ -22,6 +22,7 @@ cgroups ...
 - provided through the cgroupfs pseudo filesystem
 - are organized in hierarchies - hierarchies are defined by creating subdirectories in the cgroup filessystem
 - each process is in exactly one node in each hierarchy (cpu hierarchy, memory hierarchy, ...)
+- limit *how much* you can use of a system resource (quantity)
 
 [https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt](https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt)
 > On their own, the only use for cgroups is for simple job tracking. The intention is that other subsystems hook into the generic cgroup support to provide new attributes for cgroups, such as accounting/limiting the resources which processes in a cgroup can access. For example, cpusets (see Documentation/cgroup-v1/cpusets.txt) allow you to associate a set of CPUs and a set of memory nodes with the tasks in each cgroup.
