@@ -11,17 +11,29 @@ user_namespaces (7)  - overview of Linux user namespaces
 
 `man 7 namespaces`
 
+[https://www.youtube.com/watch?v=sK5i-N34im8](https://www.youtube.com/watch?v=sK5i-N34im8)
+
 ### What is a namespace? ###
 
 man 7 namespaces
+~~~
     (...)
     A  namespace  wraps a global system resource in an abstraction that makes it appear to the processes within the namespace that they have their own isolated instance of the global resource.  Changes to the global resource are visible to other processes that are members of the namespace, but are invisible to other processes.  One use  of namespaces  is  to implement containers.
     (...)
+~~~
 
 Namespace resources are: Cgroup, IPC, Network, Mount, PID, User, UTS
 
+Limiting what you can view on a system.
+
+Namespaces are member of one namespace of each resource.
+
+### UTS namespace ###
+Allow every process to have its own hostname.
+
 ### cgroup namespaces and their purpose ###
 
+~~~
 man cgroup_namespaces
 (...)
        Among the purposes served by the virtualization provided by cgroup namespaces are the following:
@@ -47,8 +59,15 @@ man cgroup_namespaces
          even  see the contents of that directory (or of further removed cgroup ancestor directories).  Combined with correct enforcement of hierarchical limits, this prevents process X
          from escaping the limits imposed by ancestor cgroups.
 (...)
+~~~
 
 ### network namespaces ###
+
+Add a private network stack to processes within a network namespace.
+
+Mode interfaces from one network namespace to another.
+
+veth interfaces can connect namespaces together.
 
 ~~~
 man ip-netns
@@ -101,6 +120,8 @@ Compare that to:
 
 ### mount_namespaces ###
 
+Allows processes to have their own root fs, their own /tmp, /proc/, etc.
+
 ~~~
 man mount_namespaces
 (...)
@@ -129,6 +150,7 @@ userspace.
 
 ### PID namespaces ###
 
+A process can only see processes in its own PID namespace. A process has a PID per namespace. The global namespace has a different PID for the same process than the 'custom' namespace.
 ~~~
 man pid_namespaces
 (...)
@@ -174,6 +196,8 @@ instances of systemd including those running inside of containers.
 
 ### user namespaces ###
 
+Allows UID/GID mapping. Within the namespace, a user can have UID 0 (root) but this will be squashed to root outside of the container.
+
 ~~~
 man user_namespaces
 (...)
@@ -194,6 +218,8 @@ turned off in the current version of Red Hat Enterprise Linux 7, but will be ena
 ~~~
 
 ### IPC namespaces ###
+
+A process / container can have own, save: semaphores, message queues, shared memory
 
 Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:
 ~~~
