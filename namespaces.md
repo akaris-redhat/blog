@@ -158,6 +158,8 @@ However, namespaces can also be created by feeding flags to the clone system cal
               CLONE_NEWUSER  was specified in flags, and the limit on the number of nested user
 ~~~
 
+### How to list namespaces ###
+
 Note that when a namespace is unshared, it will show up with a different namespace ID in `/proc/$PID/ns/`:
 ~~~
 [root@wks-akaris akaris]# sudo ls /proc/1/ns/ -al
@@ -198,6 +200,59 @@ uts:[4026531838]
 uts:[4026532828]
 ~~~
 
+The easiest and most detailed way to show the namespace hierarchy, though, is `lsns`:
+~~~
+man lsns
+LSNS(8)                                                                                 System Administration                                                                                 LSNS(8)
+
+NAME
+       lsns - list namespaces
+
+SYNOPSIS
+       lsns [options] [namespace]
+
+DESCRIPTION
+       lsns lists information about all the currently accessible namespaces or about the given namespace.  The namespace identifier is an inode number.
+
+       The  default  output  is  subject  to  change.  So whenever possible, you should avoid using default outputs in your scripts.  Always explicitly define expected columns by using the --output
+       option together with a columns list in environments where a stable output is required.
+
+       NSFS column, printed when net is specified for --type option, is special; it uses multi-line cells.  Use the option --nowrap is for switching to "," separated single-line representation.
+
+       Note that lsns reads information directly from the /proc filesystem and for non-root users it may return incomplete information.  The current /proc filesystem may be unshared and affected by
+       a  PID  namespace  (see  unshare  --mount-proc  for  more  details).   lsns is not able to see persistent namespaces without processes where the namespace instance is held by a bind mount to
+       /proc/pid/ns/type.
+(...)
+~~~
+
+Example:
+~~~
+[akaris@wks-akaris ~]$ sudo lsns -t uts
+        NS TYPE NPROCS PID USER COMMAND
+4026531838 uts     288   1 root /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+[akaris@wks-akaris ~]$ sudo unshare -u /bin/bash
+[root@wks-akaris akaris]# lsns -t uts
+        NS TYPE NPROCS   PID USER COMMAND
+4026531838 uts     289     1 root /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026532849 uts       2 13226 root /bin/bash
+[root@wks-akaris akaris]# unshare -u /bin/bash
+[root@wks-akaris akaris]# lsns -t uts
+        NS TYPE NPROCS   PID USER COMMAND
+4026531838 uts     289     1 root /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026532849 uts       1 13226 root /bin/bash
+4026532850 uts       2 13257 root /bin/bash
+[root@wks-akaris akaris]# readlink /proc/$$/ns/uts
+uts:[4026532850]
+[root@wks-akaris akaris]# exit
+exit
+[root@wks-akaris akaris]# readlink /proc/$$/ns/uts
+uts:[4026532849]
+[root@wks-akaris akaris]# exit
+exit
+[akaris@wks-akaris ~]$ readlink /proc/$$/ns/uts
+uts:[4026531838]
+~~~
+
 ### UTS namespace ###
 
 UTS namespaces are the identifiers returned by uname. UTS namespaces allow every process to have its own hostname domain name.
@@ -220,36 +275,6 @@ Open another CLI on the same system and verify the hostname:
 wks-akaris
 [akaris@wks-akaris ~]$ uname -a
 Linux wks-akaris 4.18.12-200.fc28.x86_64 #1 SMP Thu Oct 4 15:46:35 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
-~~~
-
-### cgroup namespaces and their purpose ###
-
-~~~
-man cgroup_namespaces
-(...)
-       Among the purposes served by the virtualization provided by cgroup namespaces are the following:
-
-       * It prevents information leaks whereby cgroup directory paths outside of a container would otherwise be visible to processes in the container.  Such leakages could, for example,
-         reveal information about the container framework to containerized applications.
-
-       * It eases tasks such as container migration.  The virtualization provided by cgroup namespaces allows containers to be isolated from  knowledge  of  the  pathnames  of  ancestor
-         cgroups.  Without such isolation, the full cgroup pathnames (displayed in /proc/self/cgroups) would need to be replicated on the target system when migrating a container; those
-         pathnames would also need to be unique, so that they don't conflict with other pathnames on the target system.
-
-       * It allows better confinement of containerized processes, because it is possible to mount the container's cgroup filesystems such that the container processes can't gain  access
-         to ancestor cgroup directories.  Consider, for example, the following scenario:
-
-           · We have a cgroup directory, /cg/1, that is owned by user ID 9000.
-
-           · We  have a process, X, also owned by user ID 9000, that is namespaced under the cgroup /cg/1/2 (i.e., X was placed in a new cgroup namespace via clone(2) or unshare(2) with
-             the CLONE_NEWCGROUP flag).
-
-         In the absence of cgroup namespacing, because the cgroup directory /cg/1 is owned (and writable) by UID 9000 and process X is also owned by user ID 9000, then process  X  would
-         be able to modify the contents of cgroups files (i.e., change cgroup settings) not only in /cg/1/2 but also in the ancestor cgroup directory /cg/1.  Namespacing process X under
-         the cgroup directory /cg/1/2, in combination with suitable mount operations for the cgroup filesystem (as shown above), prevents it modifying files in /cg/1,  since  it  cannot
-         even  see the contents of that directory (or of further removed cgroup ancestor directories).  Combined with correct enforcement of hierarchical limits, this prevents process X
-         from escaping the limits imposed by ancestor cgroups.
-(...)
 ~~~
 
 ### network namespaces ###
@@ -420,50 +445,32 @@ memory segments and semaphores with the same name, but are not able to interact 
 containers memory segments or shared memory.
 ~~~
 
-### Listing namespaces ###
+### cgroup namespaces and their purpose ###
 
-[akaris@wks-akaris ~]$ sudo lsns
-[sudo] password for akaris: 
-        NS TYPE   NPROCS   PID USER   COMMAND
-4026531835 cgroup    275     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
-4026531836 pid       273     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
-4026531837 user      275     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
-4026531838 uts       275     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
-4026531839 ipc       275     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
-4026531840 mnt       266     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
-4026531860 mnt         1    33 root   kdevtmpfs
-4026532008 net       274     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
-4026532186 mnt         1   791 root   /usr/lib/systemd/systemd-udevd
-4026532445 net         1  1051 rtkit  /usr/libexec/rtkit-daemon
-4026532508 mnt         1  1051 rtkit  /usr/libexec/rtkit-daemon
-4026532509 mnt         1  1084 chrony /usr/sbin/chronyd
-4026532510 mnt         1  1244 root   /usr/sbin/NetworkManager --no-daemon
-4026532593 pid         2  4924 root   bash
-4026532594 mnt         1  1335 colord /usr/libexec/colord
-4026532677 mnt         1  2178 root   /usr/libexec/bluetooth/bluetoothd
-4026532678 mnt         1  1800 root   /usr/libexec/boltd
-4026532752 mnt         1  2751 root   /usr/libexec/fwupd/fwupd
 ~~~
+man cgroup_namespaces
+(...)
+       Among the purposes served by the virtualization provided by cgroup namespaces are the following:
 
-For example, in CLI 1:
-~~~
-[akaris@wks-akaris ~]$ sudo lsns | grep net
-4026532008 net       276     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
-~~~
+       * It prevents information leaks whereby cgroup directory paths outside of a container would otherwise be visible to processes in the container.  Such leakages could, for example,
+         reveal information about the container framework to containerized applications.
 
-In CLI 2:
-~~~
-4026532445 net         1  1051 rtkit  /usr/libexec/rtkit-daemon
-[root@wks-akaris blog]# sudo ip netns add test2
-[root@wks-akaris blog]# sudo ip netns exec test2 bash
-/bin/basename: missing operand
-Try '/bin/basename --help' for more information.
-~~~
+       * It eases tasks such as container migration.  The virtualization provided by cgroup namespaces allows containers to be isolated from  knowledge  of  the  pathnames  of  ancestor
+         cgroups.  Without such isolation, the full cgroup pathnames (displayed in /proc/self/cgroups) would need to be replicated on the target system when migrating a container; those
+         pathnames would also need to be unique, so that they don't conflict with other pathnames on the target system.
 
-Again, in CLI 1:
-~~~
-[akaris@wks-akaris ~]$ sudo lsns | grep net
-4026532008 net       277     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
-4026532445 net         1  1051 rtkit  /usr/libexec/rtkit-daemon
-4026532607 net         1  5202 root   bash
+       * It allows better confinement of containerized processes, because it is possible to mount the container's cgroup filesystems such that the container processes can't gain  access
+         to ancestor cgroup directories.  Consider, for example, the following scenario:
+
+           · We have a cgroup directory, /cg/1, that is owned by user ID 9000.
+
+           · We  have a process, X, also owned by user ID 9000, that is namespaced under the cgroup /cg/1/2 (i.e., X was placed in a new cgroup namespace via clone(2) or unshare(2) with
+             the CLONE_NEWCGROUP flag).
+
+         In the absence of cgroup namespacing, because the cgroup directory /cg/1 is owned (and writable) by UID 9000 and process X is also owned by user ID 9000, then process  X  would
+         be able to modify the contents of cgroups files (i.e., change cgroup settings) not only in /cg/1/2 but also in the ancestor cgroup directory /cg/1.  Namespacing process X under
+         the cgroup directory /cg/1/2, in combination with suitable mount operations for the cgroup filesystem (as shown above), prevents it modifying files in /cg/1,  since  it  cannot
+         even  see the contents of that directory (or of further removed cgroup ancestor directories).  Combined with correct enforcement of hierarchical limits, this prevents process X
+         from escaping the limits imposed by ancestor cgroups.
+(...)
 ~~~
