@@ -1,5 +1,6 @@
 ### Resources ###
 
+- manpages:
 ~~~
 [akaris@wks-akaris blog]$ apropos namespace | grep _namespaces
 cgroup_namespaces (7) - overview of Linux cgroup namespaces
@@ -7,13 +8,24 @@ mount_namespaces (7) - overview of Linux mount namespaces
 network_namespaces (7) - overview of Linux network namespaces
 pid_namespaces (7)   - overview of Linux PID namespaces
 user_namespaces (7)  - overview of Linux user namespaces
+[akaris@wks-akaris blog]$ man 7 namespaces
 ~~~
 
-`man 7 namespaces`
-
-[https://www.youtube.com/watch?v=sK5i-N34im8](https://www.youtube.com/watch?v=sK5i-N34im8)
+- [https://www.youtube.com/watch?v=sK5i-N34im8](https://www.youtube.com/watch?v=sK5i-N34im8)
 
 ### What is a namespace? ###
+
+- one important component of containers
+
+- process within the namespace sees its own isolated instance of a resource
+
+- the resources are visible only to other processes that are members of the namespace 
+
+- limit what you can view on a system
+
+- each process is a member of one namespace of each resource
+
+- namespace resources are: Cgroup, IPC, Network, Mount, PID, User, UTS
 
 man 7 namespaces
 ~~~
@@ -22,14 +34,195 @@ man 7 namespaces
     (...)
 ~~~
 
-Namespace resources are: Cgroup, IPC, Network, Mount, PID, User, UTS
+### unshare - the tool to create new namespaces ###
 
-Limiting what you can view on a system.
+A child process starts within the same namespaces as its parent. In order to move a process to a new namespace, it needs to be spawned with `unshare`:
+~~~
+man unshare
 
-Namespaces are member of one namespace of each resource.
+NAME
+       unshare - run program with some namespaces unshared from parent
+
+SYNOPSIS
+       unshare [options] [program [arguments]]
+
+DESCRIPTION
+       Unshares the indicated namespaces from the parent process and then executes the specified program. If program is not given, then ``${SHELL}'' is run (default: /bin/sh).
+
+       The  namespaces can optionally be made persistent by bind mounting /proc/pid/ns/type files to a filesystem path and entered with nsenter(1) even after the program terminates (except PID namespaces
+       where permanently running init process is required).  Once a persistent namespace is no longer needed, it can be unpersisted with umount(8).  See the EXAMPLES section for more details.
+
+       The namespaces to be unshared are indicated via options.  Unshareable namespaces are:
+
+       mount namespace
+              Mounting and unmounting filesystems will not affect the rest of the system, except for filesystems which are explicitly marked as shared (with mount --make-shared; see  /proc/self/mountinfo
+              or findmnt -o+PROPAGATION for the shared flags).  For further details, see mount_namespaces(7) and the discussion of the CLONE_NEWNS flag in clone(2).
+
+              unshare  since  util-linux  version 2.27 automatically sets propagation to private in a new mount namespace to make sure that the new namespace is really unshared.  It's possible to disable
+              this feature with option --propagation unchanged.  Note that private is the kernel default.
+
+       UTS namespace
+              Setting hostname or domainname will not affect the rest of the system.  For further details, see namespaces(7) and the discussion of the CLONE_NEWUTS flag in clone(2).
+
+       IPC namespace
+              The process will have an independent namespace for POSIX message queues as well as System V message queues, semaphore sets and shared memory  segments.   For  further  details,  see  names‐
+              paces(7) and the discussion of the CLONE_NEWIPC flag in clone(2).
+
+       network namespace
+              The  process  will have independent IPv4 and IPv6 stacks, IP routing tables, firewall rules, the /proc/net and /sys/class/net directory trees, sockets, etc.  For further details, see names‐
+              paces(7) and the discussion of the CLONE_NEWNET flag in clone(2).
+
+       PID namespace
+              Children will have a distinct set of PID-to-process mappings from their parent.  For further details, see pid_namespaces(7) and the discussion of the CLONE_NEWPID flag in clone(2).
+
+       cgroup namespace
+              The process will have a virtualized view of /proc/self/cgroup, and new cgroup mounts will be rooted at the namespace cgroup root.  For further details, see cgroup_namespaces(7) and the dis‐
+              cussion of the CLONE_NEWCGROUP flag in clone(2).
+
+       user namespace
+              The process will have a distinct set of UIDs, GIDs and capabilities.  For further details, see user_namespaces(7) and the discussion of the CLONE_NEWUSER flag in clone(2).
+
+OPTIONS
+       -i, --ipc[=file]
+              Unshare the IPC namespace.  If file is specified, then a persistent namespace is created by a bind mount.
+
+       -m, --mount[=file]
+              Unshare  the  mount namespace.  If file is specified, then a persistent namespace is created by a bind mount.  Note that file has to be located on a filesystem with the propagation flag set
+              to private.  Use the command findmnt -o+PROPAGATION when not sure about the current setting.  See also the examples below.
+
+       -n, --net[=file]
+              Unshare the network namespace.  If file is specified, then a persistent namespace is created by a bind mount.
+
+       -p, --pid[=file]
+              Unshare the PID namespace.  If file is specified then persistent namespace is created by a bind mount.  See also the --fork and --mount-proc options.
+
+       -u, --uts[=file]
+              Unshare the UTS namespace.  If file is specified, then a persistent namespace is created by a bind mount.
+
+       -U, --user[=file]
+              Unshare the user namespace.  If file is specified, then a persistent namespace is created by a bind mount.
+
+       -C, --cgroup[=file]
+              Unshare the cgroup namespace. If file is specified then persistent namespace is created by bind mount.
+
+       -f, --fork
+              Fork the specified program as a child process of unshare rather than running it directly.  This is useful when creating a new PID namespace.
+
+(...)
+~~~
+
+`unshare` uses the `unshare` system call:
+~~~
+[akaris@wks-akaris ~]$ sudo strace -tt -f -s1024 unshare -u /bin/bash 2>&1 | grep -i uts
+15:54:50.016682 unshare(CLONE_NEWUTS)   = 0
+~~~
+
+~~~
+man unshare
+UNSHARE(2)                         Linux Programmer's Manual                         UNSHARE(2)
+
+NAME
+       unshare - disassociate parts of the process execution context
+
+SYNOPSIS
+       #define _GNU_SOURCE
+       #include <sched.h>
+
+       int unshare(int flags);
+
+DESCRIPTION
+       unshare()  allows  a  process (or thread) to disassociate parts of its execution context
+       that are currently being shared with other processes (or threads).  Part of  the  execu‐
+       tion  context,  such  as the mount namespace, is shared implicitly when a new process is
+       created using fork(2) or vfork(2), while other parts, such as  virtual  memory,  may  be
+       shared by explicit request when creating a process or thread using clone(2).
+
+       The  main use of unshare() is to allow a process to control its shared execution context
+       without creating a new process.
+
+(...)
+~~~
+
+However, namespaces can also be created by feeding flags to the clone system call:
+~~~
+[akaris@wks-akaris ~]$ man clone | egrep '^[ ]+CLONE_NEW'
+       CLONE_NEWCGROUP (since Linux 4.6)
+       CLONE_NEWIPC (since Linux 2.6.19)
+       CLONE_NEWNET (since Linux 2.6.24)
+       CLONE_NEWNS (since Linux 2.4.19)
+       CLONE_NEWPID (since Linux 2.6.24)
+       CLONE_NEWUSER
+       CLONE_NEWUTS (since Linux 2.6.19)
+              CLONE_NEWPID  was  specified  in flags, but the limit on the nesting depth of PID
+              CLONE_NEWUSER was specified in flags, and the call would cause the limit  on  the
+              CLONE_NEWUTS  was  specified  by  an  unprivileged   process   (process   without
+              CLONE_NEWUSER was specified in flags and the caller is in  a  chroot  environment
+              CLONE_NEWUSER  was specified in flags, and the limit on the number of nested user
+~~~
+
+Note that when a namespace is unshared, it will show up with a different namespace ID in `/proc/$PID/ns/`:
+~~~
+[root@wks-akaris akaris]# sudo ls /proc/1/ns/ -al
+total 0
+dr-x--x--x. 2 root root 0 Dec 20 15:47 .
+dr-xr-xr-x. 9 root root 0 Dec 20 09:59 ..
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 cgroup -> 'cgroup:[4026531835]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 ipc -> 'ipc:[4026531839]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 mnt -> 'mnt:[4026531840]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 net -> 'net:[4026532008]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 pid -> 'pid:[4026531836]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 pid_for_children -> 'pid:[4026531836]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 user -> 'user:[4026531837]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 uts -> 'uts:[4026531838]'
+[root@wks-akaris akaris]# sudo ls /proc/$$/ns/ -al
+total 0
+dr-x--x--x. 2 root root 0 Dec 20 15:45 .
+dr-xr-xr-x. 9 root root 0 Dec 20 15:43 ..
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 cgroup -> 'cgroup:[4026531835]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 ipc -> 'ipc:[4026531839]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 mnt -> 'mnt:[4026531840]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 net -> 'net:[4026532008]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 pid -> 'pid:[4026531836]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 pid_for_children -> 'pid:[4026531836]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 user -> 'user:[4026531837]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 uts -> 'uts:[4026532828]'
+~~~
+
+Or, a more compact example of the above:
+~~~
+[akaris@wks-akaris ~]$ sudo unshare -m uts /bin/bash
+[sudo] password for akaris: 
+unshare: failed to execute uts: No such file or directory
+[akaris@wks-akaris ~]$ sudo unshare -u /bin/bash
+[root@wks-akaris akaris]# readlink /proc/1/ns/uts
+uts:[4026531838]
+[root@wks-akaris akaris]# readlink /proc/$$/ns/uts
+uts:[4026532828]
+~~~
 
 ### UTS namespace ###
-Allow every process to have its own hostname.
+
+UTS namespaces are the identifiers returned by uname. UTS namespaces allow every process to have its own hostname domain name.
+
+Create an instance of `/bin/bash` in its own UTS namespace and assign it its own hostname:
+~~~
+[akaris@wks-akaris ~]$ sudo unshare -u /bin/bash
+[root@wks-akaris akaris]# hostname utsnamespace
+[root@wks-akaris akaris]# bash
+[root@utsnamespace akaris]#
+[root@wks-akaris akaris]# hostname
+utsnamespace
+[root@wks-akaris akaris]# uname -a
+Linux utsnamespace 4.18.12-200.fc28.x86_64 #1 SMP Thu Oct 4 15:46:35 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+~~~
+
+Open another CLI on the same system and verify the hostname:
+~~~
+[akaris@wks-akaris ~]$ hostname
+wks-akaris
+[akaris@wks-akaris ~]$ uname -a
+Linux wks-akaris 4.18.12-200.fc28.x86_64 #1 SMP Thu Oct 4 15:46:35 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+~~~
 
 ### cgroup namespaces and their purpose ###
 
