@@ -255,7 +255,11 @@ uts:[4026531838]
 
 ### UTS namespace ###
 
-UTS namespaces are the identifiers returned by uname. UTS namespaces allow every process to have its own hostname domain name.
+- UTS stands for the datastructure that stores the identifiers returned by uname. 
+
+- UTS namespaces allow every process to have its own hostname and domain name.
+
+#### Example ####
 
 Create an instance of `/bin/bash` in its own UTS namespace and assign it its own hostname:
 ~~~
@@ -279,11 +283,11 @@ Linux wks-akaris 4.18.12-200.fc28.x86_64 #1 SMP Thu Oct 4 15:46:35 UTC 2018 x86_
 
 ### network namespaces ###
 
-Add a private network stack to processes within a network namespace.
+- Allow to add a private network stack to processes within a network namespace.
 
-Mode interfaces from one network namespace to another.
+- Let you move interfaces from one network namespace to another.
 
-veth interfaces can connect namespaces together.
+- veth interfaces can connect namespaces together.
 
 ~~~
 man ip-netns
@@ -308,35 +312,60 @@ different network settings by executing the ip addr command on the host and insi
 container.
 ~~~
 
+#### Example ####
+
+There are 2 ways to generate persistent network namespaces. Either use `ip netns add`, or use the more inconvenient `unshare` command:
 ~~~
-ip netns add test
-[akaris@wks-akaris blog]$ ls /var/run/netns/test 
-/var/run/netns/test
-[akaris@wks-akaris blog]$ ls /var/run/netns
-test
-[akaris@wks-akaris blog]$ 
+[akaris@wks-akaris ~]$ sudo ip netns add netns1
+[akaris@wks-akaris ~]$ sudo ip netns 
+netns1
+[akaris@wks-akaris ~]$ sudo mount | grep netns
+tmpfs on /run/netns type tmpfs (rw,nosuid,nodev,seclabel,mode=755)
+nsfs on /run/netns/netns1 type nsfs (rw,seclabel)
+nsfs on /run/netns/netns1 type nsfs (rw,seclabel)
+[akaris@wks-akaris ~]$ sudo touch /run/netns/netns2
+[akaris@wks-akaris ~]$ sudo unshare --net=!$ /bin/bash
+sudo unshare --net=/run/netns/netns2 /bin/bash
+[root@wks-akaris akaris]# exit
+exit
+[akaris@wks-akaris ~]$ sudo ip netns
+netns2
+netns1
+[akaris@wks-akaris ~]$ sudo mount | grep netns
+tmpfs on /run/netns type tmpfs (rw,nosuid,nodev,seclabel,mode=755)
+nsfs on /run/netns/netns1 type nsfs (rw,seclabel)
+nsfs on /run/netns/netns1 type nsfs (rw,seclabel)
+nsfs on /run/netns/netns2 type nsfs (rw,seclabel)
+nsfs on /run/netns/netns2 type nsfs (rw,seclabel)
 ~~~
 
+In both cases, you will be able to enter the namespace and create interfaces therein:
 ~~~
-[akaris@wks-akaris blog]$ sudo unshare -n  ip a
-1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+[akaris@wks-akaris ~]$ sudo ip netns exec netns2 /bin/bash
+[root@wks-akaris akaris]# ip link ls
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-~~~
-
-Compare that to:
-~~~
-[akaris@wks-akaris blog]$ sudo unshare ip a ls dev lo
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+[root@wks-akaris akaris]# sudo ip link add veth0 type veth  peer name veth1
+[root@wks-akaris akaris]# ip link ls
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host 
-       valid_lft forever preferred_lft forever
+2: veth1@veth0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 1e:a0:b3:b7:e6:db brd ff:ff:ff:ff:ff:ff
+3: veth0@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether ee:1a:b2:f0:07:87 brd ff:ff:ff:ff:ff:ff
+[root@wks-akaris akaris]# exit
+exit
+[akaris@wks-akaris ~]$ sudo ip netns exec netns1 /bin/bash
+[root@wks-akaris akaris]# ip link ls
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+[root@wks-akaris akaris]# exit
+exit
 ~~~
 
-### mount_namespaces ###
+### mount namespaces ###
 
-Allows processes to have their own root fs, their own /tmp, /proc/, etc.
+- mount namespaces allow processes to have their own mount points, such as :root fs, /tmp, /proc/, etc.
 
 ~~~
 man mount_namespaces
