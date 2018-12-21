@@ -572,3 +572,8 @@ man cgroup_namespaces
          from escaping the limits imposed by ancestor cgroups.
 (...)
 ~~~
+
+### Building containers - the namespace part of it ###
+
+A nice walkthrough can be found in this youtube video:
+[https://youtu.be/sK5i-N34im8?t=2476](https://youtu.be/sK5i-N34im8?t=2476)
