@@ -510,7 +510,9 @@ root        31  0.0  0.0 153224  3700 pts/5    R+   19:01   0:00 ps aux
 
 ### user namespaces ###
 
-Allows UID/GID mapping. Within the namespace, a user can have UID 0 (root) but this will be squashed to root outside of the container.
+- Allows UID/GID mapping. 
+
+- Within the namespace, a user can have UID 0 (root) but this will be squashed to root outside of the container.
 
 ~~~
 man user_namespaces
@@ -531,9 +533,34 @@ unprivileged for operations outside the container. For compatibility reasons, us
 turned off in the current version of Red Hat Enterprise Linux 7, but will be enabled in the near future.
 ~~~
 
+#### Example ####
+
+~~~
+[akaris@wks-akaris ~]$ sudo unshare -U /bin/bash
+[nfsnobody@wks-akaris akaris]$ id
+uid=65534(nfsnobody) gid=65534(nfsnobody) groups=65534(nfsnobody) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+[nfsnobody@wks-akaris akaris]$ echo $$
+10086
+~~~
+
+Open another CLI and run:
+~~~
+[akaris@wks-akaris ~]$ sudo newuidmap 10086 0 0 1
+[akaris@wks-akaris ~]$ 
+~~~
+
+Now, within the namespace, verify what happened:
+~~~
+[nfsnobody@wks-akaris akaris]$ id
+uid=0(root) gid=65534(nfsnobody) groups=65534(nfsnobody) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+[nfsnobody@wks-akaris akaris]$ 
+~~~
+
 ### IPC namespaces ###
 
-A process / container can have own, save: semaphores, message queues, shared memory
+- Isolates interprocess communication
+
+- A process / container can have its own semaphores, message queues, shared memory, etc
 
 Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:
 ~~~
