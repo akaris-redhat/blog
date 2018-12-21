@@ -367,6 +367,22 @@ exit
 
 - mount namespaces allow processes to have their own mount points, such as :root fs, /tmp, /proc/, etc.
 
+- within a mount namespace, it's possible to mount and unmount mount points without affecting any other namespace
+
+~~~
+man unshare
+(...)
+       mount namespace
+              Mounting and unmounting filesystems will not affect the rest of the system, except for filesystems which are explicitly  marked
+              as  shared  (with  mount  --make-shared; see /proc/self/mountinfo or findmnt -o+PROPAGATION for the shared flags).  For further
+              details, see mount_namespaces(7) and the discussion of the CLONE_NEWNS flag in clone(2).
+
+              unshare since util-linux version 2.27 automatically sets propagation to private in a new mount namespace to make sure that  the
+              new  namespace  is really unshared.  It's possible to disable this feature with option --propagation unchanged.  Note that pri‐
+              vate is the kernel default.
+(...)
+~~~
+
 ~~~
 man mount_namespaces
 (...)
@@ -393,9 +409,44 @@ container can have its own /tmp or /var directory or even have an entirely diffe
 userspace.
 ~~~
 
+#### Example ####
+~~~
+[akaris@wks-akaris ~]$ sudo unshare -m /bin/bash
+[root@wks-akaris akaris]# lsns -t mnt
+        NS TYPE NPROCS   PID USER   COMMAND
+4026531840 mnt     297     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026531860 mnt       1    33 root   kdevtmpfs
+4026532186 mnt       1   983 root   /usr/lib/systemd/systemd-udevd
+4026532508 mnt       1  1261 rtkit  /usr/libexec/rtkit-daemon
+4026532509 mnt       1  1276 chrony /usr/sbin/chronyd
+4026532510 mnt       4  1460 root   /usr/sbin/NetworkManager --no-daemon
+4026532511 mnt       1  2481 root   /usr/libexec/bluetooth/bluetoothd
+4026532514 mnt       1  3045 root   /usr/libexec/fwupd/fwupd
+4026532665 mnt       1  1541 colord /usr/libexec/colord
+4026532749 mnt       1  2030 root   /usr/libexec/boltd
+4026532828 mnt       2 17149 root   /bin/bash
+[root@wks-akaris akaris]# umount -a -l
+[root@wks-akaris akaris]# ls /dev/
+[root@wks-akaris akaris]# ls /proc
+[root@wks-akaris akaris]# exit
+exit
+[akaris@wks-akaris ~]$ ls /dev | head -2
+autofs
+block
+~~~~
+
 ### PID namespaces ###
 
-A process can only see processes in its own PID namespace. A process has a PID per namespace. The global namespace has a different PID for the same process than the 'custom' namespace.
+- isolate the process ID number space
+
+- different processes in different PID namespaces can have the same PID
+
+- a process can only see processes in its own PID namespace. 
+
+- a process has a PID per namespace
+
+- The global namespace has a different PID for the same process than the 'custom' namespace
+
 ~~~
 man pid_namespaces
 (...)
@@ -430,13 +481,31 @@ numbers. For example, run the ps -eZ | grep systemd$ command on host to see all
 instances of systemd including those running inside of containers.
 ~~~
 
+#### Example ####
+
+Note that PID namespaces need to be unshared with `--fork`. Also note that this will reset the PID space, however this will not show in `ps` as the information comes from the /proc file system:
 ~~~
-[akaris@wks-akaris blog]$ sudo unshare -p --fork bash
-[sudo] password for akaris: 
-[root@wks-akaris blog]# echo $$
+[akaris@wks-akaris ~]$ sudo unshare -p --fork /bin/bash
+[root@wks-akaris akaris]# echo $$
 1
-[root@wks-akaris blog]# echo $$
-29
+[root@wks-akaris akaris]# ps
+  PID TTY          TIME CMD
+17365 pts/5    00:00:00 sudo
+17367 pts/5    00:00:00 unshare
+17368 pts/5    00:00:00 bash
+17399 pts/5    00:00:00 ps
+~~~
+
+We need a more complex series of commands to display the actual process IDs in `ps` - we need to create both a new PID and a new mount namespace and then unmount and remount proc:
+~~~
+[akaris@wks-akaris ~]$ sudo unshare -p --fork -m /bin/bash
+[root@wks-akaris akaris]# umount -l /proc
+[root@wks-akaris akaris]# mount proc /proc -t proc
+[root@wks-akaris akaris]# ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.1  0.0 123344  5916 pts/5    S    19:01   0:00 /bin/bash
+root        31  0.0  0.0 153224  3700 pts/5    R+   19:01   0:00 ps aux
+[root@wks-akaris akaris]# 
 ~~~
 
 ### user namespaces ###
