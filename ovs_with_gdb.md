@@ -1,9 +1,7 @@
 ### Introduction ###
 
 Most of this article is mainly based on [http://www.openvswitch.org/support/ovscon2018/6/1345-chaudron.pdf](http://www.openvswitch.org/support/ovscon2018/6/1345-chaudron.pdf)
-This is mainly a walkthrough of the instructions from the presentation.
-
-All instructions are for RHEL 7.
+This is mainly a walkthrough of how to get there on RHEL 7.
 
 ### Generate a core dump of OVS ###
 
