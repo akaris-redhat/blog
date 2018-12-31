@@ -76,3 +76,22 @@ source ovs_gdb.py
 ~~~
 
 ### Using the debug script ###
+
+~~~
+(gdb) ovs_dump_bridge
+(struct bridge *) 0x5563a14fd2b0: name = br-link0, type = netdev
+(struct bridge *) 0x5563a14fd8c0: name = br-int, type = netdev
+(gdb) ovs_dump_bridge ports
+(struct bridge *) 0x5563a14fd2b0: name = br-link0, type = netdev
+    (struct port *) 0x5563a1552800: name = br-link0, brige = (struct bridge *) 0x5563a14fd2b0
+        (struct iface *) 0x5563a157b090: name = 0x5563a1502070 "br-link0", ofp_port = 65534, netdev = (struct netdev *) 0x5563a157a7d0
+    (struct port *) 0x5563a157d480: name = dpdk0, brige = (struct bridge *) 0x5563a14fd2b0
+        (struct iface *) 0x5563a157d720: name = 0x5563a157bc40 "dpdk0", ofp_port = 1, netdev = (struct netdev *) 0x7f223fc6b6c0
+    (struct port *) 0x5563a15809b0: name = phy-br-link0, brige = (struct bridge *) 0x5563a14fd2b0
+        (struct iface *) 0x5563a15806a0: name = 0x5563a1580720 "phy-br-link0", ofp_port = 2, netdev = (struct netdev *) 0x5563a1582d20
+(struct bridge *) 0x5563a14fd8c0: name = br-int, type = netdev
+    (struct port *) 0x5563a1583220: name = int-br-link0, brige = (struct bridge *) 0x5563a14fd8c0
+        (struct iface *) 0x5563a15839c0: name = 0x5563a1580790 "int-br-link0", ofp_port = 1, netdev = (struct netdev *) 0x5563a1583620
+    (struct port *) 0x5563a1584560: name = br-int, brige = (struct bridge *) 0x5563a14fd8c0
+        (struct iface *) 0x5563a1584e70: name = 0x5563a1584ef0 "br-int", ofp_port = 65534, netdev = (struct netdev *) 0x5563a1584150
+~~~
