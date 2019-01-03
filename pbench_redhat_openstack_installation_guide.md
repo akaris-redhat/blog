@@ -1,4 +1,6 @@
-### Pbench installation guide for Red Hat OpenStack Platform ###
+### Pbench installation guide for Red Hat OpenStack Platform / RDO ###
+
+> The following guide contains instructions for enabling pbench in Red Hat OpenStack Platform environments or RDO. This guide is not complete, may introduce security risks and could potentially harm the cloud environment. Install and test in developement environments and never run this in a production environment unless you know exactly what you are doing.
 
 #### Prerequisite: Enable login from user root to user root on all overcloud nodes. ####
 
