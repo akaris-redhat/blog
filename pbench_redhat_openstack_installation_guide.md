@@ -61,8 +61,20 @@ The following will run a 300 second benchmark:
 ~~~
 pbench-user-benchmark -- sleep 300
 ~~~
+> Note: This will run sleep for 300 seconds and return after this. However, at the same time, this will run and collect data for all registered tools.
 
 In order to run a long-lasting benchmark, run it from within a screen.
 
 ### Collecting the data ###
-(...)
+The data will be under `/var/lib/pbench-agent/` in a directory with pattern `pbench-user-benchmark__.*`:
+~~~
+(undercloud) [root@undercloud-r430 ~]# ls /var/lib/pbench-agent/
+pbench.log  pbench-user-benchmark__2019.01.03T00.13.26  tmp  tools-default
+(undercloud) [root@undercloud-r430 ~]# ls  /var/lib/pbench-agent/pbench-user-benchmark__2019.01.03T00.13.26/1/reference-result/tools-default
+overcloud-computesriov-0  overcloud-controller-0
+~~~
+
+tar the folder to send it to a remote system for analysis:
+~~~
+tar -czf /root/pbench-user-benchmark__2019.01.03T00.13.26.tar.gz /var/lib/pbench-agent/pbench-user-benchmark__2019.01.03T00.13.26
+~~~
