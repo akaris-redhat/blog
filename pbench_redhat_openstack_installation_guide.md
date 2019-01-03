@@ -85,3 +85,15 @@ tar the folder to send it to a remote system for analysis:
 ~~~
 tar -czf /root/pbench-user-benchmark__2019.01.03T00.13.26.tar.gz /var/lib/pbench-agent/pbench-user-benchmark__2019.01.03T00.13.26
 ~~~
+
+Or, in order to view results right away on the Director node, run:
+~~~
+ln -sf /opt/pbench-web-server/html/static /var/www/html
+ln -sf /var/lib/pbench-agent /var/www/html
+~~~
+
+And browse to:
+~~~
+http://localhost/pbench-agent
+~~~
+> Note: Appropriate firewall rules need to be opened.
