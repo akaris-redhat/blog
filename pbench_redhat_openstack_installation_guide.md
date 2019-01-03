@@ -24,7 +24,7 @@ for host in $hostlist; do
 done
 ~~~
 
-### Installing pbench-agent on each node ###
+#### Installing pbench-agent on each node ####
 
 On the undercloud, and on each node that needs to be monitored, install pbench-agent.
 
@@ -35,7 +35,7 @@ yum copr enable ndokos/pbench -y
 yum install pbench-agent -y
 ~~~
 
-### Registering overcloud nodes with the undercloud ###
+#### Registering overcloud nodes with the undercloud ####
 
 Log out of the undercloud and log back in, or start a new shell, e.g. `bash`, to reload the environment's `PATH`. 
 Once that's done, you should be able to run the `pbench-*` commands.
@@ -57,7 +57,7 @@ Verify the configuration with `pbench-list-tools`, e.g.:
 default: 192.168.24.14[iostat,mpstat,perf,pidstat,proc-interrupts,proc-vmstat,sar,turbostat],192.168.24.6[iostat,mpstat,pidstat,proc-interrupts,proc-vmstat,sar,turbostat]
 ~~~
 
-### Run the benchmark ###
+#### Run the benchmark ####
 
 The following will run a 300 second benchmark:
 ~~~
@@ -74,7 +74,7 @@ Note that collected data can become quite large quite quickly. The above 300 sec
 ~~~
 Make sure to have sufficient disk space on all nodes.
 
-### Collecting the data ###
+#### Collecting the data ####
 The data will be under `/var/lib/pbench-agent/` in a directory with pattern `pbench-user-benchmark__.*`:
 ~~~
 (undercloud) [root@undercloud-r430 ~]# ls /var/lib/pbench-agent/
@@ -88,7 +88,18 @@ tar the folder to send it to a remote system for analysis:
 tar -czf /root/pbench-user-benchmark__2019.01.03T00.13.26.tar.gz /var/lib/pbench-agent/pbench-user-benchmark__2019.01.03T00.13.26
 ~~~
 
-Or, in order to view results right away on the Director node, run:
+### Setting up pbench-webserver to view results ###
+
+> Note: Work in progress
+> Note: The following was configured on the undercloud for testing purposes. However, do not do this. The web server should be configured on another host!
+
+Install the pbench-web-server:
+~~~
+subscription-manager repos --enable=rhel-7-server-rhoar-nodejs-10-rpms
+yum install pbench-web-server.noarch -y
+~~~
+
+In order to visualize results:
 ~~~
 ln -sf /opt/pbench-web-server/html/static /var/www/html
 ln -sf /var/lib/pbench-agent /var/www/html
