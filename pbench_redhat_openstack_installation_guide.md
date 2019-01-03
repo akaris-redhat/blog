@@ -65,6 +65,13 @@ pbench-user-benchmark -- sleep 300
 
 In order to run a long-lasting benchmark, run it from within a screen.
 
+Note that collected data can become quite large quite quickly. The above 300 second run consumed 18 MB:
+~~~
+(undercloud) [root@undercloud-r430 ~]# du -sh /var/lib/pbench-agent/pbench-user-benchmark__2019.01.03T00.13.26
+18M	/var/lib/pbench-agent/pbench-user-benchmark__2019.01.03T00.13.26
+~~~
+Make sure to have sufficient disk space on all nodes.
+
 ### Collecting the data ###
 The data will be under `/var/lib/pbench-agent/` in a directory with pattern `pbench-user-benchmark__.*`:
 ~~~
