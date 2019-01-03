@@ -74,6 +74,11 @@ Note that collected data can become quite large quite quickly. The above 300 sec
 ~~~
 Make sure to have sufficient disk space on all nodes.
 
+> Note: The most common problem is if someone kills pbench-user-benchmark abnormally, and the tool collection does not stop, and that can fill up disk space if left to continue.  So just be sure that does not happen or use 
+~~~
+pbench-kill-tools
+~~~
+
 #### Collecting the data ####
 The data will be under `/var/lib/pbench-agent/` in a directory with pattern `pbench-user-benchmark__.*`:
 ~~~
