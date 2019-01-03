@@ -35,6 +35,12 @@ yum copr enable ndokos/pbench -y
 yum install pbench-agent -y
 ~~~
 
+Or, use install_pbench.yml from [https://github.com/andreaskaris/pbench_openstack](https://github.com/andreaskaris/pbench_openstack): 
+  install_pbench.yml ([https://github.com/andreaskaris/pbench_openstack/blob/master/install_pbench.yml](https://github.com/andreaskaris/pbench_openstack/blob/master/install_pbench.yml))
+~~~
+ansible-playbook -i /usr/bin/tripleo-ansible-inventory install_pbench.yml
+~~~
+
 #### Registering overcloud nodes with the undercloud ####
 
 Log out of the undercloud and log back in, or start a new shell, e.g. `bash`, to reload the environment's `PATH`. 
