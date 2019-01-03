@@ -36,7 +36,8 @@ yum install pbench-agent -y
 ~~~
 
 Or, use install_pbench.yml from [https://github.com/andreaskaris/pbench_openstack](https://github.com/andreaskaris/pbench_openstack): 
-  install_pbench.yml ([https://github.com/andreaskaris/pbench_openstack/blob/master/install_pbench.yml](https://github.com/andreaskaris/pbench_openstack/blob/master/install_pbench.yml))
+
+    install_pbench.yml ([https://github.com/andreaskaris/pbench_openstack/blob/master/install_pbench.yml](https://github.com/andreaskaris/pbench_openstack/blob/master/install_pbench.yml))
 ~~~
 ansible-playbook -i /usr/bin/tripleo-ansible-inventory install_pbench.yml
 ~~~
