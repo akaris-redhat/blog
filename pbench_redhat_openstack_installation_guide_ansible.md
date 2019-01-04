@@ -73,13 +73,15 @@ default: 192.168.24.14[iostat,mpstat,perf,pidstat,proc-interrupts,proc-vmstat,sa
 
 #### Run the benchmark ####
 
-The following will run a 300 second benchmark:
+The following will run a 300 second benchmark. In order to run a long-lasting benchmark, run it from within a screen:
+~~~
+screen
+~~~
+
 ~~~
 pbench-user-benchmark -- sleep 300
 ~~~
 > Note: This will run sleep for 300 seconds and return after this. However, at the same time, this will run and collect data for all registered tools.
-
-In order to run a long-lasting benchmark, run it from within a screen.
 
 Note that collected data can become quite large quite quickly. The above 300 second run consumed 18 MB:
 ~~~
