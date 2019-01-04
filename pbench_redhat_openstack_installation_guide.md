@@ -1,4 +1,4 @@
-### Pbench installation guide for Red Hat OpenStack Platform / RDO ###
+### Pbench installation guide for Red Hat OpenStack Platform / RDO - manual ###
 
 > The following guide contains instructions for enabling pbench in Red Hat OpenStack Platform environments or RDO. This guide is not complete, may introduce security risks and could potentially harm the cloud environment. Install and test in developement environments and never run this in a production environment unless you know exactly what you are doing.
 
@@ -33,12 +33,6 @@ subscription-manager repos --enable=rhel-7-server-optional-rpms
 yum install yum-plugin-copr -y
 yum copr enable ndokos/pbench -y
 yum install pbench-agent -y
-~~~
-
-Or, use install_pbench.yml from [https://github.com/andreaskaris/pbench_openstack](https://github.com/andreaskaris/pbench_openstack): 
-> install_pbench.yml ([https://github.com/andreaskaris/pbench_openstack/blob/master/install_pbench.yml](https://github.com/andreaskaris/pbench_openstack/blob/master/install_pbench.yml))
-~~~
-ansible-playbook -i /usr/bin/tripleo-ansible-inventory install_pbench.yml
 ~~~
 
 #### Registering overcloud nodes with the undercloud ####
