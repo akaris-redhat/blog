@@ -4,9 +4,10 @@
 
 #### Prerequisites: Clone pbench_openstack.git repository ####
 
-Install git and clone the repository as user stack:
+Install git and clone the repository as user stack. Also, source stackrc:
 ~~~
 su - stack
+. stackrc
 ~~~
 
 ~~~
