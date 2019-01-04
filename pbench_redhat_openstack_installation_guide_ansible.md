@@ -4,9 +4,13 @@
 
 #### Prerequisites: Clone pbench_openstack.git repository ####
 
-Install git and clone the repository:
+Install git and clone the repository as user stack:
 ~~~
-yum install git -y
+su - stack
+~~~
+
+~~~
+sudo yum install git -y
 git clone https://github.com/andreaskaris/pbench_openstack.git
 cd pbench_openstack
 ~~~
