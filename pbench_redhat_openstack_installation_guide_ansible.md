@@ -39,7 +39,13 @@ done
 #### Installing pbench-agent on each node ####
 
 On the undercloud, and on each node that needs to be monitored, install pbench-agent. Run this as user
-stack from the pbench_openstack directory. Adjust the list of `hosts:` in the script if needed. Then, execute:
+stack from the pbench_openstack directory. 
+~~~
+su - stack
+source overcloudrc
+~~~
+
+Adjust the list of `hosts:` in the script if needed. Then, execute:
 ~~~
 ansible-playbook -i /usr/bin/tripleo-ansible-inventory install_pbench.yml
 ~~~
