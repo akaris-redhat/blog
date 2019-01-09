@@ -91,7 +91,8 @@ screen
 pbench-user-benchmark -- sleep 300
 ~~~
 > Note: This will run sleep for 300 seconds and return after this. However, at the same time, this will run and collect data for all registered tools.
-> Note: Once can also provide amore descriptive name:
+
+> Note: Once can also provide a more descriptive name:
 ~~~
 [root@undercloud-7 ~]# pbench-user-benchmark  --config="a_descriptive_name" -- sleep 30
 Running sleep 30
