@@ -91,6 +91,14 @@ screen
 pbench-user-benchmark -- sleep 300
 ~~~
 > Note: This will run sleep for 300 seconds and return after this. However, at the same time, this will run and collect data for all registered tools.
+> Note: Once can also provide amore descriptive name:
+~~~
+[root@undercloud-7 ~]# pbench-user-benchmark  --config="a_descriptive_name" -- sleep 30
+Running sleep 30
+Collecting system information
+[root@undercloud-7 ~]# ls /var/lib/pbench-agent/
+pbench.log pbench-user-benchmark_a_descriptive_name_2019.01.09T21.35.12  tmp  tools-default
+~~~
 
 Note that collected data can become quite large quite quickly. The above 300 second run consumed 18 MB:
 ~~~
