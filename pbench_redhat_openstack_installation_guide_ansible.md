@@ -29,6 +29,7 @@ ansible-playbook -i /usr/bin/tripleo-ansible-inventory enable_root_to_root_login
 Now, become the root user and verify that you can log into the overcloud nodes:
 ~~~
 sudo -i
+source /home/stack/stackrc
 hostlist=$(nova list | awk -F '[ \t]+|=' '/ACTIVE/ {print $(NF-1)}')  # all overcloud nodes, change for less
 for host in $hostlist; do 
   ssh $host hostname
