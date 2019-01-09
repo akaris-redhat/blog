@@ -42,7 +42,8 @@ On the undercloud, and on each node that needs to be monitored, install pbench-a
 stack from the pbench_openstack directory. 
 ~~~
 su - stack
-source overcloudrc
+source /home/stack/stackrc
+cd /home/stack/pbench_openstack
 ~~~
 
 Adjust the list of `hosts:` in the script if needed. Then, execute:
