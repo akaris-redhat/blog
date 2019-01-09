@@ -63,7 +63,8 @@ Log out of the undercloud and log back in, or start a new shell, e.g. `bash`, to
 Once that's done, you should be able to run the `pbench-*` commands.
 
 ~~~
-source stackrc
+sudo -i
+source /home/stack/stackrc
 hostlist=$(nova list | awk -F '[ \t]+|=' '/ACTIVE/ {print $(NF-1)}')
 toollist="sar iostat mpstat pidstat proc-vmstat proc-interrupts turbostat"
 for host in $hostlist; do
