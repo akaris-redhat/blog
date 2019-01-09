@@ -129,22 +129,14 @@ tar -czf /root/pbench-user-benchmark__2019.01.03T00.13.26.tar.gz /var/lib/pbench
 
 ### Setting up pbench-webserver to view results ###
 
-> Note: Work in progress
-> Note: The following was configured on the undercloud for testing purposes. However, do not do this. The web server should be configured on another host!
-
 Install the pbench-web-server:
 ~~~
-subscription-manager repos --enable=rhel-7-server-rhoar-nodejs-10-rpms
-yum install pbench-web-server.noarch -y
+su - stack
+source /home/stack/stackrc
+ansible-playbook install_pbench_webserver.yml
 ~~~
 
-In order to visualize results:
-~~~
-ln -sf /opt/pbench-web-server/html/static /var/www/html
-ln -sf /var/lib/pbench-agent /var/www/html
-~~~
-
-And browse to:
+After the installation, browse to:
 ~~~
 http://localhost/pbench-agent
 ~~~
