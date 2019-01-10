@@ -141,3 +141,22 @@ After the installation, browse to:
 http://localhost/pbench-agent
 ~~~
 > Note: Appropriate firewall rules need to be opened.
+
+### Removing pbench-agent ###
+
+Run:
+~~~
+su - stack
+. stackrc
+ansible-playbook -i /usr/bin/tripleo-ansible-inventory uninstall_pbench.yml
+~~~
+
+### Removing pbench-web-server ###
+
+Run:
+~~~
+su - stack
+. stackrc
+ansible-playbook uninstall_pbench_webserver.yml
+
+~~~
