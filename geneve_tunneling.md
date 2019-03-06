@@ -1,3 +1,276 @@
+### VXLAN ###
+~~~
+[root@rhel-test1 ~]# ip link add dev vxlan0 type vxlan remote 192.168.1.12 vni 1234
+vxlan: destination port not specified
+Will use Linux kernel default (non-standard value)
+Use 'dstport 4789' to get the IANA assigned value
+Use 'dstport 0' to get default and quiet this message
+[root@rhel-test1 ~]# ip link del dev vxlan0
+[root@rhel-test1 ~]# ip link add dev vxlan0 type vxlan remote 192.168.1.12 vni 1234 dstport 4789
+[root@rhel-test1 ~]# ip a a 192.168.124.1/30 dev vxlan0
+[root@rhel-test1 ~]# ip link set dev vxlan0 up
+[root@rhel-test1 ~]# ping 192.168.124.2
+PING 192.168.124.2 (192.168.124.2) 56(84) bytes of data.
+64 bytes from 192.168.124.2: icmp_seq=1 ttl=64 time=3.02 ms
+64 bytes from 192.168.124.2: icmp_seq=2 ttl=64 time=1.87 ms
+^C
+--- 192.168.124.2 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 1.879/2.453/3.027/0.574 ms
+[root@rhel-test1 ~]# ping 192.168.124.2
+PING 192.168.124.2 (192.168.124.2) 56(84) bytes of data.
+64 bytes from 192.168.124.2: icmp_seq=1 ttl=64 time=1.15 ms
+^C
+--- 192.168.124.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1.158/1.158/1.158/0.000 ms
+[root@rhel-test1 ~]# 
+~~~
+
+~~~
+[root@rhel-test2 ~]# ip link add dev vxlan0 type vxlan remote 192.168.0.12 vni 1234 dstport 4789
+[root@rhel-test2 ~]# ip a a 192.168.124.2/30 vxlan0
+Error: either "local" is duplicate, or "vxlan0" is a garbage.
+[root@rhel-test2 ~]# ip a a 192.168.124.2/30 dev vxlan0
+[root@rhel-test2 ~]# ip link set dev vlan0  up
+Cannot find device "vlan0"
+[root@rhel-test2 ~]# ip link set dev vxlan0  up
+[root@rhel-test2 ~]# tcpdump -nne -i vxlan0
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on vxlan0, link-type EN10MB (Ethernet), capture size 65535 bytes
+13:25:54.405073 b6:37:34:97:b8:e3 > 56:cf:14:90:3b:e0, ethertype IPv4 (0x0800), length 98: 192.168.124.1 > 192.168.124.2: ICMP echo request, id 2192, seq 1, length 64
+13:25:54.405131 56:cf:14:90:3b:e0 > b6:37:34:97:b8:e3, ethertype IPv4 (0x0800), length 98: 192.168.124.2 > 192.168.124.1: ICMP echo reply, id 2192, seq 1, length 64
+^C
+2 packets captured
+2 packets received by filter
+0 packets dropped by kernel
+[root@rhel-test2 ~]# 
+~~~
+
+~~~
+[akaris@wks-akaris geneve]$ tshark -r vxlan.pcap -V frame.number==43
+Frame 43: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits)
+    Encapsulation type: Ethernet (1)
+    Arrival Time: Mar  6, 2019 13:25:54.545467000 EST
+    [Time shift for this packet: 0.000000000 seconds]
+    Epoch Time: 1551896754.545467000 seconds
+    [Time delta from previous captured frame: 5.489084000 seconds]
+    [Time delta from previous displayed frame: 0.000000000 seconds]
+    [Time since reference or first frame: 61.528243000 seconds]
+    Frame Number: 43
+    Frame Length: 148 bytes (1184 bits)
+    Capture Length: 148 bytes (1184 bits)
+    [Frame is marked: False]
+    [Frame is ignored: False]
+    [Protocols in frame: eth:ethertype:ip:udp:vxlan:eth:ethertype:ip:icmp:data]
+Ethernet II, Src: fa:16:3e:40:02:d7 (fa:16:3e:40:02:d7), Dst: fa:16:3e:bf:f2:d4 (fa:16:3e:bf:f2:d4)
+    Destination: fa:16:3e:bf:f2:d4 (fa:16:3e:bf:f2:d4)
+        Address: fa:16:3e:bf:f2:d4 (fa:16:3e:bf:f2:d4)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Source: fa:16:3e:40:02:d7 (fa:16:3e:40:02:d7)
+        Address: fa:16:3e:40:02:d7 (fa:16:3e:40:02:d7)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Type: IPv4 (0x0800)
+Internet Protocol Version 4, Src: 192.168.0.12, Dst: 192.168.1.12
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    Total Length: 134
+    Identification: 0x45eb (17899)
+    Flags: 0x0000
+        0... .... .... .... = Reserved bit: Not set
+        .0.. .... .... .... = Don't fragment: Not set
+        ..0. .... .... .... = More fragments: Not set
+        ...0 0000 0000 0000 = Fragment offset: 0
+    Time to live: 63
+    Protocol: UDP (17)
+    Header checksum: 0xb313 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.0.12
+    Destination: 192.168.1.12
+User Datagram Protocol, Src Port: 34990, Dst Port: 4789
+    Source Port: 34990
+    Destination Port: 4789
+    Length: 114
+    [Checksum: [missing]]
+    [Checksum Status: Not present]
+    [Stream index: 11]
+Virtual eXtensible Local Area Network
+    Flags: 0x0800, VXLAN Network ID (VNI)
+        0... .... .... .... = GBP Extension: Not defined
+        .... .... .0.. .... = Don't Learn: False
+        .... 1... .... .... = VXLAN Network ID (VNI): True
+        .... .... .... 0... = Policy Applied: False
+        .000 .000 0.00 .000 = Reserved(R): 0x0000
+    Group Policy ID: 0
+    VXLAN Network Identifier (VNI): 1234
+    Reserved: 0
+Ethernet II, Src: b6:37:34:97:b8:e3 (b6:37:34:97:b8:e3), Dst: 56:cf:14:90:3b:e0 (56:cf:14:90:3b:e0)
+    Destination: 56:cf:14:90:3b:e0 (56:cf:14:90:3b:e0)
+        Address: 56:cf:14:90:3b:e0 (56:cf:14:90:3b:e0)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Source: b6:37:34:97:b8:e3 (b6:37:34:97:b8:e3)
+        Address: b6:37:34:97:b8:e3 (b6:37:34:97:b8:e3)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Type: IPv4 (0x0800)
+Internet Protocol Version 4, Src: 192.168.124.1, Dst: 192.168.124.2
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    Total Length: 84
+    Identification: 0x3470 (13424)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+        ...0 0000 0000 0000 = Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0x8ce4 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.124.1
+    Destination: 192.168.124.2
+Internet Control Message Protocol
+    Type: 8 (Echo (ping) request)
+    Code: 0
+    Checksum: 0x7c23 [correct]
+    [Checksum Status: Good]
+    Identifier (BE): 2192 (0x0890)
+    Identifier (LE): 36872 (0x9008)
+    Sequence number (BE): 1 (0x0001)
+    Sequence number (LE): 256 (0x0100)
+    Timestamp from icmp data: Mar  6, 2019 13:25:53.000000000 EST
+    [Timestamp from icmp data (relative): 1.545467000 seconds]
+    Data (48 bytes)
+
+0000  7d 0b 06 00 00 00 00 00 10 11 12 13 14 15 16 17   }...............
+0010  18 19 1a 1b 1c 1d 1e 1f 20 21 22 23 24 25 26 27   ........ !"#$%&'
+0020  28 29 2a 2b 2c 2d 2e 2f 30 31 32 33 34 35 36 37   ()*+,-./01234567
+        Data: 7d0b060000000000101112131415161718191a1b1c1d1e1f...
+        [Length: 48]
+
+[akaris@wks-akaris geneve]$ tshark -r vxlan.pcap -V frame.number==44
+Frame 44: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits)
+    Encapsulation type: Ethernet (1)
+    Arrival Time: Mar  6, 2019 13:25:54.545788000 EST
+    [Time shift for this packet: 0.000000000 seconds]
+    Epoch Time: 1551896754.545788000 seconds
+    [Time delta from previous captured frame: 0.000321000 seconds]
+    [Time delta from previous displayed frame: 0.000000000 seconds]
+    [Time since reference or first frame: 61.528564000 seconds]
+    Frame Number: 44
+    Frame Length: 148 bytes (1184 bits)
+    Capture Length: 148 bytes (1184 bits)
+    [Frame is marked: False]
+    [Frame is ignored: False]
+    [Protocols in frame: eth:ethertype:ip:udp:vxlan:eth:ethertype:ip:icmp:data]
+Ethernet II, Src: fa:16:3e:bf:f2:d4 (fa:16:3e:bf:f2:d4), Dst: fa:16:3e:40:02:d7 (fa:16:3e:40:02:d7)
+    Destination: fa:16:3e:40:02:d7 (fa:16:3e:40:02:d7)
+        Address: fa:16:3e:40:02:d7 (fa:16:3e:40:02:d7)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Source: fa:16:3e:bf:f2:d4 (fa:16:3e:bf:f2:d4)
+        Address: fa:16:3e:bf:f2:d4 (fa:16:3e:bf:f2:d4)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Type: IPv4 (0x0800)
+Internet Protocol Version 4, Src: 192.168.1.12, Dst: 192.168.0.12
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    Total Length: 134
+    Identification: 0xe768 (59240)
+    Flags: 0x0000
+        0... .... .... .... = Reserved bit: Not set
+        .0.. .... .... .... = Don't fragment: Not set
+        ..0. .... .... .... = More fragments: Not set
+        ...0 0000 0000 0000 = Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0x1096 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.1.12
+    Destination: 192.168.0.12
+User Datagram Protocol, Src Port: 38748, Dst Port: 4789
+    Source Port: 38748
+    Destination Port: 4789
+    Length: 114
+    [Checksum: [missing]]
+    [Checksum Status: Not present]
+    [Stream index: 12]
+Virtual eXtensible Local Area Network
+    Flags: 0x0800, VXLAN Network ID (VNI)
+        0... .... .... .... = GBP Extension: Not defined
+        .... .... .0.. .... = Don't Learn: False
+        .... 1... .... .... = VXLAN Network ID (VNI): True
+        .... .... .... 0... = Policy Applied: False
+        .000 .000 0.00 .000 = Reserved(R): 0x0000
+    Group Policy ID: 0
+    VXLAN Network Identifier (VNI): 1234
+    Reserved: 0
+Ethernet II, Src: 56:cf:14:90:3b:e0 (56:cf:14:90:3b:e0), Dst: b6:37:34:97:b8:e3 (b6:37:34:97:b8:e3)
+    Destination: b6:37:34:97:b8:e3 (b6:37:34:97:b8:e3)
+        Address: b6:37:34:97:b8:e3 (b6:37:34:97:b8:e3)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Source: 56:cf:14:90:3b:e0 (56:cf:14:90:3b:e0)
+        Address: 56:cf:14:90:3b:e0 (56:cf:14:90:3b:e0)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Type: IPv4 (0x0800)
+Internet Protocol Version 4, Src: 192.168.124.2, Dst: 192.168.124.1
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    Total Length: 84
+    Identification: 0x7bc6 (31686)
+    Flags: 0x0000
+        0... .... .... .... = Reserved bit: Not set
+        .0.. .... .... .... = Don't fragment: Not set
+        ..0. .... .... .... = More fragments: Not set
+        ...0 0000 0000 0000 = Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0x858e [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.124.2
+    Destination: 192.168.124.1
+Internet Control Message Protocol
+    Type: 0 (Echo (ping) reply)
+    Code: 0
+    Checksum: 0x8423 [correct]
+    [Checksum Status: Good]
+    Identifier (BE): 2192 (0x0890)
+    Identifier (LE): 36872 (0x9008)
+    Sequence number (BE): 1 (0x0001)
+    Sequence number (LE): 256 (0x0100)
+    [Request frame: 43]
+    [Response time: 0.321 ms]
+    Timestamp from icmp data: Mar  6, 2019 13:25:53.000000000 EST
+    [Timestamp from icmp data (relative): 1.545788000 seconds]
+    Data (48 bytes)
+
+0000  7d 0b 06 00 00 00 00 00 10 11 12 13 14 15 16 17   }...............
+0010  18 19 1a 1b 1c 1d 1e 1f 20 21 22 23 24 25 26 27   ........ !"#$%&'
+0020  28 29 2a 2b 2c 2d 2e 2f 30 31 32 33 34 35 36 37   ()*+,-./01234567
+        Data: 7d0b060000000000101112131415161718191a1b1c1d1e1f...
+        [Length: 48]
+~~~
+
+### Geneve ###
+
 [https://www.ietf.org/id/draft-ietf-nvo3-geneve-10.txt](https://www.ietf.org/id/draft-ietf-nvo3-geneve-10.txt)
 
 ~~~
