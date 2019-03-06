@@ -272,6 +272,31 @@ Internet Control Message Protocol
 ### Geneve ###
 
 [https://www.ietf.org/id/draft-ietf-nvo3-geneve-10.txt](https://www.ietf.org/id/draft-ietf-nvo3-geneve-10.txt)
+~~~
+3.3.  UDP Header
+
+   The use of an encapsulating UDP [RFC0768] header follows the
+   connectionless semantics of Ethernet and IP in addition to providing
+   entropy to routers performing ECMP.  The header fields are therefore
+   interpreted as follows:
+
+   Source port:  A source port selected by the originating tunnel
+      endpoint.  This source port SHOULD be the same for all packets
+      belonging to a single encapsulated flow to prevent reordering due
+      to the use of different paths.  To encourage an even distribution
+      of flows across multiple links, the source port SHOULD be
+      calculated using a hash of the encapsulated packet headers using,
+      for example, a traditional 5-tuple.  Since the port represents a
+      flow identifier rather than a true UDP connection, the entire
+      16-bit range MAY be used to maximize entropy.
+
+   Dest port:  IANA has assigned port 6081 as the fixed well-known
+      destination port for Geneve.  Although the well-known value should
+      be used by default, it is RECOMMENDED that implementations make
+      this configurable.  The chosen port is used for identification of
+      Geneve packets and MUST NOT be reversed for different ends of a
+      connection as is done with TCP.
+~~~
 
 ~~~
 [cloud-user@rhel-test1 ~]$ sudo -i
