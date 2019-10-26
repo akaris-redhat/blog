@@ -5,7 +5,7 @@
 The easiest way to get the file is opening horizon and going to Project -> Project -> API Access. 
 Then, click on "Download OpenStack RC File" and select to download the "clouds.yaml" file. 
 
-![Download clouds.yaml file]( image .png)
+![Download clouds.yaml file](https://raw.githubusercontent.com/andreaskaris/blog/master/clouds_yaml.png)
 
 Then, copy this file into the current Director as `clouds.yaml`. 
 
