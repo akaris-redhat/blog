@@ -62,3 +62,26 @@ rm -f install-config/.openshift_install.log
 cp ~/backup/install-config.yaml install-config/
 ./openshift-install create cluster --dir=install-config/ --log-level=info
 ~~~
+
+#### Troubleshooting ####
+
+How to access the cluster when masters and workers are up?
+~~~
+(undercloud) [stack@undercloud-0 ~]$ ssh core@api.openshift.example.com
+Warning: Permanently added 'api.openshift.example.com,172.16.0.231' (ECDSA) to the list of known hosts.
+Red Hat Enterprise Linux CoreOS 42.80.20191010.0
+WARNING: Direct SSH access to machines is not recommended.
+
+---
+[systemd]
+Failed Units: 8
+  crio-06678432c466dbdb9cfa51bfa4c0cb57befa547c3c98431316a04631f508ce23.scope
+  crio-4f7846e6fd60e2f6da52c6a183b7501a88dd3ab71906fd596013ec6d6c40d8af.scope
+  crio-5d6be1d80417068e898a3b0cb4a61e99ee7720c9e1e6d25a890b8b837ae58331.scope
+  crio-5fc3f586741d4e11858755d125148834e151deca7812f5ee5a33b44e03725984.scope
+  crio-b11bf4e4c9b8fbdb6f6df870d146c74be0cf3a39a444b4f410c7d17080f589b3.scope
+  crio-be2df06f51061d76c5fc64ec3fd63f15d21fbe8cf21fc590757caefbe9f12dc8.scope
+  crio-c9bff014902ed038cf3406dd08ff2098a3db932b9fcbff578861787cf6e547aa.scope
+  crio-e17e1746877e470ec60c87373b958d84b12d4278545fea800f1e899b0ab15b83.scope
+[core@openshift-ns98d-master-1 ~]$ 
+~~~
