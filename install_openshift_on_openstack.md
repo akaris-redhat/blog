@@ -67,12 +67,36 @@ cp ~/backup/install-config.yaml install-config/
 
 How to access the cluster when masters and workers are up?
 ~~~
-(undercloud) [stack@undercloud-0 ~]$ ssh core@api.openshift.example.com
+(overcloud) [stack@undercloud-0 clouds]$ grep api /etc/hosts
+172.16.0.231 api.openshift.example.com
+~~~
+
+~~~
+(overcloud) [stack@undercloud-0 clouds]$ openstack --os-cloud openstack server list
++--------------------------------------+------------------------------+--------+-------------------------------------+-------+--------------+
+| ID                                   | Name                         | Status | Networks                            | Image | Flavor       |
++--------------------------------------+------------------------------+--------+-------------------------------------+-------+--------------+
+| b0b7c0fe-b32a-47de-aef0-2b5655bd3441 | openshift-ns98d-worker-w4djg | ACTIVE | openshift-ns98d-openshift=10.0.0.22 | rhcos | m1.openshift |
+| 1087c10a-9f65-484b-8ade-b13637d9887c | openshift-ns98d-worker-9tkbt | ACTIVE | openshift-ns98d-openshift=10.0.0.25 | rhcos | m1.openshift |
+| a8cf9a89-896c-4172-b591-f5b9fa0696a8 | openshift-ns98d-worker-7ktvw | ACTIVE | openshift-ns98d-openshift=10.0.0.26 | rhcos | m1.openshift |
+| 303dabd2-e42e-4fa7-af8a-c82de43926ae | openshift-ns98d-master-2     | ACTIVE | openshift-ns98d-openshift=10.0.0.41 | rhcos | m1.openshift |
+| c84a1425-6ddb-4d4f-893e-cb8de242b2a0 | openshift-ns98d-master-0     | ACTIVE | openshift-ns98d-openshift=10.0.0.20 | rhcos | m1.openshift |
+| d7030165-26a5-463c-b663-41119d0d3ee3 | openshift-ns98d-master-1     | ACTIVE | openshift-ns98d-openshift=10.0.0.16 | rhcos | m1.openshift |
++--------------------------------------+------------------------------+--------+-------------------------------------+-------+--------------+
+~~~
+
+~~~
+(undercloud) [stack@undercloud-0 ~]$ eval $(ssh-agent)
+Agent pid 29891
+(undercloud) [stack@undercloud-0 ~]$ ssh-add ~/.ssh/id_rsa
+Identity added: /home/stack/.ssh/id_rsa (/home/stack/.ssh/id_rsa)
+(undercloud) [stack@undercloud-0 ~]$ ssh core@api.openshift.example.com -A
 Warning: Permanently added 'api.openshift.example.com,172.16.0.231' (ECDSA) to the list of known hosts.
 Red Hat Enterprise Linux CoreOS 42.80.20191010.0
 WARNING: Direct SSH access to machines is not recommended.
 
 ---
+Last login: Mon Nov  4 16:23:16 2019 from 172.16.0.84
 [systemd]
 Failed Units: 8
   crio-06678432c466dbdb9cfa51bfa4c0cb57befa547c3c98431316a04631f508ce23.scope
@@ -84,4 +108,14 @@ Failed Units: 8
   crio-c9bff014902ed038cf3406dd08ff2098a3db932b9fcbff578861787cf6e547aa.scope
   crio-e17e1746877e470ec60c87373b958d84b12d4278545fea800f1e899b0ab15b83.scope
 [core@openshift-ns98d-master-1 ~]$ 
+[core@openshift-ns98d-master-1 ~]$ ssh core@10.0.0.22
+Red Hat Enterprise Linux CoreOS 42.80.20191010.0
+WARNING: Direct SSH access to machines is not recommended.
+
+---
+
+[systemd]
+Failed Units: 1
+  multipathd.service
+[core@openshift-ns98d-worker-w4djg ~]$ 
 ~~~
