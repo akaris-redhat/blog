@@ -40,4 +40,16 @@ mv rhcos-4.2.0-x86_64-openstack.qcow2{,.gz}
 gunzip rhcos-4.2.0-x86_64-openstack.qcow2.gz
 ~~~
 
-
+Create the following directory structure:
+~~~
+[stack@host clouds]$ ll
+total 2247156
+-rw-rw-r--. 1 stack stack        322 Oct 30 12:42 clouds.yaml
+drwxrwxr-x. 4 stack stack        242 Nov  4 07:45 install-config
+drwxrwxr-x. 2 stack stack         48 Oct 30 12:24 openshift-client
+-rw-rw-r--. 1 stack stack   24533950 Oct 30 12:23 openshift-client-linux-4.2.0.tar.gz
+-rwxr-xr-x. 1 stack stack  293887936 Oct 10 17:49 openshift-install
+-rw-rw-r--. 1 stack stack   71492736 Oct 30 12:23 openshift-install-linux-4.2.0.tar.gz
+-rw-r--r--. 1 stack stack        706 Oct 10 17:49 README.md
+-rw-rw-r--. 1 stack stack 1911160832 Oct 30 11:33 rhcos-4.2.0-x86_64-openstack.qcow2
+~~~
