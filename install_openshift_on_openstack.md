@@ -53,3 +53,12 @@ drwxrwxr-x. 2 stack stack         48 Oct 30 12:24 openshift-client
 -rw-r--r--. 1 stack stack        706 Oct 10 17:49 README.md
 -rw-rw-r--. 1 stack stack 1911160832 Oct 30 11:33 rhcos-4.2.0-x86_64-openstack.qcow2
 ~~~
+
+#### Deleting and recreating a cluster when something went wrong ####
+~~~
+./openshift-install destroy cluster  --dir install-config/  --log-level=info
+rm -f install-config/terraform.tfstate 
+rm -f install-config/.openshift_install.log 
+cp ~/backup/install-config.yaml install-config/
+./openshift-install create cluster --dir=install-config/ --log-level=info
+~~~
