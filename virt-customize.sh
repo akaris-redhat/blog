@@ -8,6 +8,8 @@ SIZE=$3
 cp $BASE $CLONE
 qemu-img resize $CLONE +${SIZE}
 
+virt-customize -a $CLONE --run-command 'echo -e "d\nn\n\n\n\n\nw\n" | fdisk /dev/vda'
+virt-customize -a $CLONE --run-command 'resize2fs /dev/vda1'
 virt-customize -a $CLONE --run-command 'sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/g"  /etc/ssh/sshd_config'
 virt-customize -a $CLONE --run-command 'sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/g"  /etc/ssh/sshd_config'
 virt-customize -a $CLONE --run-command 'yum remove cloud-init* -y'
