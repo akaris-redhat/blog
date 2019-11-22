@@ -27,7 +27,8 @@ openstack --os-cloud openstack quota set \
 
 Create flavor:
 ~~~
-openstack --os-cloud openstack flavor create --disk 25 --ram 16384 --vcpus 4 m1.openshift
+openstack --os-cloud openstack flavor create --disk 25 --ram 32768 --vcpus 8 m1.openshift
+openstack flavor set --property hw:cpu_policy=dedicated  --property hw:mem_page_size=large m1.openshift
 ~~~
 
 Download image and create it:
