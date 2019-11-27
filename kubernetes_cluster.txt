@@ -198,3 +198,120 @@ OriginalName=flannel*
 MACAddressPolicy=none
 EOF
 ~~~
+
+~~~
+[root@vm4 ~]# cat /etc/default/grub  | grep CMDLINE
+GRUB_CMDLINE_LINUX="no_timer_check net.ifnames=0 console=tty1 console=ttyS0,115200n8 systemd.unified_cgroup_hierarchy=0"
+~~~
+
+~~~
+[root@vm4 ~]# cat /etc/yum.repos.d/kubernetes.repo 
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+~~~
+
+~~~
+[root@vm4 ~]# rpm -qa | egrep 'kube|docker'
+docker-ce-19.03.4-3.fc31.x86_64
+kubectl-1.16.2-0.x86_64
+kubelet-1.16.2-0.x86_64
+kubeadm-1.16.2-0.x86_64
+kubernetes-cni-0.7.5-0.x86_64
+docker-ce-cli-19.03.4-3.fc31.x86_64
+~~~
+
+~~~
+root@vm4 ~]# cat /etc/yum.repos.d/docker-ce.repo
+[docker-ce-stable]
+name=Docker CE Stable - $basearch
+baseurl=https://download.docker.com/linux/fedora/$releasever/$basearch/stable
+enabled=1
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-stable-debuginfo]
+name=Docker CE Stable - Debuginfo $basearch
+baseurl=https://download.docker.com/linux/fedora/$releasever/debug-$basearch/stable
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-stable-source]
+name=Docker CE Stable - Sources
+baseurl=https://download.docker.com/linux/fedora/$releasever/source/stable
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-edge]
+name=Docker CE Edge - $basearch
+baseurl=https://download.docker.com/linux/fedora/$releasever/$basearch/edge
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-edge-debuginfo]
+name=Docker CE Edge - Debuginfo $basearch
+baseurl=https://download.docker.com/linux/fedora/$releasever/debug-$basearch/edge
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-edge-source]
+name=Docker CE Edge - Sources
+baseurl=https://download.docker.com/linux/fedora/$releasever/source/edge
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-test]
+name=Docker CE Test - $basearch
+baseurl=https://download.docker.com/linux/fedora/$releasever/$basearch/test
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-test-debuginfo]
+name=Docker CE Test - Debuginfo $basearch
+baseurl=https://download.docker.com/linux/fedora/$releasever/debug-$basearch/test
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-test-source]
+name=Docker CE Test - Sources
+baseurl=https://download.docker.com/linux/fedora/$releasever/source/test
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-nightly]
+name=Docker CE Nightly - $basearch
+baseurl=https://download.docker.com/linux/fedora/$releasever/$basearch/nightly
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-nightly-debuginfo]
+name=Docker CE Nightly - Debuginfo $basearch
+baseurl=https://download.docker.com/linux/fedora/$releasever/debug-$basearch/nightly
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+
+[docker-ce-nightly-source]
+name=Docker CE Nightly - Sources
+baseurl=https://download.docker.com/linux/fedora/$releasever/source/nightly
+enabled=0
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+~~~
+
+~~~
+yum install kubernetes kubectl kubelet docker
+~~~
