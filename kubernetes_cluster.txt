@@ -313,5 +313,5 @@ gpgkey=https://download.docker.com/linux/fedora/gpg
 ~~~
 
 ~~~
-yum install kubernetes kubectl kubelet docker
+yum install kubeadm kubectl kubelet kubernetes-cni docker-ce -y
 ~~~

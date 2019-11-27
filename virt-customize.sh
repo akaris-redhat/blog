@@ -6,7 +6,7 @@ CLONE=$2
 SIZE=$3
 
 cp $BASE $CLONE
-qemu-img resize $CLONE +${SIZE}
+qemu-img resize $CLONE ${SIZE}G
 
 virt-customize -a $CLONE --run-command 'echo -e "d\nn\n\n\n\n\nw\n" | fdisk /dev/vda'
 virt-customize -a $CLONE --run-command 'resize2fs /dev/vda1'
