@@ -53,3 +53,4 @@ http://www.openvswitch.org/support/ovscon2019/#1.1L
 * [https://www.openvswitch.org/support/ovscon2019/#1.4F](https://www.openvswitch.org/support/ovscon2019/#1.4F)
 * [https://github.com/ovn-org/ovn-kubernetes](https://github.com/ovn-org/ovn-kubernetes)
 * [https://wiki.opnfv.org/display/PROJ/Ovn4nfv](https://wiki.opnfv.org/display/PROJ/Ovn4nfv)
+* [https://github.com/opnfv/ovn4nfv-k8s-plugin](https://github.com/opnfv/ovn4nfv-k8s-plugin)
