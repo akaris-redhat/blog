@@ -43,4 +43,4 @@ http://www.openvswitch.org/support/ovscon2019/#1.1L
 
 * [http://www.openvswitch.org/support/ovscon2019/#1.3F](http://www.openvswitch.org/support/ovscon2019/#1.3F)
 * [https://en.wikipedia.org/wiki/AVX-512](https://en.wikipedia.org/wiki/AVX-512)
-* 
+* [https://en.wikipedia.org/wiki/Advanced_Vector_Extensions](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions)
