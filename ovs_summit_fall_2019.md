@@ -50,4 +50,5 @@ http://www.openvswitch.org/support/ovscon2019/#1.1L
 
 ### OVN for NFV workloads with Kubernetes  ###
 
-* [http://www.openvswitch.org/support/ovscon2019/#1.2L](http://www.openvswitch.org/support/ovscon2019/#1.2L)
+* [https://www.openvswitch.org/support/ovscon2019/#1.4F](https://www.openvswitch.org/support/ovscon2019/#1.4F)
+* [https://github.com/ovn-org/ovn-kubernetes](https://github.com/ovn-org/ovn-kubernetes)
