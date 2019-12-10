@@ -28,6 +28,9 @@
 * kata containers
 * https://wiki.openstack.org/wiki/Kuryr
 
+### OVS-DPDK life of a packet ###
+http://www.openvswitch.org/support/ovscon2019/#1.1L
+
 ### Utilizing DPDK Virtual Devices in OVS  ###
 
 * [http://www.openvswitch.org/support/ovscon2019/#1.2L](http://www.openvswitch.org/support/ovscon2019/#1.2L)
@@ -35,3 +38,9 @@
 * [https://doc.dpdk.org/guides/nics/virtio.html](https://doc.dpdk.org/guides/nics/virtio.html)
 * [https://doc.dpdk.org/guides/howto/virtio_user_for_container_networking.html](https://doc.dpdk.org/guides/howto/virtio_user_for_container_networking.html)
 * [https://doc.dpdk.org/guides/nics/tap.html](https://doc.dpdk.org/guides/nics/tap.html)
+
+### Next steps for higher performance of the software data plane in OVS ###
+
+* [http://www.openvswitch.org/support/ovscon2019/#1.3F](http://www.openvswitch.org/support/ovscon2019/#1.3F)
+* [https://en.wikipedia.org/wiki/AVX-512](https://en.wikipedia.org/wiki/AVX-512)
+* 
