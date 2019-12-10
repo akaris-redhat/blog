@@ -63,3 +63,20 @@
 
 * [https://www.openvswitch.org/support/ovscon2019/#2.2L](https://www.openvswitch.org/support/ovscon2019/#2.2L)
 * [https://doc.dpdk.org/guides/howto/rte_flow.html](https://doc.dpdk.org/guides/howto/rte_flow.html)
+* [https://doc.dpdk.org/guides/prog_guide/rte_flow.html](https://doc.dpdk.org/guides/prog_guide/rte_flow.html)
+
+### Kernel Based Offloads of OVS ###
+
+* [https://www.openvswitch.org/support/ovscon2019/#2.3F](https://www.openvswitch.org/support/ovscon2019/#2.3F)
+* [http://man7.org/linux/man-pages/man8/tc-flower.8.html](http://man7.org/linux/man-pages/man8/tc-flower.8.html)
+* [https://netdevconf.info/1.1/proceedings/slides/lesokhin-eran-gerlitz-tunneling-sr-iov-switchdev.pdf](https://netdevconf.info/1.1/proceedings/slides/lesokhin-eran-gerlitz-tunneling-sr-iov-switchdev.pdf)
+* [https://docs.openstack.org/neutron/rocky/admin/config-ovs-offload.html](https://docs.openstack.org/neutron/rocky/admin/config-ovs-offload.html)
+* [https://www.youtube.com/watch?v=_EZ8-AcTJ4w](https://www.youtube.com/watch?v=_EZ8-AcTJ4w)
+* [https://www.openstack.org/videos/summits/denver-2019/hardware-offload-networks-of-kubernetes-through-openstack](https://www.openstack.org/videos/summits/denver-2019/hardware-offload-networks-of-kubernetes-through-openstack)
+
+### Franck OSP Kubernetes ###
+
+### An Encounter with OpenvSwitch Hardware Offload on 100GbE SMART NIC!! ###
+
+* [https://www.openvswitch.org/support/ovscon2019/#2.4F](https://www.openvswitch.org/support/ovscon2019/#2.4F)
+* 
