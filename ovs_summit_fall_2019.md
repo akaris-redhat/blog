@@ -79,7 +79,25 @@
 ### An Encounter with OpenvSwitch Hardware Offload on 100GbE SMART NIC!! ###
 
 * [https://www.openvswitch.org/support/ovscon2019/#2.4F](https://www.openvswitch.org/support/ovscon2019/#2.4F)
+* [https://en.wikipedia.org/wiki/PCI_Express](https://en.wikipedia.org/wiki/PCI_Express)
 
 ### IP Multicast in OVN - IGMP Snooping and Relay ###
 
 * [https://www.openvswitch.org/support/ovscon2019/#3.1L](https://www.openvswitch.org/support/ovscon2019/#3.1L)
+
+### We light the OVN so that everyone may flow with it ###
+
+* [https://www.openvswitch.org/support/ovscon2019/#3.2L](https://www.openvswitch.org/support/ovscon2019/#3.2L)
+
+### OVN issues seen in the field and how they were addressed ###
+
+* [https://www.openvswitch.org/support/ovscon2019/#3.3F](https://www.openvswitch.org/support/ovscon2019/#3.3F)
+* [https://asciinema.org/](https://asciinema.org/)
+
+### Multi-tenant Inter-DC tunneling with OVN  ###
+
+* [https://www.openvswitch.org/support/ovscon2019/#3.4F](https://www.openvswitch.org/support/ovscon2019/#3.4F)
+
+### How to dump your miniflow bits.  ###
+
+* [https://www.openvswitch.org/support/ovscon2019/#4.1L](https://www.openvswitch.org/support/ovscon2019/#4.1L)
