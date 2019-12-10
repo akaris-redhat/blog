@@ -102,3 +102,16 @@
 ### How to dump your miniflow bits.  ###
 
 * [https://www.openvswitch.org/support/ovscon2019/#4.1L](https://www.openvswitch.org/support/ovscon2019/#4.1L)
+* [https://software.intel.com/en-us/articles/the-open-vswitch-exact-match-cache](https://software.intel.com/en-us/articles/the-open-vswitch-exact-match-cache)
+
+### DDLog in OVN - current state and future challenges ###
+
+* [https://www.openvswitch.org/support/ovscon2019/#4.2L](https://www.openvswitch.org/support/ovscon2019/#4.2L)
+
+### P4-uBPF: Extending Open vSwitch packet processing pipeline at runtime using P4  ####
+
+* [https://www.openvswitch.org/support/ovscon2019/#4.3F](https://www.openvswitch.org/support/ovscon2019/#4.3F)
+
+### OvS in the cloud: Testing our OpenFlow ruleset to keep development agile  ###
+
+* [https://www.openvswitch.org/support/ovscon2019/#4.4F](https://www.openvswitch.org/support/ovscon2019/#4.4F)
