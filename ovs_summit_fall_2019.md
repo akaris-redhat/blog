@@ -2,3 +2,13 @@
 
 * [http://www.openvswitch.org/support/ovscon2019/#0.1L](http://www.openvswitch.org/support/ovscon2019/#0.1L)
 * [https://en.wikipedia.org/wiki/Rust_(programming_language)](https://en.wikipedia.org/wiki/Rust_(programming_language))
+
+### Testing OVS at the DPDK Community Lab ###
+
+* [http://www.openvswitch.org/support/ovscon2019/#0.2L](http://www.openvswitch.org/support/ovscon2019/#0.2L)
+* OVS performance testing: [https://github.com/chaudron/ovs_perf](https://github.com/chaudron/ovs_perf)
+
+### The Discrepancy of the Megaflow Cache in OVS, Part II  ###
+
+* [http://www.openvswitch.org/support/ovscon2019/#0.3F](http://www.openvswitch.org/support/ovscon2019/#0.3F)
+*
