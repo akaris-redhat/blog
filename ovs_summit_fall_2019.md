@@ -47,4 +47,7 @@ http://www.openvswitch.org/support/ovscon2019/#1.1L
 * [https://en.wikibooks.org/wiki/Microprocessor_Design/Instruction_Set_Architectures](https://en.wikibooks.org/wiki/Microprocessor_Design/Instruction_Set_Architectures)
 * [https://en.wikipedia.org/wiki/Instruction_set_architecture](https://en.wikipedia.org/wiki/Instruction_set_architecture)
 * [https://en.wikipedia.org/wiki/Advanced_Vector_Extensions](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions)
-*
+
+### OVN for NFV workloads with Kubernetes  ###
+
+* [http://www.openvswitch.org/support/ovscon2019/#1.2L](http://www.openvswitch.org/support/ovscon2019/#1.2L)
