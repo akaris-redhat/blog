@@ -27,3 +27,11 @@
 * http://www.openvswitch.org/support/ovscon2019/#0.5F
 * kata containers
 * https://wiki.openstack.org/wiki/Kuryr
+
+### Utilizing DPDK Virtual Devices in OVS  ###
+
+* [http://www.openvswitch.org/support/ovscon2019/#1.2L](http://www.openvswitch.org/support/ovscon2019/#1.2L)
+* KNI: [https://doc.dpdk.org/guides/prog_guide/kernel_nic_interface.html](https://doc.dpdk.org/guides/prog_guide/kernel_nic_interface.html)
+* [https://doc.dpdk.org/guides/nics/virtio.html](https://doc.dpdk.org/guides/nics/virtio.html)
+* [https://doc.dpdk.org/guides/howto/virtio_user_for_container_networking.html](https://doc.dpdk.org/guides/howto/virtio_user_for_container_networking.html)
+* [https://doc.dpdk.org/guides/nics/tap.html](https://doc.dpdk.org/guides/nics/tap.html)
