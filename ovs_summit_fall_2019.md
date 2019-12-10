@@ -54,3 +54,12 @@ http://www.openvswitch.org/support/ovscon2019/#1.1L
 * [https://github.com/ovn-org/ovn-kubernetes](https://github.com/ovn-org/ovn-kubernetes)
 * [https://wiki.opnfv.org/display/PROJ/Ovn4nfv](https://wiki.opnfv.org/display/PROJ/Ovn4nfv)
 * [https://github.com/opnfv/ovn4nfv-k8s-plugin](https://github.com/opnfv/ovn4nfv-k8s-plugin)
+
+### OvS-DPDK Acceleration with rte_flow: Challenges and Gaps  ###
+
+* [https://www.openvswitch.org/support/ovscon2019/#2.1L](https://www.openvswitch.org/support/ovscon2019/#2.1L)
+* [https://arthurchiao.github.io/blog/ovs-deep-dive-0-overview/](https://arthurchiao.github.io/blog/ovs-deep-dive-0-overview/)
+
+### Partial offload optimization and performance on Intel Fortville NICs using rte_flow ###
+
+* [https://www.openvswitch.org/support/ovscon2019/#2.2L](https://www.openvswitch.org/support/ovscon2019/#2.2L)
