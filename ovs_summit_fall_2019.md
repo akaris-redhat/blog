@@ -11,7 +11,6 @@
 ### The Discrepancy of the Megaflow Cache in OVS, Part II  ###
 
 * [http://www.openvswitch.org/support/ovscon2019/#0.3F](http://www.openvswitch.org/support/ovscon2019/#0.3F)
-*
 
 ### A Kubernetes Networking Implementation Using Open vSwitch  ###
 
@@ -24,12 +23,12 @@
 
 ### OVS DPDK issues in Openstack and Kubernetes and Solutions ###
 
-* http://www.openvswitch.org/support/ovscon2019/#0.5F
-* kata containers
-* https://wiki.openstack.org/wiki/Kuryr
+* [http://www.openvswitch.org/support/ovscon2019/#0.5F](http://www.openvswitch.org/support/ovscon2019/#0.5F)
+* [https://katacontainers.io/](https://katacontainers.io/)
+* [https://wiki.openstack.org/wiki/Kuryr](https://wiki.openstack.org/wiki/Kuryr)
 
 ### OVS-DPDK life of a packet ###
-http://www.openvswitch.org/support/ovscon2019/#1.1L
+[http://www.openvswitch.org/support/ovscon2019/#1.1L](http://www.openvswitch.org/support/ovscon2019/#1.1L)
 
 ### Utilizing DPDK Virtual Devices in OVS  ###
 
@@ -63,3 +62,4 @@ http://www.openvswitch.org/support/ovscon2019/#1.1L
 ### Partial offload optimization and performance on Intel Fortville NICs using rte_flow ###
 
 * [https://www.openvswitch.org/support/ovscon2019/#2.2L](https://www.openvswitch.org/support/ovscon2019/#2.2L)
+* [https://doc.dpdk.org/guides/howto/rte_flow.html](https://doc.dpdk.org/guides/howto/rte_flow.html)
