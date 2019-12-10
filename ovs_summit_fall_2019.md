@@ -20,3 +20,10 @@
 * [https://github.com/ovn-org/ovn-kubernetes](https://github.com/ovn-org/ovn-kubernetes)
 * [https://kubernetes.io/docs/concepts/cluster-administration/networking/](https://kubernetes.io/docs/concepts/cluster-administration/networking/)
 * KIND (kubernetes in docker): https://kind.sigs.k8s.io/docs/user/quick-start
+
+
+### OVS DPDK issues in Openstack and Kubernetes and Solutions ###
+
+* http://www.openvswitch.org/support/ovscon2019/#0.5F
+* kata containers
+* https://wiki.openstack.org/wiki/Kuryr
