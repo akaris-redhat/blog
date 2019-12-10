@@ -28,7 +28,7 @@
 * [https://wiki.openstack.org/wiki/Kuryr](https://wiki.openstack.org/wiki/Kuryr)
 
 ### OVS-DPDK life of a packet ###
-[http://www.openvswitch.org/support/ovscon2019/#1.1L](http://www.openvswitch.org/support/ovscon2019/#1.1L)
+* [http://www.openvswitch.org/support/ovscon2019/#1.1L](http://www.openvswitch.org/support/ovscon2019/#1.1L)
 
 ### Utilizing DPDK Virtual Devices in OVS  ###
 
