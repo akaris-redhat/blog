@@ -95,6 +95,7 @@
 * [https://asciinema.org/](https://asciinema.org/)
 * [http://skydive.network/](http://skydive.network/)
 * [http://skydive.network/tutorials/first-steps-5.html](http://skydive.network/tutorials/first-steps-5.html)
+* [https://docs.openstack.org/dragonflow/latest/specs/skydive_integration.html](https://docs.openstack.org/dragonflow/latest/specs/skydive_integration.html)
 
 ### Multi-tenant Inter-DC tunneling with OVN  ###
 
