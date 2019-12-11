@@ -123,3 +123,8 @@
 * [http://www.openvswitch.org/support/ovscon2019/#5.3F](http://www.openvswitch.org/support/ovscon2019/#5.3F)
 * [https://www.redhat.com/en/blog/vdpa-hands-proof-pudding](https://www.redhat.com/en/blog/vdpa-hands-proof-pudding)
 * [https://access.redhat.com/solutions/4430881](https://access.redhat.com/solutions/4430881)
+
+### Deploying multi chassis OVN using docker in docker ###
+
+* [http://www.openvswitch.org/support/ovscon2019/#7.3L](http://www.openvswitch.org/support/ovscon2019/#7.3L)
+Running OVN in nested contaners
