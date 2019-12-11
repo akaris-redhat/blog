@@ -117,3 +117,9 @@
 ### OvS in the cloud: Testing our OpenFlow ruleset to keep development agile  ###
 
 * [https://www.openvswitch.org/support/ovscon2019/#4.4F](https://www.openvswitch.org/support/ovscon2019/#4.4F)
+
+### SmartNIC Hardware offloads past, present and future ###
+
+* [http://www.openvswitch.org/support/ovscon2019/#5.3F](http://www.openvswitch.org/support/ovscon2019/#5.3F)
+* [https://www.redhat.com/en/blog/vdpa-hands-proof-pudding](https://www.redhat.com/en/blog/vdpa-hands-proof-pudding)
+* [https://access.redhat.com/solutions/4430881](https://access.redhat.com/solutions/4430881)
