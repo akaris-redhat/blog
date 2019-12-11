@@ -35,3 +35,8 @@ Test xclock:
 ~~~
 xclock
 ~~~
+
+Exit container and run jviewer:
+~~~
+podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host -v /home/akaris/viewer.jnlp:/root/viewer.jnlp localhost/java-image javaws /root/viewer.jnlp
+~~~
