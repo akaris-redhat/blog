@@ -28,5 +28,10 @@ sudo setenforce 0
 
 Test container:
 ~~~
-podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host localhost/java-image xclock
+podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host -v /home/akaris/viewer.jnlp:/root/viewer.jnlp localhost/java-image javaws /root/viewer.jnlp
+~~~
+
+Test xclock:
+~~~
+xclock
 ~~~
