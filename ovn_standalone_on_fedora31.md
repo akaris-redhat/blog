@@ -41,7 +41,7 @@ Now, configure OVS to connect to the OVN DBs. Note that geneve / vxlan tunnel ne
 On master node ovn1:
 ~~~
 [root@ovn1 ~]# ovs-vsctl set open . external-ids:ovn-remote=tcp:ovn1:6642
-[root@ovn1 ~]# ovs-vsctl set open . external-ids:ovn-encap-type=geneve
+[root@ovn1 ~]# ovs-vsctl set open . external-ids:ovn-encap-type=geneve,vxlan
 [root@ovn1 ~]# ovs-vsctl set open . external-ids:ovn-encap-ip=192.168.122.150
 [root@ovn1 ~]# ovs-vsctl set open . external-ids:ovn-bridge=br-int
 ~~~
@@ -50,7 +50,7 @@ On slave node ovn2:
 ~~~
 [root@ovn2 ~]# ovs-vsctl set open . external-ids:ovn-remote=tcp:ovn1:6642
 [root@ovn2 ~]# ovs-vsctl set open . external-ids:ovn-encap-ip=192.168.122.22
-[root@ovn2 ~]# ovs-vsctl set open . external-ids:ovn-encap-type=geneve
+[root@ovn2 ~]# ovs-vsctl set open . external-ids:ovn-encap-type=geneve,vxlan
 [root@ovn2 ~]# ovs-vsctl set open . external-ids:ovn-bridge=br-int
 ~~~
 
@@ -58,7 +58,7 @@ On slave node ovn3:
 ~~~
 [root@ovn3 ~]# ovs-vsctl set open . external-ids:ovn-remote=tcp:ovn1:6642
 [root@ovn3 ~]# ovs-vsctl set open . external-ids:ovn-encap-ip=192.168.122.28
-[root@ovn3 ~]# ovs-vsctl set open . external-ids:ovn-encap-type=geneve
+[root@ovn3 ~]# ovs-vsctl set open . external-ids:ovn-encap-type=geneve,vxlan
 [root@ovn3 ~]# ovs-vsctl set open . external-ids:ovn-bridge=br-int
 ~~~
 
