@@ -332,3 +332,8 @@ PING 192.168.123.1 (192.168.123.1) 56(84) bytes of data.
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 2.403/2.403/2.403/0.000 ms
 ~~~
+
+## Resources ##
+
+* [https://blog.scottlowe.org/2016/12/09/using-ovn-with-kvm-libvirt/](https://blog.scottlowe.org/2016/12/09/using-ovn-with-kvm-libvirt/)
+* [https://baturin.org/docs/iproute2/](https://baturin.org/docs/iproute2/)
