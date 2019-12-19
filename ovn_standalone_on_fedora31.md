@@ -188,10 +188,12 @@ On ovn1, configure a logical switch and port:
 ~~~
 ovn-nbctl ls-add sw0
 ovn-nbctl lsp-add sw0 port0
+ovn-nbctl lsp-set-addresses port0 00:00:00:00:00:01
 ovn-nbctl lsp-add sw0 port1
+ovn-nbctl lsp-set-addresses port1 00:00:00:00:00:02
 ~~~
 
-Now, "real" ports need to be wired to the above ports. Note that the logical port name has to match the `external_ids:iface-id` identifier. If we added  `ovn-nbctl lsp-add sw0 foo` instead of `port0`, then we would have to set `ovs-vsctl set Interface port0 external_ids:iface-id=foo` on ovn2.
+Now, "real" ports need to be wired to the above ports. Note that the logical port name has to match the `external_ids:iface-id` identifier. If we added  `ovn-nbctl lsp-add sw0 foo` instead of `port0`, then we would have to set `ovs-vsctl set Interface port0 external_ids:iface-id=foo` on ovn2. Note that we need to know the MAC address of that port. Therefore, when creating the veth, we are making sure to create it with the correct MAC address.
 
 On ovn2, execute:
 ~~~
@@ -200,6 +202,7 @@ ip netns add ns0
 ip link set dev veth0 netns ns0
 ip netns exec ns0 ip link set dev lo up
 ip netns exec ns0 ip link set dev veth0 up
+ip netns exec ns0 ip link set veth0 address 00:00:00:00:00:01
 ip netns exec ns0 ip address add 192.168.123.1/24 dev veth0
 ip link set dev port0 up
 ovs-vsctl add-port br-int port0 
@@ -213,6 +216,7 @@ ip netns add ns1
 ip link set dev veth1 netns ns1
 ip netns exec ns1 ip link set dev lo up
 ip netns exec ns1 ip link set dev veth1 up
+ip netns exec ns1 ip link set veth1 address 00:00:00:00:00:02
 ip netns exec ns1 ip address add 192.168.123.2/24 dev veth1
 ip link set dev port1 up
 ovs-vsctl add-port br-int port1 external_ids:iface-id=port1
@@ -224,7 +228,9 @@ Verify the new configuration:
 [root@ovn1 ~]# ovn-nbctl show
 switch 440ff3f7-0405-481b-af89-8def80542886 (sw0)
     port port0
+        addresses: ["00:00:00:00:00:01"]
     port port1
+        addresses: ["00:00:00:00:00:02"]
 [root@ovn1 ~]# ovn-sbctl show
 Chassis "7a992c50-4fcb-4e47-ac6f-38a41ba546d0"
     hostname: ovn1
@@ -254,3 +260,75 @@ Chassis "51cb9682-520e-4160-8b1d-1893741a6b93"
     Port_Binding port`
 ~~~
 > **Note:** The southbound database now shows port bindings.
+
+Verify logical flows:
+~~~
+[root@ovn1 ~]# ovn-sbctl lflow-list
+Datapath: "sw0" (0cacf0ff-6b99-4505-a213-17bbc1434b4c)  Pipeline: ingress
+  table=0 (ls_in_port_sec_l2  ), priority=100  , match=(eth.src[40]), action=(drop;)
+  table=0 (ls_in_port_sec_l2  ), priority=100  , match=(vlan.present), action=(drop;)
+  table=0 (ls_in_port_sec_l2  ), priority=50   , match=(inport == "port0"), action=(next;)
+  table=0 (ls_in_port_sec_l2  ), priority=50   , match=(inport == "port1"), action=(next;)
+  table=1 (ls_in_port_sec_ip  ), priority=0    , match=(1), action=(next;)
+  table=2 (ls_in_port_sec_nd  ), priority=0    , match=(1), action=(next;)
+  table=3 (ls_in_pre_acl      ), priority=0    , match=(1), action=(next;)
+  table=4 (ls_in_pre_lb       ), priority=110  , match=(nd || nd_rs || nd_ra), action=(next;)
+  table=4 (ls_in_pre_lb       ), priority=0    , match=(1), action=(next;)
+  table=5 (ls_in_pre_stateful ), priority=100  , match=(reg0[0] == 1), action=(ct_next;)
+  table=5 (ls_in_pre_stateful ), priority=0    , match=(1), action=(next;)
+  table=6 (ls_in_acl          ), priority=0    , match=(1), action=(next;)
+  table=7 (ls_in_qos_mark     ), priority=0    , match=(1), action=(next;)
+  table=8 (ls_in_qos_meter    ), priority=0    , match=(1), action=(next;)
+  table=9 (ls_in_lb           ), priority=0    , match=(1), action=(next;)
+  table=10(ls_in_stateful     ), priority=100  , match=(reg0[1] == 1), action=(ct_commit(ct_label=0/1); next;)
+  table=10(ls_in_stateful     ), priority=100  , match=(reg0[2] == 1), action=(ct_lb;)
+  table=10(ls_in_stateful     ), priority=0    , match=(1), action=(next;)
+  table=11(ls_in_arp_rsp      ), priority=0    , match=(1), action=(next;)
+  table=12(ls_in_dhcp_options ), priority=0    , match=(1), action=(next;)
+  table=13(ls_in_dhcp_response), priority=0    , match=(1), action=(next;)
+  table=14(ls_in_dns_lookup   ), priority=0    , match=(1), action=(next;)
+  table=15(ls_in_dns_response ), priority=0    , match=(1), action=(next;)
+  table=16(ls_in_external_port), priority=0    , match=(1), action=(next;)
+  table=17(ls_in_l2_lkup      ), priority=70   , match=(eth.mcast), action=(outport = "_MC_flood"; output;)
+  table=17(ls_in_l2_lkup      ), priority=50   , match=(eth.dst == 00:00:00:00:00:01), action=(outport = "port0"; output;)
+  table=17(ls_in_l2_lkup      ), priority=50   , match=(eth.dst == 00:00:00:00:00:02), action=(outport = "port1"; output;)
+Datapath: "sw0" (0cacf0ff-6b99-4505-a213-17bbc1434b4c)  Pipeline: egress
+  table=0 (ls_out_pre_lb      ), priority=110  , match=(nd || nd_rs || nd_ra), action=(next;)
+  table=0 (ls_out_pre_lb      ), priority=0    , match=(1), action=(next;)
+  table=1 (ls_out_pre_acl     ), priority=0    , match=(1), action=(next;)
+  table=2 (ls_out_pre_stateful), priority=100  , match=(reg0[0] == 1), action=(ct_next;)
+  table=2 (ls_out_pre_stateful), priority=0    , match=(1), action=(next;)
+  table=3 (ls_out_lb          ), priority=0    , match=(1), action=(next;)
+  table=4 (ls_out_acl         ), priority=0    , match=(1), action=(next;)
+  table=5 (ls_out_qos_mark    ), priority=0    , match=(1), action=(next;)
+  table=6 (ls_out_qos_meter   ), priority=0    , match=(1), action=(next;)
+  table=7 (ls_out_stateful    ), priority=100  , match=(reg0[1] == 1), action=(ct_commit(ct_label=0/1); next;)
+  table=7 (ls_out_stateful    ), priority=100  , match=(reg0[2] == 1), action=(ct_lb;)
+  table=7 (ls_out_stateful    ), priority=0    , match=(1), action=(next;)
+  table=8 (ls_out_port_sec_ip ), priority=0    , match=(1), action=(next;)
+  table=9 (ls_out_port_sec_l2 ), priority=100  , match=(eth.mcast), action=(output;)
+  table=9 (ls_out_port_sec_l2 ), priority=50   , match=(outport == "port0"), action=(output;)
+  table=9 (ls_out_port_sec_l2 ), priority=50   , match=(outport == "port1"), action=(output;)
+~~~
+
+Last but not least, run a test ping between the namespaces on both hosts:
+~~~
+[root@ovn2 ~]# ip netns exec ns0 ping 192.168.123.2 -c1 -W1
+PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=2.33 ms
+
+--- 192.168.123.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 2.330/2.330/2.330/0.000 ms
+[root@ovn2 ~]# 
+~~~
+
+~~~
+[root@ovn3 ~]# ip netns exec ns1 ping 192.168.123.1 -c1 -W1
+PING 192.168.123.1 (192.168.123.1) 56(84) bytes of data.
+64 bytes from 192.168.123.1: icmp_seq=1 ttl=64 time=2.40 ms
+
+--- 192.168.123.1 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 2.403/2.403/2.403/0.000 ms
+~~~
