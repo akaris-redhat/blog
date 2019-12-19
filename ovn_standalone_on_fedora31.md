@@ -1,3 +1,5 @@
+## Base setup ##
+
 ### Single node DB on ovn1 ###
 
 #### Configuration and installation ####
@@ -177,3 +179,78 @@ ovn3:
 [root@ovn3 ~]# ovn-nbctl show
 [root@ovn3 ~]# 
 ~~~
+
+## Adding virtual network ##
+
+### Adding logical switch and ports ###
+
+On ovn1, configure a logical switch and port:
+~~~
+ovn-nbctl ls-add sw0
+ovn-nbctl lsp-add sw0 port0
+ovn-nbctl lsp-add sw0 port1
+~~~
+
+Now, "real" ports need to be wired to the above ports. Note that the logical port name has to match the `external_ids:iface-id` identifier. If we added  `ovn-nbctl lsp-add sw0 foo` instead of `port0`, then we would have to set `ovs-vsctl set Interface port0 external_ids:iface-id=foo` on ovn2.
+
+On ovn2, execute:
+~~~
+ip link add name veth0 type veth peer name port0
+ip netns add ns0
+ip link set dev veth0 netns ns0
+ip netns exec ns0 ip link set dev lo up
+ip netns exec ns0 ip link set dev veth0 up
+ip netns exec ns0 ip address add 192.168.123.1/24 dev veth0
+ip link set dev port0 up
+ovs-vsctl add-port br-int port0 
+ovs-vsctl set Interface port0 external_ids:iface-id=port0
+~~~
+
+On ovn3, execute:
+~~~
+ip link add name veth1 type veth peer name port1
+ip netns add ns1
+ip link set dev veth1 netns ns1
+ip netns exec ns1 ip link set dev lo up
+ip netns exec ns1 ip link set dev veth1 up
+ip netns exec ns1 ip address add 192.168.123.2/24 dev veth1
+ip link set dev port1 up
+ovs-vsctl add-port br-int port1 external_ids:iface-id=port1
+ovs-vsctl set Interface port1 external_ids:iface-id=port1
+~~~
+
+Verify the new configuration:
+~~~
+[root@ovn1 ~]# ovn-nbctl show
+switch 440ff3f7-0405-481b-af89-8def80542886 (sw0)
+    port port0
+    port port1
+[root@ovn1 ~]# ovn-sbctl show
+Chassis "7a992c50-4fcb-4e47-ac6f-38a41ba546d0"
+    hostname: ovn1
+    Encap geneve
+        ip: "192.168.122.150"
+        options: {csum="true"}
+    Encap vxlan
+        ip: "192.168.122.150"
+        options: {csum="true"}
+Chassis "96baf91e-59bc-4a4d-809a-2f16e8055868"
+    hostname: ovn2
+    Encap vxlan
+        ip: "192.168.122.22"
+        options: {csum="true"}
+    Encap geneve
+        ip: "192.168.122.22"
+        options: {csum="true"}
+    Port_Binding port0
+Chassis "51cb9682-520e-4160-8b1d-1893741a6b93"
+    hostname: ovn3
+    Encap geneve
+        ip: "192.168.122.28"
+        options: {csum="true"}
+    Encap vxlan
+        ip: "192.168.122.28"
+        options: {csum="true"}
+    Port_Binding port`
+~~~
+> **Note:** The southbound database now shows port bindings.
