@@ -1,3 +1,7 @@
+See [https://bugzilla.redhat.com/show_bug.cgi?id=1785705](https://bugzilla.redhat.com/show_bug.cgi?id=1785705) for the bugzilla.
+
+The following are steps which I executed in my lab to troubleshoot issues with worker creation for OpenShift on OpenStack.
+
 ~~~
 (overcloud) [stack@undercloud-0 clouds]$ oc describe machine -n openshift-machine-api osc-c5r5c-worker-bgt9b
 Name:         osc-c5r5c-worker-bgt9b
