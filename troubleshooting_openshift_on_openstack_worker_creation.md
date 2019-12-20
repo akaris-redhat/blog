@@ -271,7 +271,7 @@ However, my clouds.yaml file is actually completely correct:
 +------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 ~~~
 
-I'm now trying with:
+I then tried with:
 ~~~
 clouds:
   openstack:
@@ -285,4 +285,104 @@ clouds:
     region_name: "regionOne"
     interface: "public"
     identity_api_version: 3
+~~~
+> Note that I made 2 changes: project_id which I got from `openstack project list | grep admin` ; and I renamed the cloud credential to name `openstack`.
+
+This actually worked:
+~~~
+(overcloud) [stack@undercloud-0 ~]$ openstack server list
++--------------------------------------+------------------------+--------+-------------------------------------------------------------------------+-------+--------------+
+| ID                                   | Name                   | Status | Networks                                                                | Image | Flavor       |
++--------------------------------------+------------------------+--------+-------------------------------------------------------------------------+-------+--------------+
+| 6726f1d5-977f-48da-9554-acf710d459fe | osc-6gzh2-worker-shw2w | ACTIVE | osc-6gzh2-openshift=172.31.0.28                                         | rhcos | m1.openshift |
+| 37af5d51-bc08-4002-bb5b-380061d9efbf | osc-6gzh2-master-0     | ACTIVE | osc-6gzh2-openshift=172.31.0.24                                         | rhcos | m1.openshift |
+| 4b52d095-e174-47ea-a699-85286f899f67 | osc-6gzh2-master-1     | ACTIVE | osc-6gzh2-openshift=172.31.0.16                                         | rhcos | m1.openshift |
+| 73bb2012-d9ff-46e4-8e62-c6d723ca5711 | osc-6gzh2-master-2     | ACTIVE | osc-6gzh2-openshift=172.31.0.15                                         | rhcos | m1.openshift |
+| 53e2da7f-1398-45d3-94e3-0008d8e209d9 | rhel-test1             | ACTIVE | private1=2000:192:168:0:f816:3eff:fe13:275, 192.168.0.113, 172.16.0.110 | rhel  | m1.small     |
++--------------------------------------+------------------------+--------+-------------------------------------------------------------------------+-------+--------------+
+~~~
+
+The cluster deployed:
+~~~
+(overcloud) [stack@undercloud-0 clouds]$ ./openshift-install create cluster --dir=install-config/ --log-level=info
+INFO Consuming "Install Config" from target directory 
+INFO Creating infrastructure resources...         
+INFO Waiting up to 30m0s for the Kubernetes API at https://api.osc.redhat.local:6443... 
+INFO API v1.14.6+17b1cc6 up                       
+INFO Waiting up to 30m0s for bootstrapping to complete... 
+INFO Destroying the bootstrap resources...        
+INFO Waiting up to 30m0s for the cluster at https://api.osc.redhat.local:6443 to initialize... 
+INFO Waiting up to 10m0s for the openshift-console route to be created... 
+INFO Install complete!                            
+INFO To access the cluster as the system:admin user when using 'oc', run 'export KUBECONFIG=/home/stack/clouds/install-config/auth/kubeconfig' 
+INFO Access the OpenShift web-console here: https://console-openshift-console.apps.osc.redhat.local 
+INFO Login to the console with user: kubeadmin, password: vFKnm-d43eY-aMMBB-52xcU 
+~~~
+
+Now, there was an issue with 2 of the machines:
+~~~
+(overcloud) [stack@undercloud-0 clouds]$ oc get machineset -A
+NAMESPACE               NAME               DESIRED   CURRENT   READY   AVAILABLE   AGE
+openshift-machine-api   osc-6gzh2-worker   3         3         1       1           97m
+(overcloud) [stack@undercloud-0 clouds]$ oc get machine -A
+NAMESPACE               NAME                     STATE    TYPE           REGION      ZONE   AGE
+openshift-machine-api   osc-6gzh2-master-0       ACTIVE   m1.openshift   regionOne   nova   97m
+openshift-machine-api   osc-6gzh2-master-1       ACTIVE   m1.openshift   regionOne   nova   97m
+openshift-machine-api   osc-6gzh2-master-2       ACTIVE   m1.openshift   regionOne   nova   97m
+openshift-machine-api   osc-6gzh2-worker-5d627   ERROR                                      96m
+openshift-machine-api   osc-6gzh2-worker-j6j78   ERROR                                      96m
+openshift-machine-api   osc-6gzh2-worker-shw2w   ACTIVE   m1.openshift   regionOne   nova   96m
+(overcloud) [stack@undercloud-0 clouds]$ oc get machineconfig -A
+NAME                                                        GENERATEDBYCONTROLLER                      IGNITIONVERSION   CREATED
+00-master                                                   d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
+00-worker                                                   d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
+01-master-container-runtime                                 d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
+01-master-kubelet                                           d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
+01-worker-container-runtime                                 d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
+01-worker-kubelet                                           d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
+99-master-51c90b92-2340-11ea-baab-fa163e272495-registries   d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
+99-master-ssh                                                                                          2.2.0             96m
+99-worker-51ca001b-2340-11ea-baab-fa163e272495-registries   d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
+99-worker-ssh                                                                                          2.2.0             96m
+rendered-master-8e766b361a127ddfebde5802f36b90ce            d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
+rendered-worker-74267811bebab086ede643b9c9b2ba66            d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
+~~~
+
+And it fails with:
+~~~
+(overcloud) [stack@undercloud-0 clouds]$ oc describe machine -n openshift-machine-api osc-6gzh2-worker-5d627 | tail
+        Openshift Cluster ID:  osc-6gzh2
+      Tags:
+        openshiftClusterID=osc-6gzh2
+      Trunk:  true
+      User Data Secret:
+        Name:  worker-user-data
+Events:
+  Type     Reason        Age                   From                  Message
+  ----     ------        ----                  ----                  -------
+  Warning  FailedCreate  2m30s (x23 over 95m)  openstack_controller  CreateError
+(overcloud) [stack@undercloud-0 clouds]$ 
+
+~~~
+
+I connected to master 0 via master 1:
+~~~
+[stack@undercloud-0 ~]$ eval $(ssh-agent)
+[stack@undercloud-0 ~]$ ssh-add  ~/.ssh/id_rsa
+[stack@undercloud-0 ~]$ ssh core@api.osc.redhat.local -A
+[stack@undercloud-0 ~]$ ssh core@api.osc.redhat.local -A
+Warning: Permanently added 'api.osc.redhat.local,172.16.0.108' (ECDSA) to the list of known hosts.
+Red Hat Enterprise Linux CoreOS 42.81.20191203.0
+WARNING: Direct SSH access to machines is not recommended.
+
+---
+Last login: Fri Dec 20 17:27:11 2019 from 172.16.0.65
+[core@osc-6gzh2-master-1 ~]$ ssh core@osc-6gzh2-master-0
+Red Hat Enterprise Linux CoreOS 42.81.20191203.0
+WARNING: Direct SSH access to machines is not recommended.
+
+---
+Last login: Fri Dec 20 17:27:13 2019 from 172.31.0.16
+sud[core@osc-6gzh2-master-0 ~]$ sudo -i
+[root@osc-6gzh2-master-0 ~]# 
 ~~~
