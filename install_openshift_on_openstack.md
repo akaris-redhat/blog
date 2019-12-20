@@ -22,9 +22,14 @@ Update quotas:
 ~~~
 project=$(openstack project list | awk '/admin/ {print $2}')
 openstack --os-cloud openstack quota set \
-  --secgroups 10 --secgroup-rules 60 --ports 100 --routers 20 \
-  --ram 153600 --cores 50 --gigabytes 500 \
+  --secgroups 20 --secgroup-rules 120 --ports 200 --routers 40 \
+  --ram 307200 --cores 100 --gigabytes 500 \
   $project
+~~~
+
+Or consider disabling quotas altogether:
+~~~
+openstack quota set --secgroups -1 --secgroup-rules -1 --cores -1 --ram -1 --gigabytes -1 admin
 ~~~
 
 Create flavor:
