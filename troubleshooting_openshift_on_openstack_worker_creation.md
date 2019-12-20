@@ -362,10 +362,51 @@ Events:
   ----     ------        ----                  ----                  -------
   Warning  FailedCreate  2m30s (x23 over 95m)  openstack_controller  CreateError
 (overcloud) [stack@undercloud-0 clouds]$ 
-
 ~~~
 
-I connected to master 0 via master 1:
+~~~
+vercloud) [stack@undercloud-0 clouds]$ oc get events -n openshift-machine-api
+LAST SEEN   TYPE      REASON              OBJECT                                              MESSAGE
+95m         Normal    Scheduled           pod/cluster-autoscaler-operator-65dfcc75bb-gv8mg    Successfully assigned openshift-machine-api/cluster-autoscaler-operator-65dfcc75bb-gv8mg to osc-6gzh2-master-1
+95m         Warning   FailedMount         pod/cluster-autoscaler-operator-65dfcc75bb-gv8mg    MountVolume.SetUp failed for volume "cert" : couldn't propagate object cache: timed out waiting for the condition
+95m         Warning   FailedMount         pod/cluster-autoscaler-operator-65dfcc75bb-gv8mg    MountVolume.SetUp failed for volume "cluster-autoscaler-operator-token-gtb48" : couldn't propagate object cache: timed out waiting for the condition
+95m         Warning   FailedMount         pod/cluster-autoscaler-operator-65dfcc75bb-gv8mg    MountVolume.SetUp failed for volume "ca-cert" : couldn't propagate object cache: timed out waiting for the condition
+94m         Normal    Pulling             pod/cluster-autoscaler-operator-65dfcc75bb-gv8mg    Pulling image "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:e6ea0a063874ff9169ef1e0e58c6399a42e163c49321018fa34c838faec99cb4"
+94m         Normal    Pulled              pod/cluster-autoscaler-operator-65dfcc75bb-gv8mg    Successfully pulled image "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:e6ea0a063874ff9169ef1e0e58c6399a42e163c49321018fa34c838faec99cb4"
+94m         Normal    Created             pod/cluster-autoscaler-operator-65dfcc75bb-gv8mg    Created container cluster-autoscaler-operator
+94m         Normal    Started             pod/cluster-autoscaler-operator-65dfcc75bb-gv8mg    Started container cluster-autoscaler-operator
+95m         Normal    SuccessfulCreate    replicaset/cluster-autoscaler-operator-65dfcc75bb   Created pod: cluster-autoscaler-operator-65dfcc75bb-gv8mg
+94m         Normal    LeaderElection      configmap/cluster-autoscaler-operator-leader        cluster-autoscaler-operator-65dfcc75bb-gv8mg_40da4183-2341-11ea-8630-0a58ac150025 became leader
+95m         Normal    ScalingReplicaSet   deployment/cluster-autoscaler-operator              Scaled up replica set cluster-autoscaler-operator-65dfcc75bb to 1
+101m        Normal    Scheduled           pod/machine-api-controllers-f64b7f7b8-xb7qn         Successfully assigned openshift-machine-api/machine-api-controllers-f64b7f7b8-xb7qn to osc-6gzh2-master-2
+101m        Normal    Pulling             pod/machine-api-controllers-f64b7f7b8-xb7qn         Pulling image "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:fad6250c0e717515d4caf35d6e6e006f7154e2a7bd9d4fec73f0540e155e3119"
+101m        Normal    Pulled              pod/machine-api-controllers-f64b7f7b8-xb7qn         Successfully pulled image "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:fad6250c0e717515d4caf35d6e6e006f7154e2a7bd9d4fec73f0540e155e3119"
+101m        Normal    Created             pod/machine-api-controllers-f64b7f7b8-xb7qn         Created container controller-manager
+101m        Normal    Started             pod/machine-api-controllers-f64b7f7b8-xb7qn         Started container controller-manager
+101m        Normal    Pulled              pod/machine-api-controllers-f64b7f7b8-xb7qn         Container image "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:fad6250c0e717515d4caf35d6e6e006f7154e2a7bd9d4fec73f0540e155e3119" already present on machine
+101m        Normal    Created             pod/machine-api-controllers-f64b7f7b8-xb7qn         Created container machine-controller
+101m        Normal    Started             pod/machine-api-controllers-f64b7f7b8-xb7qn         Started container machine-controller
+101m        Normal    Pulled              pod/machine-api-controllers-f64b7f7b8-xb7qn         Container image "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8f1a9c01710f09ad1d1c105cbc4f4ff88d7c0f5916a628f9414d3a7905fbced8" already present on machine
+101m        Normal    Created             pod/machine-api-controllers-f64b7f7b8-xb7qn         Created container nodelink-controller
+101m        Normal    Started             pod/machine-api-controllers-f64b7f7b8-xb7qn         Started container nodelink-controller
+101m        Normal    SuccessfulCreate    replicaset/machine-api-controllers-f64b7f7b8        Created pod: machine-api-controllers-f64b7f7b8-xb7qn
+101m        Normal    ScalingReplicaSet   deployment/machine-api-controllers                  Scaled up replica set machine-api-controllers-f64b7f7b8 to 1
+101m        Warning   FailedScheduling    pod/machine-api-operator-655d94c8fd-6vrqg           0/3 nodes are available: 3 node(s) had taints that the pod didn't tolerate.
+101m        Normal    Scheduled           pod/machine-api-operator-655d94c8fd-6vrqg           Successfully assigned openshift-machine-api/machine-api-operator-655d94c8fd-6vrqg to osc-6gzh2-master-2
+101m        Normal    Pulling             pod/machine-api-operator-655d94c8fd-6vrqg           Pulling image "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8f1a9c01710f09ad1d1c105cbc4f4ff88d7c0f5916a628f9414d3a7905fbced8"
+101m        Normal    Pulled              pod/machine-api-operator-655d94c8fd-6vrqg           Successfully pulled image "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8f1a9c01710f09ad1d1c105cbc4f4ff88d7c0f5916a628f9414d3a7905fbced8"
+101m        Normal    Created             pod/machine-api-operator-655d94c8fd-6vrqg           Created container machine-api-operator
+101m        Normal    Started             pod/machine-api-operator-655d94c8fd-6vrqg           Started container machine-api-operator
+102m        Normal    SuccessfulCreate    replicaset/machine-api-operator-655d94c8fd          Created pod: machine-api-operator-655d94c8fd-6vrqg
+102m        Normal    ScalingReplicaSet   deployment/machine-api-operator                     Scaled up replica set machine-api-operator-655d94c8fd to 1
+6m55s       Warning   FailedCreate        machine/osc-6gzh2-worker-5d627                      CreateError
+7m29s       Warning   FailedCreate        machine/osc-6gzh2-worker-j6j78                      CreateError
+98m         Warning   FailedCreate        machine/osc-6gzh2-worker-shw2w                      CreateError
+97m         Normal    Created             machine/osc-6gzh2-worker-shw2w                      Created Machine osc-6gzh2-worker-shw2w
+~~~
+
+
+I connected to master 2 via master 1:
 ~~~
 [stack@undercloud-0 ~]$ eval $(ssh-agent)
 [stack@undercloud-0 ~]$ ssh-add  ~/.ssh/id_rsa
@@ -385,4 +426,21 @@ WARNING: Direct SSH access to machines is not recommended.
 Last login: Fri Dec 20 17:27:13 2019 from 172.31.0.16
 sud[core@osc-6gzh2-master-0 ~]$ sudo -i
 [root@osc-6gzh2-master-0 ~]# 
+~~~
+
+And then got:
+~~~
+[root@osc-6gzh2-master-2 ~]# grep osc-6gzh2-worker-5d627 /var/log -R
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:49:41.304368389+00:00 stderr F I1220 15:49:41.304339       1 controller.go:133] Reconciling Machine "osc-6gzh2-worker-5d627"
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:49:41.304368389+00:00 stderr F I1220 15:49:41.304356       1 controller.go:304] Machine "osc-6gzh2-worker-5d627" in namespace "openshift-machine-api" doesn't specify "cluster.k8s.io/cluster-name" label, assuming nil cluster
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:50:37.383723384+00:00 stderr F I1220 15:50:37.383397       1 controller.go:133] Reconciling Machine "osc-6gzh2-worker-5d627"
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:50:37.383835414+00:00 stderr F I1220 15:50:37.383814       1 controller.go:304] Machine "osc-6gzh2-worker-5d627" in namespace "openshift-machine-api" doesn't specify "cluster.k8s.io/cluster-name" label, assuming nil cluster
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:50:38.552995792+00:00 stderr F I1220 15:50:38.552954       1 controller.go:253] Reconciling machine object osc-6gzh2-worker-5d627 triggers idempotent create.
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:50:52.700244622+00:00 stderr F E1220 15:50:52.698880       1 actuator.go:470] Machine error osc-6gzh2-worker-5d627: error creating Openstack instance: Create new server err: Request forbidden: [POST http://172.16.0.130:8774/v2.1/servers], error message: {"forbidden": {"message": "Quota exceeded for ram: Requested 32768, but already used 132096 of 153600 ram", "code": 403}}
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:50:52.700244622+00:00 stderr F W1220 15:50:52.698926       1 controller.go:255] Failed to create machine "osc-6gzh2-worker-5d627": error creating Openstack instance: Create new server err: Request forbidden: [POST http://172.16.0.130:8774/v2.1/servers], error message: {"forbidden": {"message": "Quota exceeded for ram: Requested 32768, but already used 132096 of 153600 ram", "code": 403}}
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:51:38.126016932+00:00 stderr F I1220 15:51:38.125931       1 controller.go:133] Reconciling Machine "osc-6gzh2-worker-5d627"
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:51:38.126016932+00:00 stderr F I1220 15:51:38.125971       1 controller.go:304] Machine "osc-6gzh2-worker-5d627" in namespace "openshift-machine-api" doesn't specify "cluster.k8s.io/cluster-name" label, assuming nil cluster
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:51:39.076618133+00:00 stderr F I1220 15:51:39.076540       1 controller.go:253] Reconciling machine object osc-6gzh2-worker-5d627 triggers idempotent create.
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:51:48.625264976+00:00 stderr F E1220 15:51:48.625215       1 actuator.go:470] Machine error osc-6gzh2-worker-5d627: error creating Openstack instance: Create new server err: Request forbidden: [POST http://172.16.0.130:8774/v2.1/servers], error message: {"forbidden": {"message": "Quota exceeded for ram: Requested 32768, but already used 132096 of 153600 ram", "code": 403}}
+/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:51:48.625264976+00:00 stderr F W1220 15:51:48.625239       1 controller.go:255] Failed to create machine "osc-6gzh2-worker-5d627": error creating Openstack instance: Create new server err: Request forbidden: [POST http://172.16.0.130:8774/v2.1/servers], error message: {"forbidden": {"message": "Quota exceeded for ram: Requested 32768, but already used 132096 of 153600 ram", "code": 403}}
 ~~~
