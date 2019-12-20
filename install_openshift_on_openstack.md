@@ -14,7 +14,9 @@ cd clouds
 ~~~
 
 Generate clouds.yaml:
-[https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html/installing/installing-on-openstack](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html/installing/installing-on-openstack)
+* [https://github.com/andreaskaris/blog/blob/master/using_clouds_yaml.md](https://github.com/andreaskaris/blog/blob/master/using_clouds_yaml.md)
+
+* [https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html/installing/installing-on-openstack](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html/installing/installing-on-openstack)
 
 Update quotas:
 ~~~
