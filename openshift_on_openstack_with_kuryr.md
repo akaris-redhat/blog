@@ -74,6 +74,11 @@ neutron router-gateway-set router provider1
 neutron router-interface-add router private1-subnet
 ~~~
 
+Create key-pair:
+~~~
+nova keypair-add --pub-key ~/.ssh/id_rsa.pub id_rsa
+~~~
+
 Create 2 floating IPs:
 ~~~
 openstack floating ip create provider1
