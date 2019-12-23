@@ -82,7 +82,30 @@ openstack floating ip create provider1
 
 Modify /etc/hosts on Director node:
 ~~~
+172.16.0.112 api.osc.redhat.local
 
+172.16.0.113 console-openshift-console.apps.osc.redhat.local
+172.16.0.113 integrated-oauth-server-openshift-authentication.apps.osc.redhat.local
+172.16.0.113 oauth-openshift.apps.osc.redhat.local
+172.16.0.113 prometheus-k8s-openshift-monitoring.apps.osc.redhat.local
+172.16.0.113 grafana-openshift-monitoring.apps.osc.redhat.local
+172.16.0.113 app-name.apps.osc.redhat.local
+~~~
+
+Create the following directory structure:
+~~~
+(overcloud) [stack@undercloud-0 ~]$ tree clouds/
+clouds/
+├── clouds.yaml
+├── install-backup
+│   └── install-config.yaml
+├── install-config
+│   └── install-config.yaml
+├── openshift-client-linux-4.2.10.tar.gz
+├── openshift-install
+├── openshift-install-linux-4.2.10.tar.gz
+├── README.md
+└── rhcos-4.2.0-x86_64-openstack.qcow2
 ~~~
 
 Create clouds.yaml:
@@ -140,5 +163,5 @@ sshKey: |
   ssh-rsa (...)
 ~~~
   
-Follow the rest of the OpenShift installation guide:
+Follow the rest of the OpenShift installation guide for further details:
 [https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html/installing/installing-on-openstack#installation-osp-verifying-external-network_installing-openstack-installer-custom](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html/installing/installing-on-openstack#installation-osp-verifying-external-network_installing-openstack-installer-custom)
