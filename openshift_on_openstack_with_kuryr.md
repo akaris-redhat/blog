@@ -47,6 +47,42 @@ Set secgroups after deployment:
 ~~~
 source overcloudrc
 openstack quota set --secgroups 250 --secgroup-rules 1000 --ports 1500 --subnets 250 --networks 250 admin
+openstack quota set --routers 40 --ram 307200 --cores 100 --gigabytes 500 admin
+~~~
+
+Create flavor:
+~~~
+openstack --os-cloud openstack flavor create --disk 25 --ram 32768 --vcpus 8 m1.openshift
+~~~
+
+Create image:
+~~~
+openstack image create --container-format=bare --disk-format=qcow2 --file rhcos-4.2.0-x86_64-openstack.qcow2 rhcos
+~~~
+
+Create networks, subnets, routers:
+~~~
+PROVIDER_SEGMENTATION_ID_PRIVATE=106
+PROVIDER_PHYSICAL_NETWORK="tenant"
+PROVIDER_PHYSICAL_NETWORK_EXTERNAL="external"
+neutron net-create private1 --provider:network_type vlan --provider:physical_network $PROVIDER_PHYSICAL_NETWORK --provider:segmentation_id $PROVIDER_SEGMENTATION_ID_PRIVATE --shared --router:external
+neutron net-create provider1 --provider:network_type flat --provider:physical_network $PROVIDER_PHYSICAL_NETWORK_EXTERNAL --shared --router:external
+neutron subnet-create --name private1-subnet private1 192.168.0.0/24 --allocation-pool start=192.168.0.100,end=192.168.0.150
+neutron subnet-create --gateway 172.16.0.1 --allocation-pool start=172.16.0.100,end=172.16.0.150 --dns-nameserver 10.11.5.4 --name provider1-subnet provider1 172.16.0.0/24
+neutron router-create router
+neutron router-gateway-set router provider1
+neutron router-interface-add router private1-subnet
+~~~
+
+Create 2 floating IPs:
+~~~
+openstack floating ip create provider1
+openstack floating ip create provider1
+~~~
+
+Modify /etc/hosts on Director node:
+~~~
+
 ~~~
 
 Configure OpenShift's install-config.yaml:
@@ -79,7 +115,7 @@ platform:
     cloud: overcloud
     computeFlavor: m1.openshift
     externalNetwork: provider1
-    lbFloatingIP: 172.16.0.108
+    lbFloatingIP: 172.16.0.112
     octaviaSupport: "1"
     region: ""
     trunkSupport: "1"
