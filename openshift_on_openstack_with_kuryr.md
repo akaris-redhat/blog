@@ -48,7 +48,13 @@ Make sure that the templates contain:
 octavia/network-environment.yaml:  NeutronDhcpAgentDnsmasqDnsServers: ["10.11.5.4","10.11.5.3"]
 ~~~
 
-Set secgroups after deployment:
+Set swiftoperator role and swift store key:
+~~~
+openstack role add --user admin --project admin swiftoperator
+openstack object store account set --property Temp-URL-Key=superkey
+~~~
+
+Set quotas after deployment:
 ~~~
 source overcloudrc
 openstack quota set --secgroups 250 --secgroup-rules 1000 --ports 1500 --subnets 250 --networks 250 admin
