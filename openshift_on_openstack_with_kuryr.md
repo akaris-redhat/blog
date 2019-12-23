@@ -85,6 +85,22 @@ Modify /etc/hosts on Director node:
 
 ~~~
 
+Create clouds.yaml:
+~~~
+clouds:
+  overcloud:
+    auth:
+      auth_url: http://172.16.0.108:5000//v3
+      username: "admin"
+      password: zP4be2ukhpCkj4zqRfUk8XjQb
+      project_id: 94108130319a428cbb99b5988e8ba0f1
+      project_name: "admin"
+      user_domain_name: "Default"
+    region_name: "regionOne"
+    interface: "public"
+    identity_api_version: 3
+~~~
+
 Configure OpenShift's install-config.yaml:
 ~~~
 apiVersion: v1
@@ -122,4 +138,6 @@ platform:
 pullSecret: '(...)'
 sshKey: |
   ssh-rsa (...)
-  ~~~
+~~~
+  
+Follow the rest of the OpenShift installation guide.
