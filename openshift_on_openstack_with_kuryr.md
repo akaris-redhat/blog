@@ -140,4 +140,5 @@ sshKey: |
   ssh-rsa (...)
 ~~~
   
-Follow the rest of the OpenShift installation guide.
+Follow the rest of the OpenShift installation guide:
+[https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html/installing/installing-on-openstack#installation-osp-verifying-external-network_installing-openstack-installer-custom](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html/installing/installing-on-openstack#installation-osp-verifying-external-network_installing-openstack-installer-custom)
