@@ -43,6 +43,11 @@ parameter_defaults:
 > **Note:** The project UUID for `controller_worker/amp_secgroup_allowed_projects` cannot be known beforehand. 
 > Hence, this UUID needs to be changed after a first deployment and the `openstack overcloud deploy (...) command needs to be run again.
 
+Make sure that the templates contain:
+~~~
+octavia/network-environment.yaml:  NeutronDhcpAgentDnsmasqDnsServers: ["10.11.5.4","10.11.5.3"]
+~~~
+
 Set secgroups after deployment:
 ~~~
 source overcloudrc
