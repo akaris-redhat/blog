@@ -1,6 +1,6 @@
 ### Prerequisites ###
 
-Install OpenShift on OpenStack. See: ...
+Install OpenShift on OpenStack. See: [https://github.com/andreaskaris/blog/blob/master/openshift_on_openstack_with_kuryr.md](https://github.com/andreaskaris/blog/blob/master/openshift_on_openstack_with_kuryr.md) for instructions. Do not use `networkType: Kuryr`, instead use the default `networkType:  OpenShiftSDN`.
 
 ### Upstream documentation ###
 
