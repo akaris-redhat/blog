@@ -53,3 +53,4 @@ ping 172.31.254.10
 ## Testing multus ##
 
 * [https://docs.openshift.com/container-platform/4.2/networking/multiple-networks/configuring-ipvlan.html](https://docs.openshift.com/container-platform/4.2/networking/multiple-networks/configuring-ipvlan.html)
+* [https://docs.openshift.com/container-platform/4.2/networking/multiple-networks/attaching-pod.html](https://docs.openshift.com/container-platform/4.2/networking/multiple-networks/attaching-pod.html)
