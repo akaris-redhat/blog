@@ -1,3 +1,5 @@
+## Prerequisites ##
+
 ### Creating additional OpenStack infrastructure ###
 
 Add an additional port to each of the 3 workers:
@@ -48,4 +50,6 @@ ping 172.31.254.11
 ping 172.31.254.10
 ~~~
 
+## Testing multus ##
 
+* [https://docs.openshift.com/container-platform/4.2/networking/multiple-networks/configuring-ipvlan.html](https://docs.openshift.com/container-platform/4.2/networking/multiple-networks/configuring-ipvlan.html)
