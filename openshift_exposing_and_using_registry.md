@@ -1,3 +1,7 @@
+### Disclaimer ###
+
+This is just a quick and dirty way of using the internal registry within OpenShift 4.2. Not suitable for production environments.
+
 ### Documentation ###
 
 * [https://docs.openshift.com/container-platform/4.2/registry/securing-exposing-registry.html](https://docs.openshift.com/container-platform/4.2/registry/securing-exposing-registry.html)
@@ -54,3 +58,32 @@ oc logs -n openshift-image-registry deployments/image-registry | grep fedora-cus
 
 ### Launching a deployment with the custom image ###
 
+Launch a custom deployment from the custom image. Note that the internal registry name must be used:
+~~~
+cat<<'EOF'>fedora-custom-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fedora-custom-deployment
+  labels:
+    app: fedora-custom-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fedora-custom-pod
+  template:
+    metadata:
+      labels:
+        app: fedora-custom-pod
+    spec:
+      containers:
+      - name: fedora-custom
+        image: image-registry.openshift-image-registry.svc:5000/openshift/fedora-custom:1.0
+        command:
+          - sleep
+          - infinity
+        imagePullPolicy: IfNotPresent
+EOF
+oc apply -f fedora-custom-deployment.yaml
+~~~
