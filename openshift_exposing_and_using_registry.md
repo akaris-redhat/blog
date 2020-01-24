@@ -38,3 +38,11 @@ RUN yum install tcpdump iproute iputils -y
 EOF
 buildah bud -t fedora-custom:1.0 .
 ~~~
+
+Tag the image correctly and push to get registry:
+~~~
+podman tag localhost/fedora-custom:1.0 $HOST/openshift/fedora-custom:1.0
+podman push  --tls-verify=false $HOST/openshift/fedora-custom:1.0
+~~~
+
+### Launching a deployment with the custom image ###
