@@ -45,4 +45,12 @@ podman tag localhost/fedora-custom:1.0 $HOST/openshift/fedora-custom:1.0
 podman push  --tls-verify=false $HOST/openshift/fedora-custom:1.0
 ~~~
 
+### Viewing logs ###
+
+Verify registry logs with:
+~~~
+oc logs -n openshift-image-registry deployments/image-registry | grep fedora-custom
+~~~
+
 ### Launching a deployment with the custom image ###
+
