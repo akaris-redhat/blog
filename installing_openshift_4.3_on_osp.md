@@ -6,5 +6,5 @@
 
 ~~~
 source <rc file>
-openstack server create --key-name akaris_id_rsa --flavor m1.small --image ... --network provider_net_quicklab akaris_jump_server
+openstack server create --key-name akaris_id_rsa --flavor m1.small --image rhel-7.7-server-x86_64-latest --network provider_net_quicklab akaris_jump_server
 ~~~
