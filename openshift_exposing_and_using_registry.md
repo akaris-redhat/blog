@@ -20,6 +20,11 @@ If in a lab environment and not using DNS servers, modify `/etc/hosts` on the cl
 x.x.x.x default-route-openshift-image-registry.apps.<cluster URL>
 ~~~
 
+First, login to OpenShift:
+~~~
+oc login -u kubeadmin -p <password from install log>
+~~~
+
 When using the kubeadmin user, login as follows:
 ~~~
 podman login -u kubeadmin -p $(oc whoami -t) --tls-verify=false $HOST 
