@@ -39,7 +39,7 @@ nmcli connection add type ethernet ifname ens6 con-name ens6
 
 # assign a static IP
 nmcli connection modify ens6 ipv4.addresses 172.31.254.12/24 
-nmcli connection modify ens6 ipv4.method manual
+nmcli connection modify ens6 ipv4.method static
 nmcli connection up ens6
 ~~~
 
@@ -88,6 +88,61 @@ PREFIX=24
 ~~~
 systemctl enable --now dnsmasq
 ~~~
+
+## Adding ports to master nodes ##
+
+The dhcp agents run on all master nodes and all worker nodes:
+~~~
+
+~~~
+
+Therefore, the master nodes need to be connected to the same network interfaces as the workers. Otherwise, DHCP requests might not be sent to the DHCP server:
+~~~
+root@akaris-jump-server ~]# tcpdump -nne -i eth1 port 67 or port 68 &
+[1] 22543
+[root@akaris-jump-server ~]# tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth1, link-type EN10MB (Ethernet), capture size 262144 bytes
+
+[root@akaris-jump-server ~]# 
+[root@akaris-jump-server ~]# journalctl -f -u dnsmasq &
+[2] 22544
+[root@akaris-jump-server ~]# -- Logs begin at Fri 2020-01-24 12:27:41 EST. --
+Jan 27 14:36:55 akaris-jump-server systemd[1]: Stopping DNS caching server....
+Jan 27 14:36:55 akaris-jump-server systemd[1]: Stopped DNS caching server..
+Jan 27 14:36:55 akaris-jump-server systemd[1]: Started DNS caching server..
+Jan 27 14:36:55 akaris-jump-server dnsmasq[22088]: started, version 2.76 cachesize 150
+Jan 27 14:36:55 akaris-jump-server dnsmasq[22088]: compile time options: IPv6 GNU-getopt DBus no-i18n IDN DHCP DHCPv6 no-Lua TFTP no-conntrack ipset auth no-DNSSEC loop-detect inotify
+Jan 27 14:36:55 akaris-jump-server dnsmasq-dhcp[22088]: DHCP, IP range 172.31.254.50 -- 172.31.254.150, lease time 12h
+Jan 27 14:36:55 akaris-jump-server dnsmasq[22088]: reading /etc/resolv.conf
+Jan 27 14:36:55 akaris-jump-server dnsmasq[22088]: using nameserver 10.11.142.1#53
+Jan 27 14:36:55 akaris-jump-server dnsmasq[22088]: using nameserver 10.11.142.2#53
+Jan 27 14:36:55 akaris-jump-server dnsmasq[22088]: read /etc/hosts - 7 addresses
+
+[root@akaris-jump-server ~]# 
+[root@akaris-jump-server ~]# 
+[root@akaris-jump-server ~]# 
+~~~
+
+Adding ports:
+~~~
+openstack port create --disable-port-security --no-security-group --no-fixed-ip --network akaris-backend akaris-backend-port-master-0
+openstack port create --disable-port-security --no-security-group --no-fixed-ip --network akaris-backend akaris-backend-port-master-1
+openstack port create --disable-port-security --no-security-group --no-fixed-ip --network akaris-backend akaris-backend-port-master-2
+openstack server add port akaris-osc-qhg2f-master-0 akaris-backend-port-master-0
+openstack server add port akaris-osc-qhg2f-master-1 akaris-backend-port-master-1
+openstack server add port akaris-osc-qhg2f-master-2 akaris-backend-port-master-2
+~~~
+
+Configurating interface on master nodes:
+~~~
+nmcli connection delete 'Wired connection 2'
+nmcli connection add type ethernet ifname ens6 con-name ens6
+nmcli connection modify ens6 ipv4.addresses 172.31.254.22/24
+nmcli connection modify ens6 ipv4.method static
+nmcli connection up ens6
+~~~
+
+...
 
 ## Testing multus ##
 
