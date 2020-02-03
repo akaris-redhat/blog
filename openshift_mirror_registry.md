@@ -240,6 +240,19 @@ additionalTrustBundle: |
 By the way, the `additionalTrustBundle` step can be found here:
 * https://access.redhat.com/documentation/en-us/openshift_container_platform/4.3/html/installing_on_bare_metal/installing-on-bare-metal#installation-initializing-manual_installing-restricted-networks-bare-metal
 
+Also, make sure to modify the `pullSecret` section in install-config.yaml to include the credentials for the custom registry:
+~~~
+pullSecret: '{   
+    "auths": {
+(...)
+        "10.10.181.198:5000": {
+            "auth": "cm9vdDpwYXNzd29yZA==",
+            "email": "akaris@redhat.com"
+        },
+(...)
+}
+}'
+
 As a last step, generate the custom installer:
 ~~~
 [root@mirror ~]# ls -al openshift-install
