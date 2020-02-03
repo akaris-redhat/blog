@@ -66,7 +66,9 @@ curl: (60) Issuer certificate is invalid.
 curl 7.29.0 (x86_64-redhat-linux-gnu) libcurl/7.29.0 NSS/3.44 zlib/1.2.7 libidn/1.28 libssh2/1.4.3
 ~~~
 
-Just follow the rest of the documentation. The following command ...
+Just follow the rest of the documentation. Get `$OCP_RELEASE` from https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&tab=tags. 
+
+The following command ...
 ~~~
 oc adm -a ${LOCAL_SECRET_JSON} release mirror \
      --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE} \
