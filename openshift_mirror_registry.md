@@ -88,8 +88,6 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 
 [alt_names]
-#DNS.1 = gss-stack-tools-test.openstack.gsslab.rdu2.redhat.com
-#DNS.2 = rundeck.gss-stack-tools-test.openstack.gsslab.rdu2.redhat.com
 DNS.1 = 10.10.181.198
 IP.1 = 10.10.181.198
 EOF
@@ -175,7 +173,7 @@ cm9vdDpwYXNzd29yZA==
 (...)
         "10.10.181.198:5000": {
             "auth": "cm9vdDpwYXNzd29yZA==",
-            "email": "akaris@redhat.com"
+            "email": "akaris@example.com"
         },
         "registry.redhat.io": {
 (...)
@@ -247,7 +245,7 @@ pullSecret: '{
 (...)
         "10.10.181.198:5000": {
             "auth": "cm9vdDpwYXNzd29yZA==",
-            "email": "akaris@redhat.com"
+            "email": "akaris@example.com"
         },
 (...)
 }
