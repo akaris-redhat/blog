@@ -1,3 +1,5 @@
+### Troubleshooting steps ###
+
 ~~~
 [akaris@linux 00000001]$ oc get pods -A | grep etcd-member
 openshift-etcd                                          etcd-member-cluste-xxxxx-m-1.c.akaris-00000001.internal                2/2     Running     0          3h49m
@@ -36,3 +38,7 @@ Error: unhealthy cluster
 [root@cluste-xxxxx-m-1 /]# etcdctl alarm list
 [root@cluste-xxxxx-m-1 /]# 
 ~~~
+
+### Resources ###
+
+* [https://rancher.com/docs/rancher/v2.x/en/troubleshooting/kubernetes-components/etcd/#etcd-cluster-and-connectivity-checks](https://rancher.com/docs/rancher/v2.x/en/troubleshooting/kubernetes-components/etcd/#etcd-cluster-and-connectivity-checks)
