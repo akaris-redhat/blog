@@ -250,6 +250,7 @@ pullSecret: '{
 (...)
 }
 }'
+~~~
 
 As a last step, generate the custom installer:
 ~~~
