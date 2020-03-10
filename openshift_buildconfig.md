@@ -337,9 +337,91 @@ latest
       About a minute ago
 ~~~
 
-Now, use the imagestream in a deployment:
+### Using the image stream ###
+
+Now, use the imagestream in a deployment. Inspect this with a dry-run:
+~~~
+[root@master-2 ~]# oc new-app fh  --name fh  --dry-run -o yaml
+apiVersion: v1
+items:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: fh
+    name: fh
+  spec:
+    replicas: 1
+    selector:
+      app: fh
+      deploymentconfig: fh
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: fh
+          deploymentconfig: fh
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/default/fh:latest
+          name: fh
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - fh
+        from:
+          kind: ImageStreamTag
+          name: fh:latest
+          namespace: default
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: fh
+    name: fh
+  spec:
+    ports:
+    - name: 80-tcp
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      app: fh
+      deploymentconfig: fh
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}
 ~~~
 
+Either use these resource manually or simply apply the app:
+~~~
+oc new-app fh  --name fh 
 ~~~
 
 ### Resources ###
