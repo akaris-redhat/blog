@@ -441,3 +441,4 @@ oc new-app fh  --name fh
 * https://docs.openshift.com/dedicated/3/dev_guide/builds/build_inputs.html#using-secrets-during-build
 * https://cloudowski.com/articles/why-managing-container-images-on-openshift-is-better-than-on-kubernetes/
 * https://access.redhat.com/solutions/3635491
+* https://blog.openshift.com/jupyter-on-openshift-part-6-running-as-an-assigned-user-id/
