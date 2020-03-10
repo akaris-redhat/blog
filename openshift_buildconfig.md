@@ -46,7 +46,7 @@ spec:
        RUN yum install iproute -y
        RUN echo "Apache" >> /var/www/html/index.html
        ADD run-apache.sh /run-apache.sh
-       RUN chmod -v +x /run-apache.sh
+       RUN chmod -v +rx /run-apache.sh
        CMD ["/run-apache.sh"]
   strategy:
     dockerStrategy:
@@ -274,7 +274,7 @@ Removing intermediate container d0b07909b473
 Step 7/11 : ADD run-apache.sh /run-apache.sh
  ---> 3f8d68d6b8c9
 Removing intermediate container 791595daf279
-Step 8/11 : RUN chmod -v +x /run-apache.sh
+Step 8/11 : RUN chmod -v +rx /run-apache.sh
  ---> Running in cf3b9509db44
 
 mode of '/run-apache.sh' changed from 0600 (rw-------) to 0711 (rwx--x--x)
