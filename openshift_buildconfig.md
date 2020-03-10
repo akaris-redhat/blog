@@ -44,10 +44,17 @@ spec:
        RUN yum install httpd -y
        RUN yum install tcpdump -y
        RUN yum install iproute -y
+       RUN yum install procps-ng -y
        RUN echo "Apache" >> /var/www/html/index.html
-       ADD run-apache.sh /run-apache.sh
-       RUN chmod -v +rx /run-apache.sh
-       CMD ["/run-apache.sh"]
+       ADD run-apache.sh /usr/share/httpd/run-apache.sh
+       RUN chown apache. /run/httpd/ -R
+       RUN chmod -v +rx /usr/share/httpd/run-apache.sh
+       RUN chown apache.  /usr/share/httpd/run-apache.sh
+       RUN usermod apache -s /bin/bash
+       RUN sed -i 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf
+       RUN chown apache. /etc/httpd/logs/ -R
+       USER apache
+       CMD ["/usr/share/httpd/run-apache.sh"]
   strategy:
     dockerStrategy:
       noCache: true
