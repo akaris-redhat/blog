@@ -442,3 +442,4 @@ oc new-app fh  --name fh
 * https://cloudowski.com/articles/why-managing-container-images-on-openshift-is-better-than-on-kubernetes/
 * https://access.redhat.com/solutions/3635491
 * https://blog.openshift.com/jupyter-on-openshift-part-6-running-as-an-assigned-user-id/
+* https://blog.openshift.com/jupyter-openshift-part-2-using-jupyter-project-images/
