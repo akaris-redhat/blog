@@ -93,23 +93,20 @@ Now, start the build:
 ~~~
 [root@master-2 ~]# oc start-build fh-build --follow
 build.build.openshift.io/fh-build-1 started
-Step 1/11 : FROM fedora
+Step 1/18 : FROM fedora
  ---> 536f3995adeb
-Step 2/11 : EXPOSE 80
- ---> Running in 336e05de1176
- ---> cc328bfa1609
-Removing intermediate container 336e05de1176
-Step 3/11 : RUN yum install httpd -y
- ---> Running in 9ed7b439d71e
+Step 2/18 : EXPOSE 8080
+ ---> Running in 4db37c2a6dff
+ ---> f82730dc3baa
+Removing intermediate container 4db37c2a6dff
+Step 3/18 : RUN yum install httpd -y
+ ---> Running in cabcfaad7fb7
 
-Fedora Modular 31 - x86_64                      880 kB/s | 5.2 MB     00:06    
-Fedora Modular 31 - x86_64 - Updates            565 kB/s | 4.0 MB     00:07    
-Fedora 31 - x86_64 - Updates                    2.4 MB/s |  22 MB     00:09    
-Fedora 31 - x86_64                              5.0 MB/s |  71 MB     00:14    
-Last metadata expiration check: 0:00:01 ago on Tue Mar 10 17:35:21 2020.
-
-
-
+Fedora Modular 31 - x86_64                      729 kB/s | 5.2 MB     00:07    
+Fedora Modular 31 - x86_64 - Updates            733 kB/s | 4.0 MB     00:05    
+Fedora 31 - x86_64 - Updates                    1.6 MB/s |  22 MB     00:13    
+Fedora 31 - x86_64                              4.9 MB/s |  71 MB     00:14    
+Last metadata expiration check: 0:00:03 ago on Tue Mar 10 21:35:02 2020.
 Dependencies resolved.
 ================================================================================
  Package                  Architecture Version              Repository     Size
@@ -135,18 +132,18 @@ Install  10 Packages
 Total download size: 1.9 M
 Installed size: 5.9 M
 Downloading Packages:
-(1/10): httpd-filesystem-2.4.41-12.fc31.noarch.  19 kB/s |  15 kB     00:00    
-(2/10): httpd-tools-2.4.41-12.fc31.x86_64.rpm    80 kB/s |  84 kB     00:01    
-(3/10): httpd-2.4.41-12.fc31.x86_64.rpm         693 kB/s | 1.4 MB     00:02    
-(4/10): apr-util-1.6.1-11.fc31.x86_64.rpm        77 kB/s |  98 kB     00:01    
-(5/10): apr-1.7.0-2.fc31.x86_64.rpm              73 kB/s | 124 kB     00:01    
-(6/10): apr-util-bdb-1.6.1-11.fc31.x86_64.rpm    30 kB/s |  13 kB     00:00    
-(7/10): apr-util-openssl-1.6.1-11.fc31.x86_64.r  69 kB/s |  16 kB     00:00    
-(8/10): fedora-logos-httpd-30.0.2-3.fc31.noarch  77 kB/s |  16 kB     00:00    
-(9/10): mailcap-2.1.48-6.fc31.noarch.rpm         75 kB/s |  31 kB     00:00    
-(10/10): mod_http2-1.15.3-2.fc31.x86_64.rpm     373 kB/s | 158 kB     00:00    
+(1/10): httpd-filesystem-2.4.41-12.fc31.noarch.  15 kB/s |  15 kB     00:01    
+(2/10): httpd-tools-2.4.41-12.fc31.x86_64.rpm    57 kB/s |  84 kB     00:01    
+(3/10): apr-util-1.6.1-11.fc31.x86_64.rpm        59 kB/s |  98 kB     00:01    
+(4/10): apr-1.7.0-2.fc31.x86_64.rpm              57 kB/s | 124 kB     00:02    
+(5/10): apr-util-bdb-1.6.1-11.fc31.x86_64.rpm    56 kB/s |  13 kB     00:00    
+(6/10): apr-util-openssl-1.6.1-11.fc31.x86_64.r  66 kB/s |  16 kB     00:00    
+(7/10): httpd-2.4.41-12.fc31.x86_64.rpm         401 kB/s | 1.4 MB     00:03    
+(8/10): fedora-logos-httpd-30.0.2-3.fc31.noarch  68 kB/s |  16 kB     00:00    
+(9/10): mailcap-2.1.48-6.fc31.noarch.rpm        131 kB/s |  31 kB     00:00    
+(10/10): mod_http2-1.15.3-2.fc31.x86_64.rpm      96 kB/s | 158 kB     00:01    
 --------------------------------------------------------------------------------
-Total                                           382 kB/s | 1.9 MB     00:05     
+Total                                           312 kB/s | 1.9 MB     00:06     
 Running transaction check
 Transaction check succeeded.
 Running transaction test
@@ -184,12 +181,12 @@ Installed:
   mailcap-2.1.48-6.fc31.noarch            mod_http2-1.15.3-2.fc31.x86_64       
 
 Complete!
- ---> 98d98c94a387
-Removing intermediate container 9ed7b439d71e
-Step 4/11 : RUN yum install tcpdump -y
- ---> Running in b634945ebf71
+ ---> 88867ed9b8a4
+Removing intermediate container cabcfaad7fb7
+Step 4/18 : RUN yum install tcpdump -y
+ ---> Running in 361782c1902a
 
-Last metadata expiration check: 0:01:34 ago on Tue Mar 10 17:35:21 2020.
+Last metadata expiration check: 0:01:53 ago on Tue Mar 10 21:35:02 2020.
 Dependencies resolved.
 ================================================================================
  Package         Architecture   Version                   Repository       Size
@@ -204,9 +201,9 @@ Install  1 Package
 Total download size: 446 k
 Installed size: 1.2 M
 Downloading Packages:
-tcpdump-4.9.3-1.fc31.x86_64.rpm                 285 kB/s | 446 kB     00:01    
+tcpdump-4.9.3-1.fc31.x86_64.rpm                 217 kB/s | 446 kB     00:02    
 --------------------------------------------------------------------------------
-Total                                           232 kB/s | 446 kB     00:01     
+Total                                           144 kB/s | 446 kB     00:03     
 Running transaction check
 Transaction check succeeded.
 Running transaction test
@@ -222,12 +219,12 @@ Installed:
   tcpdump-14:4.9.3-1.fc31.x86_64                                                
 
 Complete!
- ---> 0e6d31818699
-Removing intermediate container b634945ebf71
-Step 5/11 : RUN yum install iproute -y
- ---> Running in 8a97b178492e
+ ---> 42d0e7726ddc
+Removing intermediate container 361782c1902a
+Step 5/18 : RUN yum install iproute -y
+ ---> Running in 38fbda75678e
 
-Last metadata expiration check: 0:02:10 ago on Tue Mar 10 17:35:21 2020.
+Last metadata expiration check: 0:02:42 ago on Tue Mar 10 21:35:02 2020.
 Dependencies resolved.
 ================================================================================
  Package               Architecture  Version               Repository      Size
@@ -248,13 +245,13 @@ Install  5 Packages
 Total download size: 1.2 M
 Installed size: 3.4 M
 Downloading Packages:
-(1/5): psmisc-23.3-2.fc31.x86_64.rpm             93 kB/s | 160 kB     00:01    
-(2/5): iproute-tc-5.4.0-1.fc31.x86_64.rpm       199 kB/s | 408 kB     00:02    
-(3/5): iproute-5.4.0-1.fc31.x86_64.rpm          305 kB/s | 640 kB     00:02    
-(4/5): libmnl-1.0.4-10.fc31.x86_64.rpm           40 kB/s |  28 kB     00:00    
-(5/5): linux-atm-libs-2.5.1-25.fc31.x86_64.rpm   53 kB/s |  38 kB     00:00    
+(1/5): psmisc-23.3-2.fc31.x86_64.rpm             96 kB/s | 160 kB     00:01    
+(2/5): iproute-tc-5.4.0-1.fc31.x86_64.rpm       167 kB/s | 408 kB     00:02    
+(3/5): iproute-5.4.0-1.fc31.x86_64.rpm          258 kB/s | 640 kB     00:02    
+(4/5): libmnl-1.0.4-10.fc31.x86_64.rpm           19 kB/s |  28 kB     00:01    
+(5/5): linux-atm-libs-2.5.1-25.fc31.x86_64.rpm   31 kB/s |  38 kB     00:01    
 --------------------------------------------------------------------------------
-Total                                           266 kB/s | 1.2 MB     00:04     
+Total                                           221 kB/s | 1.2 MB     00:05     
 Running transaction check
 Transaction check succeeded.
 Running transaction test
@@ -279,47 +276,118 @@ Installed:
   psmisc-23.3-2.fc31.x86_64         
 
 Complete!
- ---> 25dbab5462e9
-Removing intermediate container 8a97b178492e
-Step 6/11 : RUN echo "Apache" >> /var/www/html/index.html
- ---> Running in d0b07909b473
+ ---> 21549d4c64c0
+Removing intermediate container 38fbda75678e
+Step 6/18 : RUN yum install procps-ng -y
+ ---> Running in d435bba8f834
 
- ---> 30eb534c9b8f
-Removing intermediate container d0b07909b473
-Step 7/11 : ADD run-apache.sh /run-apache.sh
- ---> 3f8d68d6b8c9
-Removing intermediate container 791595daf279
-Step 8/11 : RUN chmod -v +rx /run-apache.sh
- ---> Running in cf3b9509db44
+Last metadata expiration check: 0:03:29 ago on Tue Mar 10 21:35:02 2020.
+Dependencies resolved.
+================================================================================
+ Package           Architecture   Version                  Repository      Size
+================================================================================
+Installing:
+ procps-ng         x86_64         3.3.15-6.fc31            fedora         326 k
 
-mode of '/run-apache.sh' changed from 0600 (rw-------) to 0711 (rwx--x--x)
- ---> e53b23f01893
-Removing intermediate container cf3b9509db44
-Step 9/11 : CMD /run-apache.sh
- ---> Running in d79684be9eca
- ---> ea019a162b55
-Removing intermediate container d79684be9eca
-Step 10/11 : ENV "OPENSHIFT_BUILD_NAME" "fh-build-1" "OPENSHIFT_BUILD_NAMESPACE" "default"
- ---> Running in 71fe9b0c5d6b
- ---> b4740adc0ab9
-Removing intermediate container 71fe9b0c5d6b
-Step 11/11 : LABEL "io.openshift.build.name" "fh-build-1" "io.openshift.build.namespace" "default"
- ---> Running in 4f205c797d63
- ---> 274538a43e0a
-Removing intermediate container 4f205c797d63
-Successfully built 274538a43e0a
+Transaction Summary
+================================================================================
+Install  1 Package
+
+Total download size: 326 k
+Installed size: 966 k
+Downloading Packages:
+procps-ng-3.3.15-6.fc31.x86_64.rpm              126 kB/s | 326 kB     00:02    
+--------------------------------------------------------------------------------
+Total                                            87 kB/s | 326 kB     00:03     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Installing       : procps-ng-3.3.15-6.fc31.x86_64                         1/1 
+  Running scriptlet: procps-ng-3.3.15-6.fc31.x86_64                         1/1 
+  Verifying        : procps-ng-3.3.15-6.fc31.x86_64                         1/1 
+
+Installed:
+  procps-ng-3.3.15-6.fc31.x86_64                                                
+
+Complete!
+ ---> 951a4cb399c5
+Removing intermediate container d435bba8f834
+Step 7/18 : RUN echo "Apache" >> /var/www/html/index.html
+ ---> Running in b6c65c93e5fa
+
+ ---> 35e10a5d00de
+Removing intermediate container b6c65c93e5fa
+Step 8/18 : ADD run-apache.sh /usr/share/httpd/run-apache.sh
+ ---> d1fef6e7b9ab
+Removing intermediate container 408f20999a38
+Step 9/18 : RUN chown apache. /run/httpd/ -R
+ ---> Running in 607c708100d6
+
+ ---> 0be64aed67dc
+Removing intermediate container 607c708100d6
+Step 10/18 : RUN chmod -v +rx /usr/share/httpd/run-apache.sh
+ ---> Running in 0f5f0790daa8
+
+mode of '/usr/share/httpd/run-apache.sh' changed from 0600 (rw-------) to 0755 (rwxr-xr-x)
+ ---> 50e2716f2ff5
+Removing intermediate container 0f5f0790daa8
+Step 11/18 : RUN chown apache.  /usr/share/httpd/run-apache.sh
+ ---> Running in 14bf2ae5b2db
+
+ ---> 506b6f95e9d4
+Removing intermediate container 14bf2ae5b2db
+Step 12/18 : RUN usermod apache -s /bin/bash
+ ---> Running in 4df46121305b
+
+ ---> a6ddc2b4646b
+Removing intermediate container 4df46121305b
+Step 13/18 : RUN sed -i 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf
+ ---> Running in 91eff6b4a550
+
+ ---> 8dd2adb40976
+Removing intermediate container 91eff6b4a550
+Step 14/18 : RUN chown apache. /etc/httpd/logs/ -R
+ ---> Running in e08957abbebc
+
+ ---> ad1c7829a76f
+Removing intermediate container e08957abbebc
+Step 15/18 : USER apache
+ ---> Running in daacadbb8527
+ ---> 19696cc0c7cc
+Removing intermediate container daacadbb8527
+Step 16/18 : CMD /usr/share/httpd/run-apache.sh
+ ---> Running in 572378ff8b5f
+ ---> 14f30ed483b8
+Removing intermediate container 572378ff8b5f
+Step 17/18 : ENV "OPENSHIFT_BUILD_NAME" "fh-build-1" "OPENSHIFT_BUILD_NAMESPACE" "default"
+ ---> Running in 38160ae2c287
+ ---> b9caed661e59
+Removing intermediate container 38160ae2c287
+Step 18/18 : LABEL "io.openshift.build.name" "fh-build-1" "io.openshift.build.namespace" "default"
+ ---> Running in a23d9f647e89
+ ---> f34898ea8473
+Removing intermediate container a23d9f647e89
+Successfully built f34898ea8473
 
 Pushing image docker-registry.default.svc:5000/default/fh:latest ...
-Pushed 0/7 layers, 4% complete
-Pushed 1/7 layers, 59% complete
-Pushed 2/7 layers, 66% complete
-Pushed 3/7 layers, 70% complete
-Pushed 4/7 layers, 59% complete
-Pushed 5/7 layers, 72% complete
-Pushed 5/7 layers, 94% complete
-Pushed 6/7 layers, 96% complete
-Pushed 7/7 layers, 100% complete
-Push successful    
+Pushed 0/13 layers, 15% complete
+Pushed 1/13 layers, 31% complete
+Pushed 2/13 layers, 31% complete
+Pushed 3/13 layers, 31% complete
+Pushed 4/13 layers, 31% complete
+Pushed 5/13 layers, 38% complete
+Pushed 6/13 layers, 48% complete
+Pushed 7/13 layers, 64% complete
+Pushed 8/13 layers, 71% complete
+Pushed 9/13 layers, 80% complete
+Pushed 10/13 layers, 79% complete
+Pushed 11/13 layers, 86% complete
+Pushed 12/13 layers, 92% complete
+Pushed 13/13 layers, 100% complete
+Push successful
 ~~~
 
 Verify the build and imagestream:
