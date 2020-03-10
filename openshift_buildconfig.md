@@ -510,7 +510,7 @@ oc new-app fh  --name fh
 ### Using the image stream in a custom deployment ###
 
 With old school kubernetes deployments, this would look like this:
-`httpbin.yaml`:
+`fh.yaml`:
 ~~~
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -518,14 +518,14 @@ metadata:
   annotations:
     openshift.io/host.generated: "true"
   creationTimestamp: null
-  name: httpbin
+  name: fh
 spec:
-  host: httpbin.apps.akaris.lab.pnq2.cee.redhat.com
+  host: fh.apps.akaris.lab.pnq2.cee.redhat.com
   tls:
     termination: edge
   to:
     kind: Service
-    name: httpbin-service
+    name: fh-service
     weight: 100
   wildcardPolicy: None
 status:
@@ -534,10 +534,10 @@ status:
 apiVersion: v1
 kind: Service
 metadata:
-  name: httpbin-service
+  name: fh-service
 spec:
   selector:
-    app: httpbin-deployment
+    app: fh-deployment
   ports:
     - protocol: TCP
       port: 80
@@ -546,27 +546,27 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: httpbin-deployment
+  name: fh-deployment
   labels:
-    app: httpbin-deployment
+    app: fh-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: httpbin-pod
+      app: fh-pod
   template:
     metadata:
       labels:
-        app: httpbin-pod
+        app: fh-pod
     spec:
       containers:
-      - name: httpbin
+      - name: fh
         image: docker-registry.default.svc:5000/default/fh:latest
         imagePullPolicy: Always
 ~~~
 
 ~~~
-oc apply -f httpbin.yaml
+oc apply -f fh.yaml
 ~~~
 
 ### Resources ###
