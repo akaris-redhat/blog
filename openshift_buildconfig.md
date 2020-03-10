@@ -48,7 +48,7 @@ spec:
           name: run-apache
     dockerfile: |
        FROM fedora
-       EXPOSE 80
+       EXPOSE 8080
        RUN yum install httpd -y
        RUN yum install tcpdump -y
        RUN yum install iproute -y
@@ -352,7 +352,7 @@ latest
       About a minute ago
 ~~~
 
-### Using the image stream ###
+### Using the image stream in a new-app ###
 
 Now, use the imagestream in a deployment. Inspect this with a dry-run:
 ~~~
@@ -437,6 +437,68 @@ metadata: {}
 Either use these resource manually or simply apply the app:
 ~~~
 oc new-app fh  --name fh 
+~~~
+
+### Using the image stream in a custom deployment ###
+
+With old school kubernetes deployments, this would look like this:
+`httpbin.yaml`:
+~~~
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  creationTimestamp: null
+  name: httpbin
+spec:
+  host: httpbin.apps.akaris.lab.pnq2.cee.redhat.com
+  tls:
+    termination: edge
+  to:
+    kind: Service
+    name: httpbin-service
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress: null
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin-service
+spec:
+  selector:
+    app: httpbin-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin-deployment
+  labels:
+    app: httpbin-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin-pod
+  template:
+    metadata:
+      labels:
+        app: httpbin-pod
+    spec:
+      containers:
+      - name: httpbin
+        image: docker-registry.default.svc:5000/default/fh:latest
+        imagePullPolicy: Always
+~~~
+
+~~~
+oc apply -f httpbin.yaml
 ~~~
 
 ### Resources ###
