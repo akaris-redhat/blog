@@ -350,3 +350,4 @@ Now, use the imagestream in a deployment:
 * https://docs.openshift.com/container-platform/3.11/dev_guide/builds/basic_build_operations.html
 * https://kb.novaordis.com/index.php/OpenShift_Image_and_ImageStream_Operations
 * https://docs.openshift.com/dedicated/3/dev_guide/builds/build_inputs.html#using-secrets-during-build
+* https://cloudowski.com/articles/why-managing-container-images-on-openshift-is-better-than-on-kubernetes/
