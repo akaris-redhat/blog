@@ -1,8 +1,16 @@
 ### Building custom images with OpenShift ###
 
-Create the following file
+Note that with the below Dockerfile, we run into the caveat that the image requires to be run as user apache. So, if we are in the default project and are executing all of this as the admin user, we need to execute this as a prerequisite:
+~~~
+[root@master-2 ~]# oc adm policy add-scc-to-user anyuid -z default
+scc "anyuid" added to: ["system:serviceaccount:default:default"]
+~~~
+> **Note:** That's from https://blog.openshift.com/jupyter-openshift-part-2-using-jupyter-project-images/
 
-`buildconfig.yaml`:
+Otherwise, follow: 
+* https://blog.openshift.com/jupyter-on-openshift-part-6-running-as-an-assigned-user-id/
+
+Create the following file `buildconfig.yaml`:
 ~~~
 apiVersion: image.openshift.io/v1
 kind: ImageStream
