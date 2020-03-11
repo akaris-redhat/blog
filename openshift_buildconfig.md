@@ -515,45 +515,43 @@ With old school kubernetes deployments, this would look like this:
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  annotations:
-    openshift.io/host.generated: "true"
-  creationTimestamp: null
-  name: fh
+  labels:
+    app: fh-deploymentconfig
+  name: fh-service
 spec:
   host: fh.apps.akaris.lab.pnq2.cee.redhat.com
-  tls:
-    termination: edge
+  port:
+    targetPort: 8080
   to:
     kind: Service
     name: fh-service
     weight: 100
   wildcardPolicy: None
-status:
-  ingress: null
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: fh-service
+  labels:
+    app: fh-deploymentconfig
 spec:
   selector:
-    app: fh-deployment
+    app: fh-pod
   ports:
     - protocol: TCP
       port: 80
       targetPort: 8080
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: DeploymentConfig
 metadata:
-  name: fh-deployment
+  name: fh-deploymentconfig
   labels:
-    app: fh-deployment
+    app: fh-deploymentconfig
 spec:
   replicas: 1
   selector:
-    matchLabels:
-      app: fh-pod
+    app: fh-pod
   template:
     metadata:
       labels:
@@ -568,6 +566,14 @@ spec:
 ~~~
 oc apply -f fh.yaml
 ~~~
+
+Verification:
+~~~
+sleep 60
+[root@master-2 ~]# curl http://fh.apps.akaris.lab.pnq2.cee.redhat.com/
+Apache
+~~~
+
 
 ### Resources ###
 
