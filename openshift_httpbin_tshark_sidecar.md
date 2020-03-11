@@ -1,10 +1,28 @@
+## Configuring Alertmanager with webhooks and httpbin container with tshark sidecar as a consumer ##
+
+### Summary ###
+
+The following describe a setup on OCP 3.11 with:
+* a container running httpbin and a sidecar running tshark and filtering for incoming http requests and logging them
+* configuration of Alertmanager so that it sends alerts via webhook to httpbin
+* loading cluster with high number of pods
+* analyzing generated alarms
+
+### Prerequisites ###
+
+Make sure that ocntainers can run as any uid:
+~~~
+# oc adm policy add-scc-to-user anyuid -z default
+scc "anyuid" added to: ["system:serviceaccount:default:default"]
+~~~
+
 ### OpenShift httpbin with tshark sidecar ###
 
 The following allows us to see any incoming requests to httpbin but to filter out httpbin's answers.
 
 Prerequisites:
 ~~~
-[root@master-2 ~]# oc adm policy add-scc-to-user anyuid -z default
+# oc adm policy add-scc-to-user anyuid -z default
 scc "anyuid" added to: ["system:serviceaccount:default:default"]
 ~~~
 
@@ -321,6 +339,364 @@ pod "alertmanager-main-2" deleted
 
 And check in the web interface of alertmanager to make sure that the new configuration shows up.
 
+### Loading the cluster ###
+
+An easy way to generate an alert in a small lab is to trigger alert `KubeletTooManyPods`. Go to prometheus and check its configuration:
+~~~
+alert: KubeletTooManyPods
+expr: kubelet_running_pod_count{job="kubelet"}
+  > 250 * 0.9
+for: 15m
+labels:
+  severity: warning
+annotations:
+  message: Kubelet {{ $labels.instance }} is running {{ $value }} Pods, close to the
+    limit of 250.
+~~~
+
+Then, create the following busybox deployment with a number of pods that exceeds this number, e.g.:
+`busybox.yaml`:
+~~~
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-deployment
+  labels:
+    app: busybox-deployment
+spec:
+  replicas: 500
+  selector:
+    matchLabels:
+      app: busybox-pod
+  template:
+    metadata:
+      labels:
+        app: busybox-pod
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command:
+          - sleep
+          - infinity
+        imagePullPolicy: IfNotPresent
+~~~
+
+~~~
+oc apply -f busybox.yaml
+~~~
+
+The cluster will need some time to create those pods and it'll take 15 minutes for the alarm to fire. So take a coffee and come back later. Once the alarm fires in prometheus, go to alertmanager and make sure that it shows there, too.
+
+Among others, Alertmanager should show:
+~~~
+alertname="KubeletTooManyPods"
+16:06:32, 2020-03-11
+message:	Kubelet 10.74.176.204:10250 is running 250 Pods, close to the limit of 250.
+severity="warning"
+service="kubelet"prometheus="openshift-monitoring/k8s"namespace="kube-system"job="kubelet"instance="10.74.176.204:10250"endpoint="https-metrics"
+~~~
+
+Now, it's time to go back to the httpbin pod.
+
 ### Monitoring incoming webhook reuests ###
 
-Now, monitor the status of incoming web hooks
+Get the pod name:
+~~~
+# oc get pods | grep httpbin
+httpbin-deploymentconfig-8-8crvh     2/2       Running   0          1h
+~~~
+
+And check the logs of the tshark container which will show a verbose packet capture of HTTP with a destination port of 80 (so we are not capturing the response):
+~~~
+# oc logs httpbin-deploymentconfig-8-8crvh -c tshark | tail -n 400
+(...)
+Frame 1708: 5220 bytes on wire (41760 bits), 5220 bytes captured (41760 bits) on interface 0
+    Interface id: 0 (eth0)
+        Interface name: eth0
+(...)
+Ethernet II, Src: ... (...), Dst: ... (...)
+(...)
+Internet Protocol Version 4, Src: ..., Dst: ...
+(...)
+Transmission Control Protocol, Src Port: 41606, Dst Port: 80, Seq: 1, Ack: 1, Len: 5154
+(...)
+Hypertext Transfer Protocol
+    POST /anything HTTP/1.1\r\n
+        [Expert Info (Chat/Sequence): POST /anything HTTP/1.1\r\n]
+            [POST /anything HTTP/1.1\r\n]
+            [Severity level: Chat]
+            [Group: Sequence]
+        Request Method: POST
+        Request URI: /anything
+        Request Version: HTTP/1.1
+    User-Agent: Alertmanager/0.15.2\r\n
+    Content-Length: 4743\r\n
+        [Content length: 4743]
+    Content-Type: application/json\r\n
+(...)
+JavaScript Object Notation: application/json
+    Object
+        Member Key: receiver
+            String value: wh
+            Key: receiver
+        Member Key: status
+            String value: firing
+            Key: status
+        Member Key: alerts
+            Array
+                Object
+                    Member Key: status
+                        String value: firing
+                        Key: status
+                    Member Key: labels
+                        Object
+                            Member Key: alertname
+                                String value: KubeDaemonSetRolloutStuck
+                                Key: alertname
+                            Member Key: cluster
+                                String value: openshift.akaris2.lab.pnq2.cee.redhat.com
+                                Key: cluster
+                            Member Key: daemonset
+                                String value: node-exporter
+                                Key: daemonset
+                            Member Key: endpoint
+                                String value: https-main
+                                Key: endpoint
+                            Member Key: instance
+                                String value: ...:8443
+                                Key: instance
+                            Member Key: job
+                                String value: kube-state-metrics
+                                Key: job
+                            Member Key: namespace
+                                String value: openshift-monitoring
+                                Key: namespace
+                            Member Key: pod
+                                String value: kube-state-metrics-6f4c658bcc-v57b6
+                                Key: pod
+                            Member Key: prometheus
+                                String value: openshift-monitoring/k8s
+                                Key: prometheus
+                            Member Key: service
+                                String value: kube-state-metrics
+                                Key: service
+                            Member Key: severity
+                                String value: critical
+                                Key: severity
+                        Key: labels
+                    Member Key: annotations
+                        Object
+                            Member Key: message
+                                String value: Only 66.66666666666666% of desired pods scheduled and ready for daemon set openshift-monitoring/node-exporter
+                                Key: message
+                        Key: annotations
+                    Member Key: startsAt
+                        String value: 2020-03-11T16:07:40.59085788Z
+                        Key: startsAt
+                    Member Key: endsAt
+                        String value: 0001-01-01T00:00:00Z
+                        Key: endsAt
+                    Member Key: generatorURL
+                        String value [truncated]: https://prometheus-k8s-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com/graph?g0.expr=kube_daemonset_status_number_ready%7Bjob%3D%22kube-state-metrics%22%2Cnamespace%3D~%22%28openshift-.%2A%7Ckube-.%2A%7C
+                        Key: generatorURL
+                Object
+                    Member Key: status
+                        String value: firing
+                        Key: status
+                    Member Key: labels
+                        Object
+                            Member Key: alertname
+                                String value: KubeDaemonSetRolloutStuck
+                                Key: alertname
+                            Member Key: cluster
+                                String value: openshift.akaris2.lab.pnq2.cee.redhat.com
+                                Key: cluster
+                            Member Key: daemonset
+                                String value: ovs
+                                Key: daemonset
+                            Member Key: endpoint
+                                String value: https-main
+                                Key: endpoint
+                            Member Key: instance
+                                String value: ...:8443
+                                Key: instance
+                            Member Key: job
+                                String value: kube-state-metrics
+                                Key: job
+                            Member Key: namespace
+                                String value: openshift-sdn
+                                Key: namespace
+                            Member Key: pod
+                                String value: kube-state-metrics-6f4c658bcc-v57b6
+                                Key: pod
+                            Member Key: prometheus
+                                String value: openshift-monitoring/k8s
+                                Key: prometheus
+                            Member Key: service
+                                String value: kube-state-metrics
+                                Key: service
+                            Member Key: severity
+                                String value: critical
+                                Key: severity
+                        Key: labels
+                    Member Key: annotations
+                        Object
+                            Member Key: message
+                                String value: Only 66.66666666666666% of desired pods scheduled and ready for daemon set openshift-sdn/ovs
+                                Key: message
+                        Key: annotations
+                    Member Key: startsAt
+                        String value: 2020-03-11T16:07:40.59085788Z
+                        Key: startsAt
+                    Member Key: endsAt
+                        String value: 0001-01-01T00:00:00Z
+                        Key: endsAt
+                    Member Key: generatorURL
+                        String value [truncated]: https://prometheus-k8s-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com/graph?g0.expr=kube_daemonset_status_number_ready%7Bjob%3D%22kube-state-metrics%22%2Cnamespace%3D~%22%28openshift-.%2A%7Ckube-.%2A%7C
+                        Key: generatorURL
+                Object
+                    Member Key: status
+                        String value: firing
+                        Key: status
+                    Member Key: labels
+                        Object
+                            Member Key: alertname
+                                String value: KubeDaemonSetRolloutStuck
+                                Key: alertname
+                            Member Key: cluster
+                                String value: openshift.akaris2.lab.pnq2.cee.redhat.com
+                                Key: cluster
+                            Member Key: daemonset
+                                String value: sdn
+                                Key: daemonset
+                            Member Key: endpoint
+                                String value: https-main
+                                Key: endpoint
+                            Member Key: instance
+                                String value: ...:8443
+                                Key: instance
+                            Member Key: job
+                                String value: kube-state-metrics
+                                Key: job
+                            Member Key: namespace
+                                String value: openshift-sdn
+                                Key: namespace
+                            Member Key: pod
+                                String value: kube-state-metrics-6f4c658bcc-v57b6
+                                Key: pod
+                            Member Key: prometheus
+                                String value: openshift-monitoring/k8s
+                                Key: prometheus
+                            Member Key: service
+                                String value: kube-state-metrics
+                                Key: service
+                            Member Key: severity
+                                String value: critical
+                                Key: severity
+                        Key: labels
+                    Member Key: annotations
+                        Object
+                            Member Key: message
+                                String value: Only 66.66666666666666% of desired pods scheduled and ready for daemon set openshift-sdn/sdn
+                                Key: message
+                        Key: annotations
+                    Member Key: startsAt
+                        String value: 2020-03-11T16:07:40.59085788Z
+                        Key: startsAt
+                    Member Key: endsAt
+                        String value: 0001-01-01T00:00:00Z
+                        Key: endsAt
+                    Member Key: generatorURL
+                        String value [truncated]: https://prometheus-k8s-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com/graph?g0.expr=kube_daemonset_status_number_ready%7Bjob%3D%22kube-state-metrics%22%2Cnamespace%3D~%22%28openshift-.%2A%7Ckube-.%2A%7C
+                        Key: generatorURL
+                Object
+                    Member Key: status
+                        String value: firing
+                        Key: status
+                    Member Key: labels
+                        Object
+                            Member Key: alertname
+                                String value: KubeDaemonSetRolloutStuck
+                                Key: alertname
+                            Member Key: cluster
+                                String value: openshift.akaris2.lab.pnq2.cee.redhat.com
+                                Key: cluster
+                            Member Key: daemonset
+                                String value: sync
+                                Key: daemonset
+                            Member Key: endpoint
+                                String value: https-main
+                                Key: endpoint
+                            Member Key: instance
+                                String value: ...:8443
+                                Key: instance
+                            Member Key: job
+                                String value: kube-state-metrics
+                                Key: job
+                            Member Key: namespace
+                                String value: openshift-node
+                                Key: namespace
+                            Member Key: pod
+                                String value: kube-state-metrics-6f4c658bcc-v57b6
+                                Key: pod
+                            Member Key: prometheus
+                                String value: openshift-monitoring/k8s
+                                Key: prometheus
+                            Member Key: service
+                                String value: kube-state-metrics
+                                Key: service
+                            Member Key: severity
+                                String value: critical
+                                Key: severity
+                        Key: labels
+                    Member Key: annotations
+                        Object
+                            Member Key: message
+                                String value: Only 66.66666666666666% of desired pods scheduled and ready for daemon set openshift-node/sync
+                                Key: message
+                        Key: annotations
+                    Member Key: startsAt
+                        String value: 2020-03-11T16:07:40.59085788Z
+                        Key: startsAt
+                    Member Key: endsAt
+                        String value: 0001-01-01T00:00:00Z
+                        Key: endsAt
+                    Member Key: generatorURL
+                        String value [truncated]: https://prometheus-k8s-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com/graph?g0.expr=kube_daemonset_status_number_ready%7Bjob%3D%22kube-state-metrics%22%2Cnamespace%3D~%22%28openshift-.%2A%7Ckube-.%2A%7C
+                        Key: generatorURL
+            Key: alerts
+        Member Key: groupLabels
+            Object
+            Key: groupLabels
+        Member Key: commonLabels
+            Object
+                Member Key: alertname
+                    String value: KubeDaemonSetRolloutStuck
+                    Key: alertname
+                Member Key: cluster
+                    String value: openshift.akaris2.lab.pnq2.cee.redhat.com
+                    Key: cluster
+                Member Key: endpoint
+                    String value: https-main
+                    Key: endpoint
+                Member Key: instance
+                    String value: ...:8443
+                    Key: instance
+                Member Key: job
+                    String value: kube-state-metrics
+                    Key: job
+                Member Key: pod
+                    String value: kube-state-metrics-6f4c658bcc-v57b6
+                    Key: pod
+                Member Key: prometheus
+                    String value: openshift-monitoring/k8s
+                    Key: prometheus
+                Member Key: service
+                    String value: kube-state-metrics
+                    Key: service
+                Member Key: severity
+                    String value: critical
+                    Key: severity
+            Key: commonLabels
+~~~
