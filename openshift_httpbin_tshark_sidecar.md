@@ -196,3 +196,131 @@ Hypertext Transfer Protocol
         Request URI: /post
         Request Version: HTTP/1.1
 ~~~
+
+### Configuring Alertmanager to send webhooks to httpbin pod ###
+
+Prerequisites:
+* https://docs.openshift.com/container-platform/3.11/install_config/prometheus_cluster_monitoring.html
+
+In the following, replace `myuser` with the user who shall log into alertmanager:
+~~~
+$ oc adm policy add-cluster-role-to-user cluster-monitoring-view myuser
+cluster role "cluster-monitoring-view" added: "myuser"
+~~~
+
+We can use the above to tell alertmanager to use httpbin as its web hook:
+~~~
+$ oc get routes -n openshift-monitoring
+NAME                HOST/PORT                                                                     PATH      SERVICES            PORT      TERMINATION   WILDCARD
+alertmanager-main   alertmanager-main-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com             alertmanager-main   web       reencrypt     None
+grafana             grafana-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com                       grafana             https     reencrypt     None
+prometheus-k8s      prometheus-k8s-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com                prometheus-k8s      web       reencrypt     None
+~~~
+
+Now, access:
+~~~
+https://alertmanager-main-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com
+~~~
+
+The status page will show the current alertmanager configuration.
+
+The following Red Hat knowledge base solution shows how to update the alertmanager config: https://access.redhat.com/solutions/3804781
+
+Create file: `~/group_vars/OSEv3.yml`:
+~~~
+openshift_cluster_monitoring_operator_alertmanager_config: |+
+  global:
+    resolve_timeout: 2m
+  route:
+    group_wait: 5s
+    group_interval: 10s
+    repeat_interval: 20s
+    receiver: default
+    routes:
+    - match:
+        alertname: DeadMansSwitch
+      repeat_interval: 30s
+      receiver: deadmansswitch
+    - match:
+        alertname: DeadMansSwitch
+      repeat_interval: 30s
+      receiver: wh
+    - match:
+        alertname: '*'
+      repeat_interval: 2m
+      receiver: wh
+    - match:
+        severity: critical
+      receiver: wh
+    - match:
+        severity: warning
+      receiver: wh
+    - match:
+        alertname: KubeAPILatencyHigh
+      receiver: wh
+  receivers:
+  - name: default
+  - name: deadmansswitch
+  - name: wh
+    webhook_configs:
+      - url: "http://httpbin.apps.akaris2.lab.pnq2.cee.redhat.com/anything"
+~~~
+
+And run:
+~~~
+ansible-playbook -i hosts openshift-ansible/playbooks/openshift-monitoring/config.yml -e="openshift_cluster_monitoring_operator_install=true"
+~~~
+
+Verify:
+~~~
+$ oc get secret -n openshift-monitoring alertmanager-main -o yaml | awk '/alertmanager.yaml:/ {print $NF}' | base64 -d
+global:
+  resolve_timeout: 2m
+route:
+  group_wait: 5s
+  group_interval: 10s
+  repeat_interval: 20s
+  receiver: default
+  routes:
+  - match:
+      alertname: DeadMansSwitch
+    repeat_interval: 30s
+    receiver: deadmansswitch
+  - match:
+      alertname: DeadMansSwitch
+    repeat_interval: 30s
+    receiver: wh
+  - match:
+      alertname: '*'
+    repeat_interval: 2m
+    receiver: wh
+  - match:
+      severity: critical
+    receiver: wh
+  - match:
+      severity: warning
+    receiver: wh
+  - match:
+      alertname: KubeAPILatencyHigh
+    receiver: wh
+receivers:
+- name: default
+- name: deadmansswitch
+- name: wh
+  webhook_configs:
+    - url: "http://httpbin.apps.akaris2.lab.pnq2.cee.redhat.com/anything"
+~~~
+
+Restart pods:
+~~~
+$ oc delete pods --selector=app=alertmanager -n openshift-monitoring
+pod "alertmanager-main-0" deleted
+pod "alertmanager-main-1" deleted
+pod "alertmanager-main-2" deleted
+~~~
+
+And check in the web interface of alertmanager to make sure that the new configuration shows up.
+
+### Monitoring incoming webhook reuests ###
+
+Now, monitor the status of incoming web hooks
