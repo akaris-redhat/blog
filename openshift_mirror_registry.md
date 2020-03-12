@@ -91,6 +91,7 @@ subjectAltName = @alt_names
 DNS.1 = 10.10.181.198
 IP.1 = 10.10.181.198
 EOF
+openssl genrsa -out domain.key 4096
 openssl req -new -key domain.key -nodes -out domain.csr -config config
 ~~~
 
