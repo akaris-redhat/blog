@@ -169,13 +169,10 @@ And make sure that curl does not report an issue:
 {"repositories":[]}
 ~~~
 
-Now, follow the rest of the documentation. Modify the pull secret by adding the correct base64 encoded password:
+Now, download your pull-secret from https://cloud.redhat.com/openshift/install/pull-secret. Modify the pull secret by adding the correct base64 encoded password:
 ~~~
 [root@mirror certificates]# echo -n 'root:password' | base64 
 cm9vdDpwYXNzd29yZA==
-~~~
-
-~~~
 [root@mirror ~]# cat pull-secret-modified.txt 
 (...)
         "10.10.181.198:5000": {
