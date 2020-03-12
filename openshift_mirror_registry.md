@@ -63,6 +63,12 @@ total 8
 -rw-r--r--. 1 root root 3311 Feb  3 09:45 rootCA.key
 ~~~
 
+Trust this rootCA on the mirror registry node and on the node where you are running the OpenShift installer:
+~~~
+cp rootCA.crt  /etc/pki/ca-trust/source/anchors/
+update-ca-trust extract
+~~~
+
 Create a certificate signing request:
 ~~~
 mkdir CA/certificates
