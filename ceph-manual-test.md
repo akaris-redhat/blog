@@ -1,20 +1,57 @@
 ### Using Ceph with qemu-kvm manually ###
 
-#### Downloading and customizing qcow2 ####
+#### Install Ceph ####
 
+Create a Ceph cluster according to: 
+[https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/container_guide/deploying-red-hat-ceph-storage-in-containers](https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/container_guide/deploying-red-hat-ceph-storage-in-containers)
 
+#### Installing ceph credentials to /etc/ceph ####
 
-#### Uploading image into Ceph pool ####
+Make sure that all required ceph credentials are in /etc/ceph. In this case, I copied them directly from /etc/ceph on one of my monitor nodes.
+
+#### Creating a pool ####
 
 ~~~
-qemu-img convert -f qcow2 -O raw rhel-server-7.8-beta-1-x86_64-kvm.qcow2 rbd:rbd-pool/rhel-server-7.8-beta-1-x86_64-kvm
+ceph osd pool create rbd-pool 128
+rbd pool init rbd-pool
 ~~~
 
-#### Booting a VM from the raw Ceph image ####
+#### Downloading and customizing RHEL qcow2 ####
+
+Download the RHEL qcow2 from [https://access.redhat.com](https://access.redhat.com), e.g.: [https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.7/x86_64/product-software](https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.7/x86_64/product-software)
+
+Install libguestfs-tools:
+~~~
+yum install libguestfs-tools -y
+~~~
+
+Change the root password of the image:
+~~~
+virt-customize -a rhel-server-7.8-beta-1-x86_64-kvm.qcow2 --password root:password
+# or, if needed:
+# export LIBGUESTFS_BACKEND=direct ; virt-customize -a rhel-server-7.8-beta-1-x86_64-kvm.qcow2 --password root:password
+~~~
+
+#### Converting and uploading image into Ceph pool ####
+
+~~~
+qemu-img convert -f qcow2 -O raw rhel-server-7.8-beta-1-x86_64-kvm.qcow2 rbd:rbd-pool/rhel-server
+~~~
+
+#### Booting a VM from the raw Ceph image with QEMU-KVM ####
 
 Start a VM that directly uses the uploaded image from the Ceph pool:
 ~~~
-/usr/libexec/qemu-kvm -drive file=rbd:rbd-pool/rhel-server-7.8-beta-1-x86_64-kvm -nographic -m 1024
+/usr/libexec/qemu-kvm -drive file=rbd:rbd-pool/rhel-server -nographic -m 1024
 ~~~
 
 To get out of qemu-kvm, type `CTRL-a x`
+
+You should be able to log into the image with credentials: `root` / `password`
+
+> **Note:** With the RHEL cloud image, the screen will show grub, then go blank for a while. This is normal, just wait for a few seconds.
+
+#### Booting a VM from the raw Ceph image with libvirt ####
+
+See:
+[https://blog.modest-destiny.com/posts/kvm-libvirt-add-ceph-rbd-pool/](https://blog.modest-destiny.com/posts/kvm-libvirt-add-ceph-rbd-pool/)
