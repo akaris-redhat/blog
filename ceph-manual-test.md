@@ -55,3 +55,13 @@ You should be able to log into the image with credentials: `root` / `password`
 
 See:
 [https://blog.modest-destiny.com/posts/kvm-libvirt-add-ceph-rbd-pool/](https://blog.modest-destiny.com/posts/kvm-libvirt-add-ceph-rbd-pool/)
+
+[root@undercloud-0 ~]# DISK_SIZE=$(qemu-img  info rhel-server-7.8-beta-1-x86_64-kvm.raw | awk -F '[(|)]' '/virtual size/ {print $(NF-1)}' | awk '{print $1}')
+[root@undercloud-0 ~]# virsh vol-create-as $CEPH_POOL rhel $DISK_SIZE --format raw
+Vol rhel created
+
+[root@undercloud-0 ~]# virsh vol-upload --pool $CEPH_POOL rhel rhel-server-7.8-beta-1-x86_64-kvm.raw
+error: cannot upload to volume rhel
+error: this function is not supported by the connection driver: storage pool doesn't support volume upload
+
+
