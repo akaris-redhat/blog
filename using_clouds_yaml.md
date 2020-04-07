@@ -65,6 +65,7 @@ clouds:
       username: "admin"
       password: VrcxVu7RmZAzpzKUaHmcMv22q
       project_name: "admin"
+      project_id: "a416f556938f454f849da42faa317cd3"
       user_domain_name: "Default"
     region_name: "regionOne"
     interface: "public"
