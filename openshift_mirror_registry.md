@@ -33,11 +33,6 @@ Enter pass phrase for rootCA.key:
 140528188733328:error:28069065:lib(40):UI_set_result:result too small:ui_lib.c:831:You must type in 4 to 1023 characters
 Enter pass phrase for rootCA.key:
 Verifying - Enter pass phrase for rootCA.key:
-[root@mirror CA]# cp ../config .
-[root@mirror CA]# vim config 
--bash: vim: command not found
-[root@mirror CA]# vi config 
-[root@mirror CA]# rm -f config 
 [root@mirror CA]# ll
 total 4
 -rw-r--r--. 1 root root 3311 Feb  3 09:45 rootCA.key
@@ -125,6 +120,12 @@ Then, trust the certificate and make sure that it passes verification and that i
 [root@mirror certificates]# openssl x509 -in domain.crt -noout -text | grep IP
                 DNS:10.10.181.198, IP Address:10.10.181.198
 [root@mirror certificates]# openssl verify -verbose domain.crt
+domain.crt: OK
+~~~
+
+In case of issues with certificate verification, verify the cert directly against the root CA file to determine the failure domain:
+~~~
+[root@mirror certificates]# openssl verify -CAfile ../rootCA.crt domain.crt 
 domain.crt: OK
 ~~~
 
