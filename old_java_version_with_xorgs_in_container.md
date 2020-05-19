@@ -1,5 +1,3 @@
-#!/bin/bash
-
 Also see reference: https://adam.younglogic.com/2017/01/gui-applications-container/
 
 Make sure that you're running xorgs and not wayland:
