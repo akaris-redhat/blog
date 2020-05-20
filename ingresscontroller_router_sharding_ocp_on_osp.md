@@ -152,19 +152,19 @@ Only one of the 3 IngressControllers will be served at this moment. We will chan
 ~~~
 oc project default
 oc apply -f fh-build.yaml
-oc start-build fh-build --wait
+oc start-build fh-build --follow
 oc apply -f fh-ingress.yaml
 
 oc project test1
 oc adm policy add-scc-to-user anyuid -z default
 oc apply -f fh-test1-build.yaml
-oc start-build fh-test1-build --wait
+oc start-build fh-test1-build --follow
 oc apply -f fh-test1-ingress.yaml
 
 oc project test2
 oc adm policy add-scc-to-user anyuid -z default
 oc apply -f fh-test2-build.yaml
-oc start-build fh-test2-build --wait
+oc start-build fh-test2-build --follow
 oc apply -f fh-test2-ingress.yaml
 ~~~
 
