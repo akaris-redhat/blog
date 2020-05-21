@@ -32,6 +32,11 @@ Or consider disabling quotas altogether:
 openstack quota set --secgroups -1 --secgroup-rules -1 --cores -1 --ram -1 --gigabytes -1 admin
 ~~~
 
+Also if it's necessary to spawn a higher number of workers:
+~~~
+nova quota-class-update default --instances -1 --ram -1 --cores -1
+~~~
+
 Create flavor:
 ~~~
 openstack --os-cloud openstack flavor create --disk 25 --ram 32768 --vcpus 8 m1.openshift
