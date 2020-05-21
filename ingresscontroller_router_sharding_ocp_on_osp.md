@@ -65,9 +65,6 @@ spec:
     nodeSelector:
       matchLabels:
         ingressoperator: default
-  namespaceSelector:
-    matchExpressions:
-      - {key: type, operator: NotIn, values: [test1, test2]}
 ~~~
 
 ~~~
