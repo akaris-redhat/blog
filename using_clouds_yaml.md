@@ -25,6 +25,32 @@ openstack --os-cloud <cloud identifier> token issue
 
 #### Manually creating the file ####
 
+Use the following script:
+~~~
+#!/bin/bash
+
+source /home/stack/overcloudrc
+
+PROJECT_ID=$(openstack project list | grep $OS_PROJECT_NAME | awk '{print $2}')
+
+cat << EOF > clouds.yaml
+clouds:
+  openstack:
+    auth:
+      auth_url: $OS_AUTH_URL
+      username: "$OS_USERNAME"
+      password: "$OS_PASSWORD"
+      project_name: "$OS_PROJECT_NAME"
+      project_id: "$PROJECT_ID"
+      user_domain_name: "$OS_USER_DOMAIN_NAME"
+    region_name: "$OS_REGION_NAME"
+    interface: "public"
+    identity_api_version: $OS_IDENTITY_API_VERSION
+EOF
+~~~
+
+##### Further details #####
+
 Look at `overcloudrc`:
 ~~~
 [stack@undercloud-0 ~]$ cat overcloudrc 
@@ -53,6 +79,11 @@ if [ -z "${CLOUDPROMPT_ENABLED:-}" ]; then
     export PS1=\${OS_CLOUDNAME:+"(\$OS_CLOUDNAME)"}\ $PS1
     export CLOUDPROMPT_ENABLED=1
 fi
+~~~
+
+Get the project id with:
+~~~
+openstack project list | grep $OS_PROJECT_NAME | awk '{print $2}'
 ~~~
 
 Generate clouds.yaml with the above credentials. Adjust this to use the actual configuration and credentials as obtained from overcloudrc:
